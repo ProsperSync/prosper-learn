@@ -1,0 +1,31 @@
+{
+  "expo": {
+    "name": "Prosper Learn",
+    "slug": "prosper-learn",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.prospersync.learn"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.prospersync.learn"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "scheme": "prosper-learn",
+    "plugins": ["expo-router"]
+  }
+}
