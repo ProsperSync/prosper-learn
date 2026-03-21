@@ -1,5 +1,5 @@
 # TASKS
-_Last updated: 2026-03-21 | Executor Run #8_
+_Last updated: 2026-03-21 | Executor Run #9_
 
 ---
 
@@ -63,24 +63,6 @@ _Last updated: 2026-03-21 | Executor Run #8_
 
 ---
 
-### TASK-009
-- **id**: TASK-009
-- **title**: Add Global React Error Boundary
-- **description**: The app has no error boundary. Any unhandled exception thrown during a component render causes a white screen of death with zero user-facing recovery path. Before real users interact with the app, a `React.Component`-based `ErrorBoundary` must be added at the app root (wrapping children in `app/_layout.tsx`). The boundary should: (1) catch render-phase errors via `componentDidCatch`, (2) display a friendly fallback UI: an error emoji, "Something went wrong" heading, a brief message, and a "Try Again" button, (3) the "Try Again" button should reset the boundary state so the app re-renders, (4) log the error to console (and eventually to Sentry when TASK-010 is done). This is a critical production-safety task — a single bad render anywhere in the tree currently crashes the entire app with no recovery.
-- **domain**: Engineering
-- **priority**: P1
-- **status**: TODO
-- **dependencies**: none
-- **acceptance_criteria**:
-  - A class component `ErrorBoundary` is implemented with `componentDidCatch` and `getDerivedStateFromError`
-  - `ErrorBoundary` wraps the main app content in `app/_layout.tsx`
-  - When a child component throws during render, a fallback UI is shown (not a white screen)
-  - Fallback UI includes: error icon/emoji, "Something went wrong" title, descriptive message, and "Try Again" button
-  - "Try Again" resets `hasError` state and re-renders children (recovers without app restart)
-  - Error details are logged to console for debugging
-
----
-
 ### TASK-010
 - **id**: TASK-010
 - **title**: Integrate Sentry for Crash Reporting & Observability
@@ -88,7 +70,7 @@ _Last updated: 2026-03-21 | Executor Run #8_
 - **domain**: Analytics & Observability
 - **priority**: P2
 - **status**: TODO
-- **dependencies**: TASK-009
+- **dependencies**: TASK-009 ✅
 - **acceptance_criteria**:
   - `@sentry/react-native` is installed and listed in `package.json` dependencies
   - Sentry is initialized in `app/_layout.tsx` before any UI renders, using `EXPO_PUBLIC_SENTRY_DSN` env var
@@ -100,6 +82,14 @@ _Last updated: 2026-03-21 | Executor Run #8_
 ---
 
 ## Completed Tasks
+
+---
+
+### TASK-009 ✅
+- **id**: TASK-009
+- **title**: Add Global React Error Boundary
+- **completed**: 2026-03-21 (Executor Run #9)
+- **summary**: Created `src/components/ErrorBoundary.tsx` — a React class component implementing `getDerivedStateFromError` and `componentDidCatch`. Fallback UI displays an error emoji, "Something went wrong" title, descriptive message reassuring data safety, and a green "Try Again" button that resets state to re-render children. In dev mode, error details are shown in a styled card. Errors are logged to console (ready for Sentry integration in TASK-010). Wrapped `<AuthProvider>` and `<AuthGate>` with `<ErrorBoundary>` in `app/_layout.tsx` so the boundary catches any render-phase error in the entire component tree. Zero new TypeScript errors.
 
 ---
 

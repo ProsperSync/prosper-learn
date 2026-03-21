@@ -3,6 +3,47 @@ _Planner Agent Memory Log_
 
 ---
 
+## Executor Run #9 — 2026-03-21
+
+### Task Executed
+**TASK-009**: Add Global React Error Boundary
+
+### Changes Made
+1. **Created `src/components/ErrorBoundary.tsx`** (new file):
+   - React class component with `getDerivedStateFromError` and `componentDidCatch`
+   - Fallback UI: error emoji (😟), "Something went wrong" title, reassuring message, green "Try Again" button
+   - "Try Again" resets `hasError` state → re-renders children (recovery without app restart)
+   - Dev-only error details card showing the error message in monospace red text
+   - Errors logged to console via `console.error` with component stack trace
+   - Styled with the app's design language (green primary #4CAF50, card-based, 12px border radius, #F2F2F7 background)
+
+2. **Modified `app/_layout.tsx`**:
+   - Imported `ErrorBoundary` from `../src/components/ErrorBoundary`
+   - Wrapped `<AuthProvider><AuthGate /></AuthProvider>` with `<ErrorBoundary>` in `RootLayout`
+   - Boundary is at the outermost level so it catches errors from any component in the tree
+
+### Key Decisions
+- Placed ErrorBoundary OUTSIDE AuthProvider so even auth-related render errors are caught
+- Used ScrollView in fallback UI to handle small screens or long error messages
+- Dev-only error details gated behind `__DEV__` to avoid leaking stack traces in production
+- Console logging uses `[ErrorBoundary]` prefix for easy filtering in dev tools
+- Left a comment noting Sentry integration point for TASK-010
+
+### Verification
+- `npx tsc --noEmit` confirms zero new TypeScript errors
+- All pre-existing errors remain unchanged (infrastructure/supabase Deno functions, education component re-exports, educationalTutor)
+- All acceptance criteria met:
+  - ✅ Class component `ErrorBoundary` with `componentDidCatch` and `getDerivedStateFromError`
+  - ✅ Wraps main app content in `app/_layout.tsx`
+  - ✅ Fallback UI shown on render error (not white screen)
+  - ✅ Fallback includes: error emoji, "Something went wrong" title, descriptive message, "Try Again" button
+  - ✅ "Try Again" resets `hasError` state and re-renders children
+  - ✅ Error details logged to console for debugging
+
+### Status: DONE
+
+---
+
 ## Executor Run #8 — 2026-03-21
 
 ### Task Executed
