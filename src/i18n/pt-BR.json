@@ -1,0 +1,257 @@
+{
+  "common": {
+    "loading": "Carregando...",
+    "error": "Erro",
+    "close": "Fechar",
+    "viewAll": "Ver Todos",
+    "cancel": "Cancelar",
+    "save": "Salvar",
+    "back": "Voltar"
+  },
+  "education": {
+    "title": "Aprender",
+    "tracksCompleted": "trilhas concluídas",
+    "inProgress": "Em Andamento",
+    "available": "Disponível",
+    "completed": "Concluído",
+    "noTracks": "Nenhuma trilha disponível",
+    "offlineAvailable": "Disponível offline",
+    "categories": {
+      "all": "Todas",
+      "basics": "Básico",
+      "budgeting": "Orçamento",
+      "investing": "Investimentos",
+      "debt": "Dívidas",
+      "goals": "Metas",
+      "advanced": "Avançado"
+    },
+    "difficulty": {
+      "beginner": "Iniciante",
+      "intermediate": "Intermediário",
+      "advanced": "Avançado"
+    },
+    "lesson": {
+      "markComplete": "Marcar como Concluído",
+      "nextLesson": "Próxima Aula →",
+      "videoPlayer": "Player de Vídeo",
+      "completeError": "Falha ao concluir aula. Tente novamente.",
+      "interactiveContent": "Conteúdo Interativo"
+    },
+    "quiz": {
+      "incompleteTitle": "Quiz Incompleto",
+      "incompleteMessage": "Por favor, responda todas as perguntas antes de enviar.",
+      "failedTitle": "Quiz Reprovado",
+      "failedMessage": "Você obteve {{score}}%. É necessário 70% para passar.",
+      "tryAgain": "Tentar Novamente",
+      "submitError": "Falha ao enviar quiz. Tente novamente.",
+      "question": "Questão",
+      "submit": "Enviar Respostas",
+      "passed": "Quiz Aprovado! 🎉",
+      "failed": "Quase Lá",
+      "score": "Pontuação",
+      "correct": "corretas"
+    },
+    "track": {
+      "lessons": "aulas",
+      "startTrack": "Iniciar Trilha",
+      "continueTrack": "Continuar",
+      "completedTrack": "Concluído",
+      "xpReward": "XP",
+      "noLessons": "Nenhuma aula disponível para esta trilha."
+    }
+  },
+  "gamification": {
+    "title": "Conquistas",
+    "overview": {
+      "progress": "Seu Progresso",
+      "stats": "Estatísticas",
+      "recentBadges": "Conquistas Recentes",
+      "activeStreaks": "Sequências Ativas"
+    },
+    "stats": {
+      "totalBadges": "Conquistas",
+      "activeStreaks": "Sequências",
+      "level": "Nível",
+      "tracksCompleted": "Trilhas"
+    },
+    "tabs": {
+      "overview": "Visão Geral",
+      "badges": "Conquistas",
+      "streaks": "Sequências",
+      "activity": "Atividade"
+    },
+    "xp": {
+      "level": "Nível",
+      "total": "XP Total",
+      "noRecentEvents": "Nenhuma atividade recente",
+      "recentActivity": "Atividade Recente",
+      "levelUp": "Subiu de Nível!",
+      "events": {
+        "transaction_created": "Transação Adicionada",
+        "transaction_categorized": "Transação Categorizada",
+        "budget_set": "Orçamento Criado",
+        "goal_created": "Meta Criada",
+        "goal_completed": "Meta Concluída",
+        "milestone_reached": "Marco Alcançado",
+        "streak_milestone": "Marco de Sequência",
+        "fis_improved": "Pontuação Financeira Melhorou",
+        "lesson_completed": "Aula Concluída",
+        "quiz_passed": "Quiz Aprovado",
+        "track_completed": "Trilha Concluída",
+        "perfect_quiz": "Pontuação Perfeita no Quiz",
+        "daily_login": "Login Diário",
+        "voice_command_used": "Comando de Voz Usado",
+        "feedback_provided": "Feedback Enviado",
+        "referral_made": "Indicação Feita"
+      }
+    },
+    "tier": {
+      "bronze": "Bronze",
+      "silver": "Prata",
+      "gold": "Ouro",
+      "platinum": "Platina"
+    },
+    "badges": {
+      "empty": "Nenhuma conquista ainda",
+      "emptyHint": "Conclua aulas e metas para ganhar conquistas",
+      "criteria": "Critérios",
+      "threshold": "Limite",
+      "earnedOn": "Conquistado em",
+      "byTier": "Conquistas por Nível"
+    },
+    "streak": {
+      "transaction_entry": "Transações Diárias",
+      "budget_review": "Revisões de Orçamento",
+      "goal_progress": "Atualizações de Meta",
+      "fis_check": "Revisões de Pontuação Financeira",
+      "educational": "Sequência de Aprendizado",
+      "atRisk": "Em risco — registre hoje para manter sua sequência!",
+      "longest": "Maior",
+      "nextMilestone": "Próximo marco",
+      "milestones": "Marcos",
+      "empty": "Nenhuma sequência ativa",
+      "emptyHint": "Comece a completar ações diárias para construir sequências"
+    }
+  },
+  "badges": {
+    "first_transaction": {
+      "title": "Primeiros Passos",
+      "description": "Registrou sua primeira transação"
+    },
+    "week_streak": {
+      "title": "Guerreiro Semanal",
+      "description": "Manteve uma sequência de 7 dias"
+    },
+    "month_streak": {
+      "title": "Campeão Mensal",
+      "description": "Manteve uma sequência de 30 dias"
+    },
+    "budget_champion": {
+      "title": "Campeão do Orçamento",
+      "description": "Ficou dentro do orçamento por um mês completo"
+    },
+    "savings_starter": {
+      "title": "Iniciante em Poupança",
+      "description": "Atingiu sua primeira meta de poupança"
+    },
+    "debt_slayer": {
+      "title": "Matador de Dívidas",
+      "description": "Quitou uma dívida"
+    },
+    "investment_initiator": {
+      "title": "Iniciante em Investimentos",
+      "description": "Fez seu primeiro investimento"
+    },
+    "fis_beginner": {
+      "title": "Aprendiz Financeiro",
+      "description": "Atingiu uma pontuação de saúde financeira básica"
+    },
+    "fis_developing": {
+      "title": "Desenvolvedor Financeiro",
+      "description": "Atingiu uma pontuação de saúde financeira em desenvolvimento"
+    },
+    "fis_proficient": {
+      "title": "Proficiente Financeiro",
+      "description": "Atingiu uma pontuação de saúde financeira proficiente"
+    },
+    "fis_expert": {
+      "title": "Especialista Financeiro",
+      "description": "Atingiu nível especialista em saúde financeira"
+    },
+    "first_goal": {
+      "title": "Definidor de Metas",
+      "description": "Criou sua primeira meta financeira"
+    },
+    "goal_achiever": {
+      "title": "Realizador de Metas",
+      "description": "Completou uma meta financeira"
+    },
+    "milestone_master": {
+      "title": "Mestre dos Marcos",
+      "description": "Atingiu 10 marcos de meta"
+    },
+    "ambitious_planner": {
+      "title": "Planejador Ambicioso",
+      "description": "Criou 5 ou mais metas financeiras"
+    },
+    "knowledge_seeker": {
+      "title": "Buscador do Conhecimento",
+      "description": "Completou sua primeira aula"
+    },
+    "quiz_master": {
+      "title": "Mestre dos Quizzes",
+      "description": "Passou em 10 quizzes"
+    },
+    "track_completed": {
+      "title": "Finalizador de Trilha",
+      "description": "Completou uma trilha de aprendizado"
+    },
+    "perfect_score": {
+      "title": "Pontuação Perfeita",
+      "description": "Tirou 100% em um quiz"
+    },
+    "early_adopter": {
+      "title": "Pioneiro",
+      "description": "Um dos nossos primeiros usuários"
+    },
+    "daily_user": {
+      "title": "Aprendiz Consistente",
+      "description": "Fez login por 30 dias"
+    },
+    "voice_enthusiast": {
+      "title": "Entusiasta de Voz",
+      "description": "Usou comandos de voz 50 vezes"
+    },
+    "social_sharer": {
+      "title": "Compartilhador Social",
+      "description": "Compartilhou seu progresso com amigos"
+    }
+  },
+  "auth": {
+    "welcomeTitle": "Prosper Learn",
+    "welcomeSubtitle": "Domine suas finanças, uma aula de cada vez",
+    "signIn": "Entrar",
+    "signUp": "Criar Conta",
+    "email": "E-mail",
+    "password": "Senha",
+    "noAccount": "Não tem uma conta?",
+    "hasAccount": "Já tem uma conta?",
+    "signUpLink": "Criar conta",
+    "signInLink": "Entrar",
+    "signUpSuccess": "Conta criada! Verifique seu e-mail para confirmar.",
+    "signInError": "E-mail ou senha inválidos. Tente novamente.",
+    "signUpError": "Não foi possível criar a conta. Tente novamente.",
+    "emailRequired": "E-mail é obrigatório",
+    "passwordRequired": "Senha é obrigatória",
+    "passwordMinLength": "A senha deve ter pelo menos 6 caracteres"
+  },
+  "profile": {
+    "title": "Perfil",
+    "settings": "Configurações",
+    "language": "Idioma",
+    "notifications": "Notificações",
+    "about": "Sobre",
+    "signOut": "Sair",
+    "signOutConfirm": "Tem certeza de que deseja sair?"
+  }
+}

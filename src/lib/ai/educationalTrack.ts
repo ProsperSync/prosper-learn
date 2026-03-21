@@ -53,12 +53,19 @@ export class EducationalTrackEngine {
   }
 
   /**
-   * Get lesson by ID
+   * Get lesson by ID (requires trackId for validation)
    */
   getLesson(trackId: string, lessonId: string): Lesson | undefined {
     const track = this.tracks.get(trackId);
     if (!track || !track.lessons.includes(lessonId)) return undefined;
 
+    return this.lessons.get(lessonId);
+  }
+
+  /**
+   * Get lesson by ID only (no trackId required)
+   */
+  getLessonById(lessonId: string): Lesson | undefined {
     return this.lessons.get(lessonId);
   }
 

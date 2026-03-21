@@ -1,32 +1,84 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView, Pressable } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, Text, StyleSheet, ScrollView, Pressable, Alert } from 'react-native';
+import { useTranslation } from 'react-i18next';
+import { useAuth } from '../../src/hooks/useAuth';
+import { gamificationService } from '../../src/services';
 
 export default function ProfileTab() {
+  const { t } = useTranslation();
+  const { user, signOut } = useAuth();
+
+  const [level, setLevel] = useState(1);
+  const [totalXP, setTotalXP] = useState(0);
+
+  const loadGamificationData = useCallback(async () => {
+    if (!user?.id) return;
+    try {
+      const stats = await gamificationService.getStats(user.id);
+      if (stats) {
+        setLevel(stats.currentLevel);
+        setTotalXP(stats.totalXP);
+      }
+    } catch (error) {
+      console.error('Failed to load profile stats:', error);
+    }
+  }, [user?.id]);
+
+  useEffect(() => {
+    loadGamificationData();
+  }, [loadGamificationData]);
+
+  const handleSignOut = () => {
+    Alert.alert(
+      t('profile.signOut'),
+      t('profile.signOutConfirm'),
+      [
+        { text: t('common.cancel'), style: 'cancel' },
+        {
+          text: t('profile.signOut'),
+          style: 'destructive',
+          onPress: signOut,
+        },
+      ]
+    );
+  };
+
+  const displayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Learner';
+  const displayEmail = user?.email || '';
+  const initials = displayName.charAt(0).toUpperCase();
+
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <View style={styles.header}>
         <View style={styles.avatar}>
-          <Text style={styles.avatarText}>👤</Text>
+          <Text style={styles.avatarText}>{initials}</Text>
         </View>
-        <Text style={styles.name}>Learner</Text>
-        <Text style={styles.subtitle}>Level 1 • 0 XP</Text>
+        <Text style={styles.name}>{displayName}</Text>
+        <Text style={styles.email}>{displayEmail}</Text>
+        <Text style={styles.subtitle}>
+          Level {level} • {totalXP.toLocaleString()} XP
+        </Text>
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Settings</Text>
+        <Text style={styles.sectionTitle}>{t('profile.settings')}</Text>
         <Pressable style={styles.menuItem}>
-          <Text style={styles.menuText}>Language</Text>
+          <Text style={styles.menuText}>{t('profile.language')}</Text>
           <Text style={styles.menuValue}>English</Text>
         </Pressable>
         <Pressable style={styles.menuItem}>
-          <Text style={styles.menuText}>Notifications</Text>
+          <Text style={styles.menuText}>{t('profile.notifications')}</Text>
           <Text style={styles.menuValue}>On</Text>
         </Pressable>
         <Pressable style={styles.menuItem}>
-          <Text style={styles.menuText}>About</Text>
+          <Text style={styles.menuText}>{t('profile.about')}</Text>
           <Text style={styles.menuValue}>v1.0.0</Text>
         </Pressable>
       </View>
+
+      <Pressable style={styles.signOutButton} onPress={handleSignOut}>
+        <Text style={styles.signOutText}>{t('profile.signOut')}</Text>
+      </Pressable>
     </ScrollView>
   );
 }
@@ -34,14 +86,60 @@ export default function ProfileTab() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#F2F2F7' },
   content: { padding: 16 },
-  header: { alignItems: 'center', paddingVertical: 32, backgroundColor: '#fff', borderRadius: 12, marginBottom: 16 },
-  avatar: { width: 80, height: 80, borderRadius: 40, backgroundColor: '#E8F5E9', justifyContent: 'center', alignItems: 'center', marginBottom: 12 },
-  avatarText: { fontSize: 40 },
+  header: {
+    alignItems: 'center',
+    paddingVertical: 32,
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    marginBottom: 16,
+  },
+  avatar: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: '#4CAF50',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  avatarText: { fontSize: 32, color: '#fff', fontWeight: '700' },
   name: { fontSize: 24, fontWeight: '700', color: '#333', marginBottom: 4 },
+  email: { fontSize: 14, color: '#999', marginBottom: 4 },
   subtitle: { fontSize: 14, color: '#666' },
-  section: { backgroundColor: '#fff', borderRadius: 12, overflow: 'hidden' },
-  sectionTitle: { fontSize: 16, fontWeight: '700', color: '#333', padding: 16, borderBottomWidth: 1, borderBottomColor: '#f0f0f0' },
-  menuItem: { flexDirection: 'row', justifyContent: 'space-between', padding: 16, borderBottomWidth: 1, borderBottomColor: '#f0f0f0' },
+  section: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    overflow: 'hidden',
+    marginBottom: 16,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#333',
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
+  },
+  menuItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
+  },
   menuText: { fontSize: 16, color: '#333' },
   menuValue: { fontSize: 16, color: '#999' },
+  signOutButton: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 16,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#F44336',
+  },
+  signOutText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#F44336',
+  },
 });

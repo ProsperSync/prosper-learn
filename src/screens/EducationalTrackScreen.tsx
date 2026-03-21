@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, ScrollView, RefreshControl, Pressable } from 'react-native';
+import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import type { EducationalTrack, TrackProgress } from '../lib/types';
 import { educationalTrackEngine } from '../lib/ai';
 import { educationalService } from '../services';
+import { useAuth } from '../hooks/useAuth';
 
 interface TrackCardProps {
   track: EducationalTrack;
@@ -103,7 +105,8 @@ function TrackCard({ track, progress, onPress }: TrackCardProps) {
   );
 }
 
-export function EducationalTrackScreen({ navigation }: any) {
+export function EducationalTrackScreen() {
+  const router = useRouter();
   const { t } = useTranslation();
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -112,7 +115,8 @@ export function EducationalTrackScreen({ navigation }: any) {
   const [trackProgress, setTrackProgress] = useState<Map<string, TrackProgress>>(new Map());
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
-  const userId = 'current-user-id'; // TODO: Get from auth context
+  const { user } = useAuth();
+  const userId = user?.id ?? '';
 
   const loadData = useCallback(async () => {
     try {
@@ -141,7 +145,7 @@ export function EducationalTrackScreen({ navigation }: any) {
   }, [loadData]);
 
   const handleTrackPress = (track: EducationalTrack) => {
-    navigation.navigate('TrackDetail', { trackId: track.id });
+    router.push('/track/' + track.id);
   };
 
   const categories = [

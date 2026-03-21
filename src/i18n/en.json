@@ -1,0 +1,257 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "close": "Close",
+    "viewAll": "View All",
+    "cancel": "Cancel",
+    "save": "Save",
+    "back": "Back"
+  },
+  "education": {
+    "title": "Learn",
+    "tracksCompleted": "tracks completed",
+    "inProgress": "In Progress",
+    "available": "Available",
+    "completed": "Completed",
+    "noTracks": "No tracks available",
+    "offlineAvailable": "Available offline",
+    "categories": {
+      "all": "All",
+      "basics": "Basics",
+      "budgeting": "Budgeting",
+      "investing": "Investing",
+      "debt": "Debt",
+      "goals": "Goals",
+      "advanced": "Advanced"
+    },
+    "difficulty": {
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced"
+    },
+    "lesson": {
+      "markComplete": "Mark as Complete",
+      "nextLesson": "Next Lesson →",
+      "videoPlayer": "Video Player",
+      "completeError": "Failed to complete lesson. Please try again.",
+      "interactiveContent": "Interactive Content"
+    },
+    "quiz": {
+      "incompleteTitle": "Incomplete Quiz",
+      "incompleteMessage": "Please answer all questions before submitting.",
+      "failedTitle": "Quiz Failed",
+      "failedMessage": "You scored {{score}}%. A passing score of 70% is required.",
+      "tryAgain": "Try Again",
+      "submitError": "Failed to submit quiz. Please try again.",
+      "question": "Question",
+      "submit": "Submit Answers",
+      "passed": "Quiz Passed! 🎉",
+      "failed": "Not Quite There",
+      "score": "Score",
+      "correct": "correct"
+    },
+    "track": {
+      "lessons": "lessons",
+      "startTrack": "Start Track",
+      "continueTrack": "Continue",
+      "completedTrack": "Completed",
+      "xpReward": "XP",
+      "noLessons": "No lessons available for this track."
+    }
+  },
+  "gamification": {
+    "title": "Achievements",
+    "overview": {
+      "progress": "Your Progress",
+      "stats": "Stats",
+      "recentBadges": "Recent Badges",
+      "activeStreaks": "Active Streaks"
+    },
+    "stats": {
+      "totalBadges": "Badges",
+      "activeStreaks": "Streaks",
+      "level": "Level",
+      "tracksCompleted": "Tracks"
+    },
+    "tabs": {
+      "overview": "Overview",
+      "badges": "Badges",
+      "streaks": "Streaks",
+      "activity": "Activity"
+    },
+    "xp": {
+      "level": "Level",
+      "total": "Total XP",
+      "noRecentEvents": "No recent activity",
+      "recentActivity": "Recent Activity",
+      "levelUp": "Level Up!",
+      "events": {
+        "transaction_created": "Transaction Added",
+        "transaction_categorized": "Transaction Categorized",
+        "budget_set": "Budget Created",
+        "goal_created": "Goal Created",
+        "goal_completed": "Goal Completed",
+        "milestone_reached": "Milestone Reached",
+        "streak_milestone": "Streak Milestone",
+        "fis_improved": "Financial Score Improved",
+        "lesson_completed": "Lesson Completed",
+        "quiz_passed": "Quiz Passed",
+        "track_completed": "Track Completed",
+        "perfect_quiz": "Perfect Quiz Score",
+        "daily_login": "Daily Login",
+        "voice_command_used": "Voice Command Used",
+        "feedback_provided": "Feedback Provided",
+        "referral_made": "Referral Made"
+      }
+    },
+    "tier": {
+      "bronze": "Bronze",
+      "silver": "Silver",
+      "gold": "Gold",
+      "platinum": "Platinum"
+    },
+    "badges": {
+      "empty": "No badges yet",
+      "emptyHint": "Complete lessons and goals to earn badges",
+      "criteria": "Criteria",
+      "threshold": "Threshold",
+      "earnedOn": "Earned on",
+      "byTier": "Badges by Tier"
+    },
+    "streak": {
+      "transaction_entry": "Daily Transactions",
+      "budget_review": "Budget Reviews",
+      "goal_progress": "Goal Updates",
+      "fis_check": "Financial Score Reviews",
+      "educational": "Learning Streak",
+      "atRisk": "At risk — log today to keep your streak!",
+      "longest": "Longest",
+      "nextMilestone": "Next milestone",
+      "milestones": "Milestones",
+      "empty": "No active streaks",
+      "emptyHint": "Start completing daily actions to build streaks"
+    }
+  },
+  "badges": {
+    "first_transaction": {
+      "title": "First Steps",
+      "description": "Logged your first transaction"
+    },
+    "week_streak": {
+      "title": "Week Warrior",
+      "description": "Maintained a 7-day streak"
+    },
+    "month_streak": {
+      "title": "Monthly Champion",
+      "description": "Maintained a 30-day streak"
+    },
+    "budget_champion": {
+      "title": "Budget Champion",
+      "description": "Stayed within budget for a full month"
+    },
+    "savings_starter": {
+      "title": "Savings Starter",
+      "description": "Reached your first savings goal"
+    },
+    "debt_slayer": {
+      "title": "Debt Slayer",
+      "description": "Paid off a debt"
+    },
+    "investment_initiator": {
+      "title": "Investment Initiator",
+      "description": "Made your first investment"
+    },
+    "fis_beginner": {
+      "title": "Financial Learner",
+      "description": "Achieved a beginner Financial Health Score"
+    },
+    "fis_developing": {
+      "title": "Financial Developer",
+      "description": "Reached a developing Financial Health Score"
+    },
+    "fis_proficient": {
+      "title": "Financial Proficient",
+      "description": "Achieved a proficient Financial Health Score"
+    },
+    "fis_expert": {
+      "title": "Financial Expert",
+      "description": "Reached expert-level Financial Health Score"
+    },
+    "first_goal": {
+      "title": "Goal Setter",
+      "description": "Created your first financial goal"
+    },
+    "goal_achiever": {
+      "title": "Goal Achiever",
+      "description": "Completed a financial goal"
+    },
+    "milestone_master": {
+      "title": "Milestone Master",
+      "description": "Reached 10 goal milestones"
+    },
+    "ambitious_planner": {
+      "title": "Ambitious Planner",
+      "description": "Created 5 or more financial goals"
+    },
+    "knowledge_seeker": {
+      "title": "Knowledge Seeker",
+      "description": "Completed your first lesson"
+    },
+    "quiz_master": {
+      "title": "Quiz Master",
+      "description": "Passed 10 quizzes"
+    },
+    "track_completed": {
+      "title": "Track Finisher",
+      "description": "Completed a learning track"
+    },
+    "perfect_score": {
+      "title": "Perfect Score",
+      "description": "Scored 100% on a quiz"
+    },
+    "early_adopter": {
+      "title": "Early Adopter",
+      "description": "One of our first users"
+    },
+    "daily_user": {
+      "title": "Consistent Learner",
+      "description": "Logged in for 30 days"
+    },
+    "voice_enthusiast": {
+      "title": "Voice Enthusiast",
+      "description": "Used voice commands 50 times"
+    },
+    "social_sharer": {
+      "title": "Social Sharer",
+      "description": "Shared your progress with friends"
+    }
+  },
+  "auth": {
+    "welcomeTitle": "Prosper Learn",
+    "welcomeSubtitle": "Master your finances, one lesson at a time",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "email": "Email",
+    "password": "Password",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "signUpLink": "Sign up",
+    "signInLink": "Sign in",
+    "signUpSuccess": "Account created! Check your email to confirm.",
+    "signInError": "Invalid email or password. Please try again.",
+    "signUpError": "Could not create account. Please try again.",
+    "emailRequired": "Email is required",
+    "passwordRequired": "Password is required",
+    "passwordMinLength": "Password must be at least 6 characters"
+  },
+  "profile": {
+    "title": "Profile",
+    "settings": "Settings",
+    "language": "Language",
+    "notifications": "Notifications",
+    "about": "About",
+    "signOut": "Sign Out",
+    "signOutConfirm": "Are you sure you want to sign out?"
+  }
+}

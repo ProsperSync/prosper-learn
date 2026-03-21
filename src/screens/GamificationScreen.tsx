@@ -7,6 +7,7 @@ import { StreakList } from '../components/gamification/StreakWidget';
 import { XPProgressBar, XPEventFeed } from '../components/gamification/XPProgressBar';
 import { gamificationService } from '../services';
 import { useTheme, type ThemeColors } from '../hooks/useTheme';
+import { useAuth } from '../hooks/useAuth';
 
 type Tab = 'overview' | 'badges' | 'streaks' | 'activity';
 
@@ -26,7 +27,8 @@ export function GamificationScreen() {
   const [xpEvents, setXPEvents] = useState<any[]>([]);
   const [selectedBadge, setSelectedBadge] = useState<Badge | null>(null);
 
-  const userId = 'current-user-id'; // TODO: Get from auth context
+  const { user } = useAuth();
+  const userId = user?.id ?? '';
 
   const loadData = useCallback(async () => {
     try {
