@@ -1,5 +1,5 @@
 # TASKS
-_Last updated: 2026-03-21 | Executor Run #15_
+_Last updated: 2026-03-21 | Executor Run #16_
 
 ---
 
@@ -122,7 +122,34 @@ _Last updated: 2026-03-21 | Executor Run #15_
 
 ---
 
+### TASK-020
+- **id**: TASK-020
+- **title**: Verify GitHub Pages is Live and Privacy Policy URL Resolves
+- **description**: TASK-016 created the `docs/` folder and set `privacyPolicyUrl` in `app.json`, but GitHub Pages must be **explicitly enabled** in the GitHub repository settings for the URL to be publicly accessible. Without this activation step, Play Console's privacy policy URL validation will fail and block TASK-003 submission. Steps: (1) Navigate to the GitHub repository Settings → Pages, (2) Under "Build and deployment" → Source: "Deploy from a branch", Branch: `main`, Folder: `/docs` → click Save, (3) Wait 1–3 minutes for the GitHub Actions deployment to complete, (4) Open `https://prospersync.github.io/prosper-learn/privacy-policy.html` in a browser and confirm HTTP 200 with full page content, (5) Also verify the landing page `https://prospersync.github.io/prosper-learn/` and terms page `https://prospersync.github.io/prosper-learn/terms.html` resolve. Important: if the GitHub username/org is not `prospersync`, update `expo.extra.privacyPolicyUrl` in `app.json` to the correct URL before TASK-003.
+- **domain**: Google Play Store Readiness / Legal & Trust
+- **priority**: P0
+- **status**: TODO
+- **dependencies**: TASK-016 ✅
+- **acceptance_criteria**:
+  - GitHub Pages is enabled on the repository (Settings → Pages shows "Your site is live at …")
+  - `https://prospersync.github.io/prosper-learn/privacy-policy.html` returns HTTP 200 and displays full privacy policy content
+  - `https://prospersync.github.io/prosper-learn/` (landing page) returns HTTP 200
+  - The URL in `app.json` `expo.extra.privacyPolicyUrl` matches the verified live URL exactly
+  - No certificate errors or unexpected redirects when accessing the URL
+
+---
+
+---
+
 ## Completed Tasks
+
+---
+
+### TASK-021 ✅
+- **id**: TASK-021
+- **title**: Write Optimized Play Store Full Listing Description
+- **completed**: 2026-03-21 (Executor Run #16)
+- **summary**: Created `docs/store-listing.md` with complete Play Store listing copy. Short description: "Master personal finance with bite-sized lessons, quizzes & XP rewards" (71 chars, within ≤80 limit). Full description (~1,920 chars, within 1,500–4,000 range) includes: compelling hook in first 167 chars ("Take control of your money — no jargon, no overwhelm…"), 5 feature sections (Bite-Sized Lessons, Earn XP & Badges, Structured Learning Tracks, Daily Streaks, Quizzes & Challenges), topics covered paragraph (budgeting, saving, investing, debt, credit, compound interest, emergency funds, money management), target audience section (beginners, students, young adults), trust paragraph (no ads, no in-app purchases, no data selling, not financial advice), and CTA. All 8 target keywords included naturally: financial education, personal finance, budgeting app, investing basics, money management, financial literacy, learn finance, finance for beginners. 5 keyword tags for Play Console: financial education, personal finance app, budgeting app, financial literacy, learn finance. Also includes content rating questionnaire guidance notes.
 
 ---
 
@@ -231,6 +258,37 @@ _Last updated: 2026-03-21 | Executor Run #15_
 ---
 
 ## Notes
+
+### Planner Run #15 — 2026-03-21
+
+**Assessed Stage**: Pre-release → **LAUNCH READY.** TASK-016 is confirmed complete (Executor Run #15 created `docs/`, set `privacyPolicyUrl` in `app.json`). TASK-003 is now FULLY UNBLOCKED — every dependency is resolved. Two lightweight prep tasks stand between the team and submission: TASK-020 (verify GitHub Pages live URL) and TASK-021 (write optimized listing copy), both of which can be done in parallel.
+
+**Key Findings**:
+- **TASK-016 ✅ CONFIRMED COMPLETE** — `docs/` folder exists with `index.html`, `privacy-policy.html`, and `terms.html`. `app.json` `expo.extra.privacyPolicyUrl` is set to `https://prospersync.github.io/prosper-learn/privacy-policy.html`. This closes the last hard dependency for TASK-003.
+- **TASK-003 is FULLY UNBLOCKED** — all 6 dependencies (TASK-007, TASK-011, TASK-012, TASK-013, TASK-014, TASK-016) are confirmed ✅. TASK-003 description updated to remove outdated "only remaining dep is TASK-016" language. New step-by-step instructions added including content rating guidance (Education category) and screenshot specs.
+- **GitHub Pages activation is untracked** — TASK-016 noted that GitHub Pages must be manually enabled in repo Settings, but no task was tracking this pre-flight check. A silent failure here would cause Play Console to reject the privacy policy URL. Added TASK-020 (P0) to close this gap.
+- **Play Store listing copy unwritten** — TASK-003 says "write full description with keywords" but the actual copy hasn't been drafted anywhere. This is time-intensive creative/ASO work that should be parallelized with the EAS build setup. Added TASK-021 (P1) to produce `docs/store-listing.md`.
+- **No `@sentry/react-native`, `expo-notifications`, `expo-store-review`, or analytics SDK** in `package.json` — TASK-010, TASK-015, TASK-017, TASK-018, TASK-019 remain unstarted and correctly prioritized as post-launch work.
+- **eas.json submit track is "internal"** — This means TASK-003's first submission goes to the Internal Testing track, not Production. This is intentional and correct (allows catching any Play Console rejection issues before full rollout). Documented in TASK-003 updated description.
+
+**Tasks Added This Run**:
+- **TASK-020** (NEW, P0) — Verify GitHub Pages is live and privacy policy URL resolves (pre-flight for TASK-003)
+- **TASK-021** (NEW, P1) — Write optimized Play Store listing copy; creates `docs/store-listing.md`
+- **TASK-003** (UPDATED) — Description rewritten to reflect all deps are resolved; added step-by-step EAS build and Play Console instructions; added TASK-020 as pre-flight check dep
+
+**Immediate Critical Path to Launch**:
+1. **TASK-020** (P0) → Enable GitHub Pages + verify URL resolves → 5-minute manual step
+2. **TASK-021** (P1) → Write listing copy → can run in parallel with EAS build setup
+3. **TASK-003** (P0) → `eas build` + Play Console listing + screenshots + submit
+
+**Post-Launch Priority Queue** (unchanged, in order):
+1. TASK-015 (P2) — Push Notifications (Day-2 retention — highest immediate ROI)
+2. TASK-010 (P2) — Sentry (crash visibility from Day 1)
+3. TASK-018 (P2) — Behavioral Analytics (product decisions need data)
+4. TASK-017 (P2) — In-App Rating Prompt (after 100+ installs, ratings accelerate discovery)
+5. TASK-019 (P3) — Achievement Social Sharing (viral growth flywheel)
+
+---
 
 ### Planner Run #14 — 2026-03-21
 

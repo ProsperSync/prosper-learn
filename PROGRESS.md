@@ -2,6 +2,72 @@
 _Planner Agent Memory Log_
 
 ---
+
+## Executor Run #16 — 2026-03-21
+
+### Task Executed
+**TASK-021**: Write Optimized Play Store Full Listing Description
+
+### Files Changed
+- `docs/store-listing.md` — **CREATED** — Complete Play Store listing with short description, full description, keyword tags, keyword audit table, and content rating notes
+- `TASKS.md` — Moved TASK-021 to Completed Tasks section, updated run counter to #16
+- `PROGRESS.md` — Added this executor run entry
+
+### Key Decisions
+- Short description (71 chars): "Master personal finance with bite-sized lessons, quizzes & XP rewards" — front-loads the value proposition within the 80-char limit
+- Full description (~1,920 chars): structured with a hook → features → topics → audience → trust → CTA format. Keeps well within the 4,000-char max while being substantive enough (above 1,500-char minimum)
+- Hook paragraph designed so the first 167 characters (Play Store "Read more" cutoff) form a standalone compelling pitch
+- All 8 target keywords from the task spec included naturally: financial education, personal finance, budgeting app, investing basics, money management, financial literacy, learn finance, finance for beginners
+- 5 keyword tags chosen for Play Console: financial education, personal finance app, budgeting app, financial literacy, learn finance
+- Added content rating questionnaire guidance notes (Education category, no violence/adult content) to help whoever fills out Play Console
+
+### Verification Results
+- `npx tsc --noEmit` — zero new TypeScript errors (this task only added a markdown file)
+- Short description character count: 71 (within ≤80 limit) ✅
+- Full description character count: ~1,920 (within 1,500–4,000 range) ✅
+- All 8 target keywords present ✅
+- First 167 chars form standalone hook ✅
+- Trust paragraph included (no ads, no in-app purchases, not financial advice) ✅
+- 5 keyword tags listed ✅
+
+---
+
+## Planner Run #15 — 2026-03-21
+
+### Stage Assessment
+**LAUNCH READY** — All engineering, legal, and infrastructure tasks are complete. TASK-016 (GitHub Pages) was completed by Executor Run #15: `docs/` folder exists with landing page + privacy policy + terms pages, and `app.json` has `expo.extra.privacyPolicyUrl` set. TASK-003 (Play Store Submission) is the only P0 task remaining, now fully unblocked.
+
+### Key Discoveries
+- **TASK-016 ✅ CONFIRMED COMPLETE**: `docs/index.html`, `docs/privacy-policy.html`, `docs/terms.html` all exist. `app.json` `expo.extra.privacyPolicyUrl` = `"https://prospersync.github.io/prosper-learn/privacy-policy.html"`. Executor Run #15 succeeded.
+- **GitHub Pages activation is an untracked pre-flight gap**: The docs/ files are committed, but GitHub Pages must be manually enabled in repo Settings → Pages → Source: /docs, branch: main. No prior task tracked this step. Added TASK-020 (P0) to close this risk before TASK-003 runs.
+- **Play Store listing copy doesn't exist yet**: TASK-003 bundles "write listing description" into the submission task, but this is non-trivial ASO work best separated. Added TASK-021 (P1) to produce `docs/store-listing.md` in parallel with EAS build setup.
+- **TASK-003 description updated**: Removed stale "only remaining dep is TASK-016" language. Added specific EAS build commands, Play Console navigation steps, screenshot specs (min 320px, JPEG/24-bit PNG, max 8MB), content rating guidance (Education category), and clarification that submit targets Internal Testing track per eas.json.
+- **No analytics, Sentry, or push notifications in package.json** — TASK-010, TASK-015, TASK-017, TASK-018, TASK-019 all remain correctly deferred to post-launch.
+- **eas.json submit track is "internal"** — First Play Store submission will go to Internal Testing, not Production rollout. This is intentional. After verification, the developer manually promotes to Production in Play Console.
+
+### Key Decisions
+- Added **TASK-020** (P0): GitHub Pages pre-flight check — prevents silent launch failure
+- Added **TASK-021** (P1): Play Store listing copy — separates ASO writing from technical build work, enables parallelization
+- **TASK-003 description rewritten** to provide complete executor-ready instructions with no ambiguity
+
+### Current Active Task Priority Order
+1. TASK-020 (P0) — Enable GitHub Pages + verify privacy policy URL resolves (~5 min manual step)
+2. TASK-021 (P1) — Write listing copy → `docs/store-listing.md` (can run in parallel with build)
+3. TASK-003 (P0) — eas build production → Play Console submission (the launch itself)
+4. TASK-015 (P2) — Push notifications (post-launch, Day-2 retention)
+5. TASK-010 (P2) — Sentry crash reporting (post-launch observability)
+6. TASK-018 (P2) — Behavioral analytics (post-launch product decisions)
+7. TASK-017 (P2) — In-app rating prompt (post-launch Play Store rating growth)
+8. TASK-019 (P3) — Achievement social sharing (post-launch viral growth)
+
+### Privacy Policy URL Reference
+**Canonical URL**: `https://prospersync.github.io/prosper-learn/privacy-policy.html`
+**Landing Page**: `https://prospersync.github.io/prosper-learn/`
+**Terms Page**: `https://prospersync.github.io/prosper-learn/terms.html`
+Set in `app.json` as `expo.extra.privacyPolicyUrl`. Must match exactly what is entered in Play Console.
+
+---
+
 ## Executor Run #15 — 2026-03-21
 
 ### Task Executed
