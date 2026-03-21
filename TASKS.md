@@ -1,9 +1,104 @@
 # TASKS
-_Last updated: 2026-03-21 | Executor Run #16_
+_Last updated: 2026-03-21 | Executor Run #17_
 
 ---
 
 ## Active Tasks
+
+---
+
+### TASK-025
+- **id**: TASK-025
+- **title**: Configure EAS Build Secrets for Production Environment
+- **description**: The production EAS build runs on Expo's cloud servers — local `.env` files are NOT included. The app reads `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY` (verified in `src/config/supabase.ts`), and `EXPO_PUBLIC_OPENAI_API_KEY` (used by `src/lib/ai/`). If these are not explicitly set as EAS Secrets, the production AAB will compile with empty strings and the app will silently fail: Supabase auth will return errors on every sign-in/sign-up attempt, and all AI features (AI Tutor, adaptive quiz, progress insights) will fail. Additionally, `.env.example` documents wrong names (`SUPABASE_URL`, `SUPABASE_ANON_KEY`, `OPENAI_API_KEY`) while the actual code uses `EXPO_PUBLIC_` prefixed versions — this discrepancy must be corrected to avoid developer confusion. Steps: (1) Obtain the production Supabase URL and anon key from your Supabase project dashboard (Settings → API), (2) Obtain the production OpenAI API key from platform.openai.com, (3) Set each secret via EAS CLI: `eas secret:create --scope project --name EXPO_PUBLIC_SUPABASE_URL --value "https://xxxx.supabase.co"`, repeat for `EXPO_PUBLIC_SUPABASE_ANON_KEY` and `EXPO_PUBLIC_OPENAI_API_KEY`, (4) Verify with `eas secret:list` — all 3 secrets should appear, (5) Update `.env.example` to use the correct `EXPO_PUBLIC_` prefix names so future developers know the exact variable names required, (6) Also add these secrets to `eas.json` under `build.production.env` as references (not values) if runtime injection is needed.
+- **domain**: Mobile Release Readiness / Engineering
+- **priority**: P0
+- **status**: TODO
+- **dependencies**: TASK-022
+- **acceptance_criteria**:
+  - `eas secret:list` shows `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`, `EXPO_PUBLIC_OPENAI_API_KEY` with scope `project`
+  - After running `eas build --platform android --profile production`, the build logs confirm env vars are injected (no "undefined" warnings for these keys)
+  - `.env.example` updated to use `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`, `EXPO_PUBLIC_OPENAI_API_KEY` (matching actual code usage in `src/config/supabase.ts` and `src/lib/ai/`)
+  - A smoke test (TASK-026) confirms auth works in the resulting build
+
+---
+
+### TASK-026
+- **id**: TASK-026
+- **title**: Production APK Smoke Test Before Play Store Submission
+- **description**: Before submitting the production AAB to the Play Store, the build must be installed and manually verified on an Android device or emulator. A broken build submitted to Play Store wastes review time (typically 3–7 days) and creates a negative first impression on any internal testers. The production `eas build` profile (`buildType: app-bundle`) cannot be directly installed on a device — use the `preview` profile (APK output) to build a testable binary with the same production code and env vars. Steps: (1) Ensure TASK-025 (EAS Secrets) is complete, (2) Run `eas build --platform android --profile preview` to produce an installable APK with production env vars, (3) Download the APK from the EAS dashboard and install via `adb install <apk-path>` on a physical Android device or emulator, (4) Execute the smoke test checklist: [a] Cold launch — splash screen appears with branded icon, [b] Auth — sign-up with a new test email works (user is created in Supabase), [c] Onboarding — 3-screen flow completes and lands on Education tab, [d] Lesson — open a lesson, complete it, confirm XP is awarded and streak updates, [e] AI Tutor — send a message, confirm response is returned (not an error), [f] Profile — check streak count, XP, badge display are correct, [g] Settings — Privacy Policy and Terms of Service links open correctly, (5) Document any failures and create bug tasks before proceeding to TASK-003.
+- **domain**: Mobile Release Readiness / Engineering
+- **priority**: P0
+- **status**: TODO
+- **dependencies**: TASK-022, TASK-025
+- **acceptance_criteria**:
+  - Preview APK installs successfully on Android device or emulator (API 30+)
+  - Cold launch shows branded splash screen (green background, Prosper Learn logo) — not a white screen or crash
+  - Sign-up flow completes: new user appears in Supabase Auth dashboard
+  - At least one lesson can be completed end-to-end (XP awarded, streak increments)
+  - AI Tutor returns a response without crashing (or shows a graceful error if OpenAI key is quota-limited)
+  - Profile tab correctly shows XP, streak, and badges
+  - No crash-to-home during the smoke test checklist
+  - Any failures are documented as new bug tasks before TASK-003 proceeds
+
+---
+
+
+---
+
+### TASK-022
+- **id**: TASK-022
+- **title**: EAS Account Setup & Project Linking
+- **description**: `eas build` cannot run without an active Expo/EAS account and the project registered on expo.dev. This is a hard prerequisite for TASK-003 that has never been tracked as an explicit task. Steps: (1) Create an account at https://expo.dev/signup if one doesn't already exist (free tier is sufficient — EAS Build free tier allows 30 builds/month), (2) Install EAS CLI globally: `npm install -g eas-cli`, (3) Log in: `eas login`, (4) From the project root (`/prosper-learn`), run `eas init` — this creates an `extra.eas.projectId` in `app.json` and registers the project under the Expo account, (5) Verify `app.json` now contains `expo.extra.eas.projectId` (a UUID), (6) Confirm `eas whoami` shows the correct account. Important: the EAS account email should be the same account that owns or has access to the Google Play Console account for TASK-023. Note: the project package name `com.prospersync.learn` (from `app.json`) must match exactly what will be registered in Play Console — verify this before running `eas build`.
+- **domain**: Mobile Release Readiness
+- **priority**: P0
+- **status**: TODO
+- **dependencies**: None
+- **acceptance_criteria**:
+  - `eas whoami` returns the correct Expo account username
+  - `app.json` contains `expo.extra.eas.projectId` (a valid UUID string)
+  - `eas build --platform android --profile production --dry-run` (or `eas build:list`) does not error with "project not linked"
+  - EAS CLI version is ≥ 12.0.0 (`eas --version`)
+
+---
+
+---
+
+### TASK-023
+- **id**: TASK-023
+- **title**: Google Play Developer Account & Service Account Key Setup
+- **description**: TASK-003 requires a Google Play Console account to submit the AAB, and `eas.json` references `./google-service-account.json` for automated submission. Both must be provisioned before TASK-003 can complete. Steps: (1) Pay the one-time $25 USD Google Play Developer registration fee at https://play.google.com/console/signup — account is activated within hours, (2) Accept the Google Play Developer Distribution Agreement and complete the account profile (developer name: "Prosper Sync" or your entity name, contact email, website optional), (3) Create the app entry in Play Console: "Create app" → App name: "Prosper Learn", Default language: English, App or Game: App, Free or Paid: Free, (4) To enable automated submission via `eas submit`, create a Google Cloud service account: go to Play Console → Setup → API access → Link to a Google Cloud project (create one if needed) → Grant access → Create service account → download the JSON key → save as `google-service-account.json` in the project root (NEVER commit this file — add to `.gitignore`), (5) Grant the service account "Release manager" role in Play Console → Users and permissions. The service account JSON path in `eas.json` (`"serviceAccountKeyPath": "./google-service-account.json"`) already matches this location.
+- **domain**: Google Play Store Readiness / Mobile Release Readiness
+- **priority**: P0
+- **status**: TODO
+- **dependencies**: None
+- **acceptance_criteria**:
+  - Google Play Developer account is active (login works at https://play.google.com/console)
+  - "Prosper Learn" app entry exists in Play Console (even as a draft)
+  - `google-service-account.json` exists at the project root with valid service account credentials
+  - `google-service-account.json` is listed in `.gitignore` (security requirement — must NOT be committed)
+  - Service account has "Release manager" role in Play Console Users and permissions
+
+---
+
+---
+
+### TASK-024
+- **id**: TASK-024
+- **title**: Capture Play Store Screenshots via Preview Build
+- **description**: TASK-003 requires at least 4 Play Store screenshots (minimum 320px wide, JPEG or 24-bit PNG, max 8MB each), but there is no established process for capturing them in this Expo managed workflow. The fastest path is: (1) build a preview APK using `eas build --platform android --profile preview` — this produces a downloadable APK installable on any Android device or emulator, (2) Install the APK on an Android device (physical or emulator via Android Studio) using `adb install <apk-path>`, (3) Navigate to each of the 4 required screens and capture screenshots: Screen 1 — Auth screen (sign-up form, branded logo visible), Screen 2 — Learn tab with track cards (show at least 3 tracks with difficulty badges), Screen 3 — Track Detail screen (lesson list with progress bar and XP stats), Screen 4 — Achievements/Gamification screen (streak count, badges earned, XP level), (4) Export screenshots at the device's native resolution (modern Android devices are 1080×2400 or higher — all within Play Console's accepted range), (5) Optionally frame screenshots using a tool like Previewed (https://previewed.app) or screenshots.pro for a more polished store presence, (6) Upload to Play Console under "Store listing → Graphics → Phone screenshots". Alternative: if no physical device is available, use the Android Emulator in Android Studio (API 34, Pixel 6 skin) which supports screenshot capture natively.
+- **domain**: Google Play Store Readiness
+- **priority**: P1
+- **status**: TODO
+- **dependencies**: TASK-022, TASK-007 ✅
+- **acceptance_criteria**:
+  - At least 4 screenshots captured covering: Auth screen, Learn tab (track list), Track Detail, Achievements/Gamification
+  - All screenshots are ≥ 320px wide, JPEG or 24-bit PNG, ≤ 8MB each
+  - Screenshots are uploaded to Play Console under "Phone screenshots" in the Store listing
+  - The branded app icon and splash screen (TASK-007) are visible in at least 1 screenshot
+  - Screenshots clearly show the app's core value proposition (learning, XP, tracks) to a new visitor
+
+---
 
 ---
 
@@ -14,7 +109,7 @@ _Last updated: 2026-03-21 | Executor Run #16_
 - **domain**: Google Play Store Readiness / Legal & Trust / Mobile Release Readiness
 - **priority**: P0
 - **status**: TODO
-- **dependencies**: TASK-007 ✅, TASK-011 ✅, TASK-012 ✅, TASK-013 ✅, TASK-014 ✅, TASK-016 ✅, TASK-020 (pre-flight check)
+- **dependencies**: TASK-007 ✅, TASK-011 ✅, TASK-012 ✅, TASK-013 ✅, TASK-014 ✅, TASK-016 ✅, TASK-020 (pre-flight), TASK-022 (EAS account), TASK-023 (Play Console account), TASK-024 (screenshots)
 - **acceptance_criteria**:
   - `eas build --platform android --profile production` completes and produces a valid signed AAB
   - Store listing draft completed in Play Console: title "Prosper Learn", short description (≤80 chars), full description with keywords (financial education, personal finance, budgeting, investing, money management)
@@ -145,6 +240,14 @@ _Last updated: 2026-03-21 | Executor Run #16_
 
 ---
 
+### TASK-027 ✅
+- **id**: TASK-027
+- **title**: Fix .env.example Variable Name Discrepancy
+- **completed**: 2026-03-21 (Executor Run #17)
+- **summary**: Updated `.env.example` to use correct `EXPO_PUBLIC_` prefixed variable names matching source code: `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`, `EXPO_PUBLIC_OPENAI_API_KEY` (matching `src/config/supabase.ts` and AI services). Also added `EXPO_PUBLIC_SENTRY_DSN` (used by `src/lib/sentry/sentryService.ts`). Added explanatory comments at the top noting that `EXPO_PUBLIC_` prefix is required for Expo to bundle vars into the app binary. Verified `.gitignore` already includes `.env`. No TypeScript errors introduced.
+
+---
+
 ### TASK-021 ✅
 - **id**: TASK-021
 - **title**: Write Optimized Play Store Full Listing Description
@@ -258,6 +361,32 @@ _Last updated: 2026-03-21 | Executor Run #16_
 ---
 
 ## Notes
+
+### Planner Run #17 — 2026-03-21
+
+**Assessed Stage**: Pre-release — **LAUNCH EXECUTION PHASE.** TASK-021 (store listing copy) is now confirmed complete. The product is code-complete, legally compliant, and store-listed. What remains is the execution mechanics of actually submitting to Play Store. Two planning gaps surfaced that could silently block TASK-003 mid-execution.
+
+**Key Findings**:
+- **TASK-021 ✅ CONFIRMED COMPLETE** — `docs/store-listing.md` exists with full Play Store copy (71-char short description, ~1,920-char full description, all 8 keywords present). This is the last creative asset needed for TASK-003 submission.
+- **EAS Account is untracked (critical gap)** — `eas build` requires an expo.dev account and `eas init` linkage to embed a `projectId` in `app.json`. Without this, the first command of TASK-003 fails immediately. This has never been tracked. Added TASK-022 (P0).
+- **Play Console account is untracked (critical gap)** — TASK-003 step 3 says "complete the Play Console listing" but a Play Console account must first be registered ($25 one-time fee). Additionally, `eas.json` references `./google-service-account.json` which requires a GCP service account linked to Play Console — this file does not yet exist and is not tracked. Added TASK-023 (P0).
+- **`google-service-account.json` is absent** — `eas.json submit.production.android.serviceAccountKeyPath` points to `./google-service-account.json`. This file does not exist in the repo. Without it, `eas submit` will fail. TASK-023 covers its creation.
+- **Screenshot capture process unspecified (P1 gap)** — TASK-003 requires "at least 4 screenshots" but gives no process for an executor to actually generate them from an Expo managed workflow. The fastest path is a preview APK via `eas build --profile preview` + Android emulator. Added TASK-024 (P1).
+- **TASK-020 still TODO** — GitHub Pages must be manually enabled in repo Settings. This is a 2-minute human action (UI click) that unlocks the privacy policy URL. Remains P0.
+- **No new post-launch tasks needed** — the P2–P3 post-launch queue (TASK-010, TASK-015, TASK-017, TASK-018, TASK-019) is fully planned and correctly prioritized. No additions required this run.
+
+**Tasks Added This Run**:
+- **TASK-022** (NEW, P0) — EAS Account Setup & Project Linking (prerequisite for `eas build`)
+- **TASK-023** (NEW, P0) — Google Play Developer Account & Service Account Key Setup (prerequisite for Play Console listing and `eas submit`)
+- **TASK-024** (NEW, P1) — Capture Play Store Screenshots via Preview Build (concrete process for Expo managed workflow)
+- **TASK-003** (UPDATED) — Added TASK-022, TASK-023, TASK-024 to dependencies list
+
+**Revised Critical Path to Launch**:
+1. **TASK-022** (P0) + **TASK-023** (P0) + **TASK-020** (P0) — All three can run in parallel; all are human account/setup steps
+2. **TASK-024** (P1) — After EAS account is ready; preview APK → emulator → screenshots
+3. **TASK-003** (P0) — Once all prerequisites above are confirmed, execute the full Play Store submission
+
+---
 
 ### Planner Run #15 — 2026-03-21
 
