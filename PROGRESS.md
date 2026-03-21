@@ -3,6 +3,78 @@ _Planner Agent Memory Log_
 
 ---
 
+## Executor Run #11 — 2026-03-21
+
+### Tasks Executed
+**TASK-011**: Create `eas.json` Build Configuration for Production AAB
+**TASK-013**: Update `app.json` for Play Store Compliance
+
+### Changes Made
+1. **Created `eas.json`** (new file):
+   - `development` profile: `developmentClient: true`, `distribution: "internal"`
+   - `preview` profile: `distribution: "internal"`, `android.buildType: "apk"` for internal testing
+   - `production` profile: `distribution: "store"`, `android.buildType: "app-bundle"` for Play Store AAB
+   - `submit.production.android` config with service account key path and `track: "internal"`
+   - `cli.version: ">= 12.0.0"`, `cli.appVersionSource: "remote"`
+
+2. **Modified `app.json`**:
+   - Added `"targetSdkVersion": 34` to `expo.android` (Google Play requirement since Aug 2024)
+   - Added `"versionCode": 1` to `expo.android` (Play Console requirement)
+   - Changed `expo.splash.backgroundColor` from `"#ffffff"` to `"#4CAF50"` (brand green)
+   - Changed `expo.android.adaptiveIcon.backgroundColor` from `"#ffffff"` to `"#4CAF50"` (brand green)
+   - `android.package` remains `com.prospersync.learn` (unchanged)
+
+### Key Decisions
+- Combined both P0 tasks in a single run since they are trivially small config-only changes with no code impact
+- Set `appVersionSource: "remote"` so EAS manages version codes automatically after the initial versionCode 1
+- Included a `submit` section in eas.json for future `eas submit` usage (targets `internal` track for initial testing)
+- Set `cli.version >= 12.0.0` to ensure compatibility with current EAS CLI features
+
+### Verification
+- Both `eas.json` and `app.json` validated as valid JSON via `JSON.parse()`
+- `npx tsc --noEmit` confirms zero new TypeScript errors (all errors are pre-existing: Deno edge functions, education component re-exports, educationalTutor)
+- All TASK-011 acceptance criteria met:
+  - ✅ `eas.json` exists at repo root
+  - ✅ `production` profile with `distribution: "store"` targeting Android
+  - ✅ `preview` profile with `distribution: "internal"` and `buildType: "apk"`
+  - ✅ Valid JSON (no syntax errors)
+  - ✅ `app.json` `android.package` remains `com.prospersync.learn`
+- All TASK-013 acceptance criteria met:
+  - ✅ `android` block contains `"targetSdkVersion": 34`
+  - ✅ `android` block contains `"versionCode": 1`
+  - ✅ `splash.backgroundColor` changed to `"#4CAF50"`
+  - ✅ `android.adaptiveIcon.backgroundColor` changed to `"#4CAF50"`
+  - ✅ File remains valid JSON; no existing fields removed or broken
+
+### Status: DONE (both tasks)
+
+---
+
+## Planner Run #11 — 2026-03-21
+
+### Stage Assessment
+**PRE-RELEASE** — MVP and onboarding are fully complete. The full user journey (Auth → Onboarding → Track List → Track Detail → Lesson → XP → Achievements) is end-to-end functional. Engineering work is done. Focus shifts entirely to Play Store release infrastructure and legal compliance.
+
+### Key Discoveries
+- **TASK-006 (Onboarding) confirmed COMPLETE**: `OnboardingScreen.tsx` is a 3-page FlatList swipe experience (Welcome, Track Demo, Category Picker) with skip, AsyncStorage persistence (`onboarding_complete`), and full routing in `_layout.tsx`. Already in Completed Tasks.
+- **`eas.json` is MISSING**: Critical blocker. `eas build` cannot produce a signed release AAB without it. Added as TASK-011 (P0).
+- **`app.json` Play Store gaps**: Missing `targetSdkVersion: 34` (required by Google since Aug 2024), missing `versionCode: 1`, splash/adaptiveIcon backgrounds still `#ffffff` instead of `#4CAF50`. Added as TASK-013 (P0).
+- **No privacy policy**: App collects email via Supabase Auth — Play Store requires a privacy policy URL. Added as TASK-012 (P1).
+
+### Key Decisions
+- Broke TASK-003 into sub-tasks: TASK-011 (eas.json), TASK-013 (app.json), TASK-012 (privacy policy). TASK-003 is now the final Play Console submission step.
+- Elevated eas.json and app.json compliance to P0 — without these, no Play Store submission is possible regardless of app quality.
+
+### Current Active Task Priority Order
+1. TASK-011 (P0) — Create `eas.json`
+2. TASK-013 (P0) — Update `app.json` for Play Store compliance
+3. TASK-007 (P1) — Custom branded icon & splash
+4. TASK-012 (P1) — Privacy policy screen + hosted URL
+5. TASK-003 (P1) — Final Play Store submission (blocked by above)
+6. TASK-010 (P2) — Sentry crash reporting
+
+---
+
 ## Executor Run #10 — 2026-03-21
 
 ### Task Executed

@@ -1,5 +1,5 @@
 # TASKS
-_Last updated: 2026-03-21 | Executor Run #10_
+_Last updated: 2026-03-21 | Planner Run #11_
 
 ---
 
@@ -7,22 +7,41 @@ _Last updated: 2026-03-21 | Executor Run #10_
 
 ---
 
+### TASK-012
+- **id**: TASK-012
+- **title**: Create Privacy Policy Screen & Hosted URL
+- **description**: The app collects personal data (email/password via Supabase Auth; learning progress via AsyncStorage). Google Play Store requires a privacy policy URL for all apps that handle personal data — submission without one will be rejected. Steps: (1) create `src/screens/PrivacyPolicyScreen.tsx` rendering the policy as scrollable text, (2) add route `app/privacy-policy.tsx`, (3) add "Privacy Policy" link in the Profile tab settings section, (4) host the policy as a static HTML page (GitHub Pages or similar) so a URL is available for Play Console. Policy must cover: data collected (email, display name), purpose (auth + personalized learning), storage (Supabase cloud + AsyncStorage on-device), no third-party advertising, deletion rights, contact email.
+- **domain**: Legal & Trust / Google Play Store Readiness
+- **priority**: P1
+- **status**: TODO
+- **dependencies**: none
+- **acceptance_criteria**:
+  - `src/screens/PrivacyPolicyScreen.tsx` exists and renders a complete, readable privacy policy
+  - Policy covers: data collected (email, name), purpose, storage, no ad data sharing, deletion rights, contact info
+  - `app/privacy-policy.tsx` route exists and renders `PrivacyPolicyScreen`
+  - Profile tab contains a "Privacy Policy" pressable link navigating to `/privacy-policy`
+  - A hosted URL for the policy is documented in `PROGRESS.md` for entry into `app.json` and Play Console
+  - Screen is accessible without authentication
+
+---
+
+---
+
 ### TASK-003
 - **id**: TASK-003
 - **title**: Google Play Store Submission Preparation
-- **description**: The app is not ready for Play Store submission. Critical gaps include: no `targetSdkVersion` in `app.json` (Google mandates SDK 34+ as of 2024), no privacy policy URL (required because the app uses Supabase Auth + user data), no `eas.json` build configuration file (no way to produce a signed AAB for submission), and store listing assets are missing (screenshots, short/long description, feature graphic). Resolving this is the final gate before real users can be acquired.
+- **description**: Final Play Store submission step. Sub-tasks TASK-011 (eas.json), TASK-012 (privacy policy), and TASK-013 (app.json compliance) have been broken out as individually executable tasks. TASK-003 is now the integration step: generating the signed AAB, completing the Play Console listing, capturing screenshots, and submitting for review. Do not start until TASK-007, TASK-011, TASK-012, and TASK-013 are complete.
 - **domain**: Google Play Store Readiness / Legal & Trust / Mobile Release Readiness
 - **priority**: P1
 - **status**: TODO
-- **dependencies**: TASK-002 ✅, TASK-007 (branded assets required before screenshots)
+- **dependencies**: TASK-007, TASK-011, TASK-012, TASK-013
 - **acceptance_criteria**:
-  - `app.json` includes `android.targetSdkVersion: 34` and `android.versionCode: 1`
-  - A privacy policy page exists (hosted HTML or in-app screen) covering: email/password collected via Supabase Auth, learning progress stored locally via AsyncStorage, no third-party ad data sharing
-  - Privacy policy URL referenced in `app.json` under `android.privacyPolicy`
-  - `eas.json` is created with `production` build profile (release AAB, proper signing config)
-  - Store listing draft prepared: title "Prosper Learn", short description (≤80 chars), full description with keywords (financial education, personal finance, budgeting, investing, money management)
+  - `eas build --platform android --profile production` completes and produces a valid signed AAB
+  - Store listing draft completed in Play Console: title "Prosper Learn", short description (≤80 chars), full description with keywords (financial education, personal finance, budgeting, investing, money management)
   - At least 4 screenshots covering key screens (Auth, Learn tab with tracks, Track Detail, Achievements)
   - Content rating questionnaire completed in Play Console
+  - Privacy policy URL entered in Play Console listing
+  - App submitted for review
 
 ---
 
@@ -67,6 +86,22 @@ _Last updated: 2026-03-21 | Executor Run #10_
 ---
 
 ## Completed Tasks
+
+---
+
+### TASK-011 ✅
+- **id**: TASK-011
+- **title**: Create `eas.json` Build Configuration for Production AAB
+- **completed**: 2026-03-21 (Executor Run #11)
+- **summary**: Created `eas.json` at repo root with three build profiles: `development` (developmentClient, internal distribution), `preview` (internal distribution, APK buildType for testing), and `production` (store distribution, app-bundle buildType for Play Store). Includes `submit.production.android` config for Play Store submission via service account. CLI version set to >= 12.0.0 with remote appVersionSource. Valid JSON confirmed.
+
+---
+
+### TASK-013 ✅
+- **id**: TASK-013
+- **title**: Update `app.json` for Play Store Compliance
+- **completed**: 2026-03-21 (Executor Run #11)
+- **summary**: Updated `app.json` with four Play Store compliance changes: (1) added `"targetSdkVersion": 34` to android block (required by Google Play since Aug 2024), (2) added `"versionCode": 1` to android block (required by Play Console), (3) changed `splash.backgroundColor` from `"#ffffff"` to `"#4CAF50"` (brand green), (4) changed `android.adaptiveIcon.backgroundColor` from `"#ffffff"` to `"#4CAF50"`. `android.package` remains `com.prospersync.learn`. Valid JSON confirmed.
 
 ---
 
@@ -127,6 +162,42 @@ _Last updated: 2026-03-21 | Executor Run #10_
 ---
 
 ## Notes
+
+### Planner Run #11 — 2026-03-21
+
+**Assessed Stage**: Pre-release. MVP + Onboarding fully complete. All engineering P0 tasks done. Focus is 100% on Play Store release infrastructure and legal requirements.
+
+**Key Findings**:
+- TASK-006 (Onboarding) was already completed by a prior executor run (confirmed from code review). `OnboardingScreen.tsx` is a fully-featured 3-page swipe flow with category picker, skip, and AsyncStorage persistence.
+- `eas.json` is MISSING — absolute blocker for any signed production build. Added as TASK-011 (P0).
+- `app.json` is missing `targetSdkVersion: 34` and `versionCode: 1`; splash/adaptiveIcon backgrounds are still `#ffffff` white. Added as TASK-013 (P0).
+- No privacy policy exists anywhere — Play Store will reject submission without one. Added as TASK-012 (P1).
+- TASK-003 was too broad; broken into TASK-011, TASK-012, TASK-013 sub-tasks. TASK-003 now represents the final integration step.
+
+**Tasks Added This Run**:
+- TASK-011: Create `eas.json` Build Configuration (P0)
+- TASK-013: Update `app.json` for Play Store Compliance (P0)
+- TASK-012: Create Privacy Policy Screen & Hosted URL (P1)
+
+**Updated Critical Path to Launch**:
+1. TASK-011 — Create `eas.json` (P0, ~10 min, unblocks all production builds)
+2. TASK-013 — Update `app.json` compliance fields (P0, ~5 min config update)
+3. TASK-007 — Custom branded icon & splash (P1, prerequisite for screenshots)
+4. TASK-012 — Privacy policy screen + hosted URL (P1, Play Store legal requirement)
+5. TASK-003 — Final Play Store submission (P1, depends on all above)
+6. TASK-010 — Sentry crash reporting (P2, immediately post-launch)
+
+**Deferred to Future Runs**:
+- Push notifications for streak reminders (P2)
+- CI/CD pipeline — GitHub Actions + EAS Build (P2)
+- Monetization model (freemium / subscription TBD)
+- Landing page / web presence (P2)
+- Language switcher in Profile settings (P2)
+- Terms of Service screen (P2, companion to privacy policy)
+- ASO keyword research for Play Store listing (P2)
+- Post-launch: review monitoring, feedback clustering, iterative UX improvements
+
+---
 
 ### Session #6 — 2026-03-21 (Planner Run)
 

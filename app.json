@@ -9,7 +9,7 @@
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#4CAF50"
     },
     "ios": {
       "supportsTablet": true,
@@ -18,9 +18,11 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#4CAF50"
       },
-      "package": "com.prospersync.learn"
+      "package": "com.prospersync.learn",
+      "versionCode": 1,
+      "targetSdkVersion": 34
     },
     "web": {
       "favicon": "./assets/favicon.png"
