@@ -10,15 +10,15 @@ _Last updated: 2026-03-21 | Executor Run #17_
 ### TASK-025
 - **id**: TASK-025
 - **title**: Configure EAS Build Secrets for Production Environment
-- **description**: The production EAS build runs on Expo's cloud servers — local `.env` files are NOT included. The app reads `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY` (verified in `src/config/supabase.ts`), and `EXPO_PUBLIC_OPENAI_API_KEY` (used by `src/lib/ai/`). If these are not explicitly set as EAS Secrets, the production AAB will compile with empty strings and the app will silently fail: Supabase auth will return errors on every sign-in/sign-up attempt, and all AI features (AI Tutor, adaptive quiz, progress insights) will fail. Additionally, `.env.example` documents wrong names (`SUPABASE_URL`, `SUPABASE_ANON_KEY`, `OPENAI_API_KEY`) while the actual code uses `EXPO_PUBLIC_` prefixed versions — this discrepancy must be corrected to avoid developer confusion. Steps: (1) Obtain the production Supabase URL and anon key from your Supabase project dashboard (Settings → API), (2) Obtain the production OpenAI API key from platform.openai.com, (3) Set each secret via EAS CLI: `eas secret:create --scope project --name EXPO_PUBLIC_SUPABASE_URL --value "https://xxxx.supabase.co"`, repeat for `EXPO_PUBLIC_SUPABASE_ANON_KEY` and `EXPO_PUBLIC_OPENAI_API_KEY`, (4) Verify with `eas secret:list` — all 3 secrets should appear, (5) Update `.env.example` to use the correct `EXPO_PUBLIC_` prefix names so future developers know the exact variable names required, (6) Also add these secrets to `eas.json` under `build.production.env` as references (not values) if runtime injection is needed.
+- **description**: The production EAS build runs on Expo's cloud servers — local `.env` files are NOT included. The app reads `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY` (verified in `src/config/supabase.ts`), `EXPO_PUBLIC_OPENAI_API_KEY` (used by `src/lib/ai/`), and `EXPO_PUBLIC_SENTRY_DSN` (used by `src/lib/sentry/sentryService.ts`). If these are not explicitly set as EAS Secrets, the production AAB will compile with empty strings and silently fail. Note: `.env.example` has already been fixed by TASK-027 to use correct `EXPO_PUBLIC_` prefix names. Steps: (1) Obtain the production Supabase URL and anon key from your Supabase project dashboard (Settings → API), (2) Obtain the production OpenAI API key from platform.openai.com, (3) Obtain or create a Sentry DSN from sentry.io (free tier is sufficient), (4) Set each secret via EAS CLI: `eas secret:create --scope project --name EXPO_PUBLIC_SUPABASE_URL --value "https://xxxx.supabase.co"`, repeat for `EXPO_PUBLIC_SUPABASE_ANON_KEY`, `EXPO_PUBLIC_OPENAI_API_KEY`, and `EXPO_PUBLIC_SENTRY_DSN`, (5) Verify with `eas secret:list` — all 4 secrets should appear.
 - **domain**: Mobile Release Readiness / Engineering
 - **priority**: P0
 - **status**: TODO
 - **dependencies**: TASK-022
 - **acceptance_criteria**:
-  - `eas secret:list` shows `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`, `EXPO_PUBLIC_OPENAI_API_KEY` with scope `project`
+  - `eas secret:list` shows `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`, `EXPO_PUBLIC_OPENAI_API_KEY`, `EXPO_PUBLIC_SENTRY_DSN` with scope `project`
   - After running `eas build --platform android --profile production`, the build logs confirm env vars are injected (no "undefined" warnings for these keys)
-  - `.env.example` updated to use `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`, `EXPO_PUBLIC_OPENAI_API_KEY` (matching actual code usage in `src/config/supabase.ts` and `src/lib/ai/`)
+  - `.env.example` already uses correct `EXPO_PUBLIC_` prefixed names ✅ (done via TASK-027)
   - A smoke test (TASK-026) confirms auth works in the resulting build
 
 ---
@@ -122,24 +122,6 @@ _Last updated: 2026-03-21 | Executor Run #17_
 
 ---
 
-### TASK-010
-- **id**: TASK-010
-- **title**: Integrate Sentry for Crash Reporting & Observability
-- **description**: The app currently has zero observability. Once real users are using it, there is no way to know what is crashing, how often, or for which users. Sentry React Native provides automatic unhandled exception capture, breadcrumbs, user context, and performance monitoring. Setup steps: (1) install `@sentry/react-native` via npm, (2) initialize Sentry in `app/_layout.tsx` with the Sentry DSN (use environment variable `EXPO_PUBLIC_SENTRY_DSN`), (3) wrap the root component with `Sentry.wrap()`, (4) add `sentry-expo` plugin to `app.json` plugins array for source map uploads, (5) integrate with the ErrorBoundary from TASK-009 to report caught errors. This is a P2 task (not blocking launch) but should be done before or immediately after first Play Store upload, as it dramatically shortens the feedback loop for real-world crashes.
-- **domain**: Analytics & Observability
-- **priority**: P2
-- **status**: TODO
-- **dependencies**: TASK-009 ✅
-- **acceptance_criteria**:
-  - `@sentry/react-native` is installed and listed in `package.json` dependencies
-  - Sentry is initialized in `app/_layout.tsx` before any UI renders, using `EXPO_PUBLIC_SENTRY_DSN` env var
-  - Unhandled JS exceptions are automatically captured and visible in Sentry dashboard
-  - The `ErrorBoundary` (TASK-009) calls `Sentry.captureException(error)` in `componentDidCatch`
-  - `app.json` includes `sentry-expo` plugin for source map uploads on EAS Build
-  - A test throw in development can be verified in the Sentry dashboard
-
----
-
 ---
 
 ### TASK-015
@@ -237,6 +219,14 @@ _Last updated: 2026-03-21 | Executor Run #17_
 ---
 
 ## Completed Tasks
+
+---
+
+### TASK-010 ✅
+- **id**: TASK-010
+- **title**: Integrate Sentry for Crash Reporting & Observability
+- **completed**: 2026-03-21 (discovered complete by Planner Run #19)
+- **summary**: `@sentry/react-native@^8.5.0` installed. `src/lib/sentry/sentryService.ts` fully implements `initSentry()`, `captureError()`, `captureMessage()`, `setUserContext()`, `clearUserContext()`, `addBreadcrumb()`, `wrapWithSentry()`. `app/_layout.tsx` calls `initSentry()` at startup and wraps root with `wrapWithSentry()`. `ErrorBoundary.tsx` calls `captureError()` in `componentDidCatch`. `app.json` includes `@sentry/react-native/expo` plugin for source map uploads. `EXPO_PUBLIC_SENTRY_DSN` documented in `.env.example`.
 
 ---
 
