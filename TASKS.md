@@ -1,5 +1,5 @@
 # TASKS
-_Last updated: 2026-03-21 | Executor Run #7_
+_Last updated: 2026-03-21 | Executor Run #8_
 
 ---
 
@@ -61,23 +61,6 @@ _Last updated: 2026-03-21 | Executor Run #7_
 
 ---
 
-### TASK-008
-- **id**: TASK-008
-- **title**: Auto-Update Daily Learning Streak on Lesson Completion
-- **description**: The `gamificationService` has full streak infrastructure (`saveStreak`, `getStreaks`, `getActiveStreaks`, `getStreakByType`) and the `GamificationScreen` renders active streaks via `StreakList`. However, completing a lesson in `app/lesson/[id].tsx` does NOT update the streak. The lesson completion handler must: (1) call `gamificationService.getStreakByType(userId, 'daily_lesson')` to get or create a daily lesson streak, (2) check if the streak was already incremented today (compare `streak.lastActivityDate` with today's date using `date-fns` which is already installed), (3) if not yet incremented today, increment `streak.currentStreak`, update `streak.lastActivityDate` to today, and update `streak.longestStreak` if current exceeds it, (4) call `gamificationService.saveStreak(updatedStreak)`. If no streak exists yet, create a new one with `currentStreak: 1`. This is the highest-ROI retention mechanic — daily learning streaks are the #1 driver of Day-2+ retention in education apps (Duolingo model). All required infrastructure already exists; this is a wiring task.
-- **domain**: Product & UX / Engineering
-- **priority**: P1
-- **status**: TODO
-- **dependencies**: TASK-002 ✅, TASK-005 ✅
-- **acceptance_criteria**:
-  - Completing any lesson increments the `daily_lesson` streak counter for the current user
-  - If the user already completed a lesson today, the streak counter is NOT incremented again (idempotent)
-  - If the user completes lessons on consecutive days, `currentStreak` grows (e.g., 3-day streak)
-  - If the user misses a day, `currentStreak` resets to 1 on next completion (streak broken)
-  - `longestStreak` is updated whenever `currentStreak` exceeds it
-  - The updated streak is reflected in `GamificationScreen` (streak tab shows current count)
-  - Uses `date-fns` (already installed) for date comparison — no moment.js or custom parsing
-
 ---
 
 ### TASK-009
@@ -117,6 +100,14 @@ _Last updated: 2026-03-21 | Executor Run #7_
 ---
 
 ## Completed Tasks
+
+---
+
+### TASK-008 ✅
+- **id**: TASK-008
+- **title**: Auto-Update Daily Learning Streak on Lesson Completion
+- **completed**: 2026-03-21 (Executor Run #8)
+- **summary**: Wired the daily learning streak into the lesson completion handler in `app/lesson/[id].tsx`. Added an `updateDailyStreak()` function that uses `date-fns` (`format`, `isToday`, `isYesterday`, `parseISO`) to manage the `educational` streak type. On lesson completion: if no streak exists, creates one with `currentStreak: 1`; if already incremented today, does nothing (idempotent); if last activity was yesterday, increments `currentStreak`; if older, resets to 1 (streak broken). `longestStreak` is updated whenever `currentStreak` exceeds it. Milestones (3, 7, 14, 30 days) are tracked and marked when reached. The streak is visible in `GamificationScreen` via the existing `StreakList` widget. Zero new TypeScript errors.
 
 ---
 

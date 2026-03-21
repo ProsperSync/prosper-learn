@@ -10,7 +10,8 @@ import {
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import type { Lesson } from '../../src/lib/types';
+import { format, isToday, isYesterday, parseISO } from 'date-fns';
+import type { Lesson, Streak } from '../../src/lib/types';
 import { educationalTrackEngine, xpCalculator } from '../../src/lib/ai';
 import { educationalService, gamificationService } from '../../src/services';
 import { useAuth } from '../../src/hooks/useAuth';
@@ -19,6 +20,73 @@ type QuizAnswer = {
   questionIndex: number;
   selectedOption: number;
 };
+
+/**
+ * Updates the daily learning streak for the user.
+ * - If no streak exists, creates one with currentStreak: 1
+ * - If already incremented today, does nothing (idempotent)
+ * - If last activity was yesterday, increments the streak
+ * - If last activity was older, resets streak to 1 (streak broken)
+ * - Updates longestStreak if currentStreak exceeds it
+ */
+async function updateDailyStreak(userId: string): Promise<void> {
+  const todayStr = format(new Date(), 'yyyy-MM-dd');
+  const streakType = 'educational';
+
+  const existingStreak = await gamificationService.getStreakByType(userId, streakType);
+
+  if (!existingStreak) {
+    // Create a new streak
+    const newStreak: Streak = {
+      id: `streak-${userId}-${streakType}-${Date.now()}`,
+      userId,
+      type: streakType,
+      currentStreak: 1,
+      longestStreak: 1,
+      lastActivityDate: todayStr,
+      startDate: todayStr,
+      isActive: true,
+      milestones: [
+        { days: 3 },
+        { days: 7 },
+        { days: 14 },
+        { days: 30 },
+      ],
+    };
+    await gamificationService.saveStreak(newStreak);
+    return;
+  }
+
+  // Already incremented today — idempotent
+  const lastActivityDate = parseISO(existingStreak.lastActivityDate);
+  if (isToday(lastActivityDate)) {
+    return;
+  }
+
+  // Determine if streak continues or resets
+  const wasYesterday = isYesterday(lastActivityDate);
+  const newCurrentStreak = wasYesterday ? existingStreak.currentStreak + 1 : 1;
+  const newLongestStreak = Math.max(existingStreak.longestStreak, newCurrentStreak);
+
+  // Update milestones if any were reached
+  const updatedMilestones = existingStreak.milestones?.map((m) => {
+    if (!m.reachedAt && newCurrentStreak >= m.days) {
+      return { ...m, reachedAt: todayStr };
+    }
+    return m;
+  });
+
+  const updatedStreak: Streak = {
+    ...existingStreak,
+    currentStreak: newCurrentStreak,
+    longestStreak: newLongestStreak,
+    lastActivityDate: todayStr,
+    startDate: wasYesterday ? existingStreak.startDate : todayStr,
+    milestones: updatedMilestones,
+  };
+
+  await gamificationService.saveStreak(updatedStreak);
+}
 
 export default function LessonScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -185,6 +253,9 @@ export default function LessonScreen() {
       const updatedXP = xpCalculator.calculateLevel(newTotalXP);
       updatedXP.userId = userId;
       await gamificationService.saveUserXP(updatedXP);
+
+      // Update daily learning streak
+      await updateDailyStreak(userId);
 
       setEarnedXP(totalXPEarned);
       showSuccess();
