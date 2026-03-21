@@ -267,6 +267,8 @@
     "notifications": "Notifications",
     "about": "About",
     "signOut": "Sign Out",
-    "signOutConfirm": "Are you sure you want to sign out?"
+    "signOutConfirm": "Are you sure you want to sign out?",
+    "legal": "Legal",
+    "privacyPolicy": "Privacy Policy"
   }
 }

@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, ScrollView, Pressable, Alert } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { useRouter } from 'expo-router';
 import { useAuth } from '../../src/hooks/useAuth';
 import { gamificationService } from '../../src/services';
 
 export default function ProfileTab() {
   const { t } = useTranslation();
   const { user, signOut } = useAuth();
+  const router = useRouter();
 
   const [level, setLevel] = useState(1);
   const [totalXP, setTotalXP] = useState(0);
@@ -76,6 +78,17 @@ export default function ProfileTab() {
         </Pressable>
       </View>
 
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>{t('profile.legal')}</Text>
+        <Pressable
+          style={styles.menuItem}
+          onPress={() => router.push('/privacy-policy')}
+        >
+          <Text style={styles.menuText}>{t('profile.privacyPolicy')}</Text>
+          <Text style={styles.menuChevron}>→</Text>
+        </Pressable>
+      </View>
+
       <Pressable style={styles.signOutButton} onPress={handleSignOut}>
         <Text style={styles.signOutText}>{t('profile.signOut')}</Text>
       </Pressable>
@@ -129,6 +142,7 @@ const styles = StyleSheet.create({
   },
   menuText: { fontSize: 16, color: '#333' },
   menuValue: { fontSize: 16, color: '#999' },
+  menuChevron: { fontSize: 16, color: '#ccc' },
   signOutButton: {
     backgroundColor: '#fff',
     borderRadius: 12,

@@ -34,6 +34,10 @@ function AuthGate() {
 
     const inAuthGroup = segments[0] === 'auth';
     const inOnboarding = segments[0] === 'onboarding';
+    const inPrivacyPolicy = segments[0] === 'privacy-policy';
+
+    // Allow unauthenticated access to privacy policy
+    if (inPrivacyPolicy) return;
 
     if (!session && !inAuthGroup) {
       // Redirect to auth screen if not authenticated
@@ -91,6 +95,10 @@ function AuthGate() {
         <Stack.Screen
           name="lesson/[id]"
           options={{ headerShown: true, title: 'Lesson', presentation: 'card' }}
+        />
+        <Stack.Screen
+          name="privacy-policy"
+          options={{ headerShown: false, presentation: 'card' }}
         />
       </Stack>
     </>

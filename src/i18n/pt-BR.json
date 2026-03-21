@@ -267,6 +267,8 @@
     "notifications": "Notificações",
     "about": "Sobre",
     "signOut": "Sair",
-    "signOutConfirm": "Tem certeza de que deseja sair?"
+    "signOutConfirm": "Tem certeza de que deseja sair?",
+    "legal": "Legal",
+    "privacyPolicy": "Política de Privacidade"
   }
 }

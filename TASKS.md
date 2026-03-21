@@ -1,27 +1,9 @@
 # TASKS
-_Last updated: 2026-03-21 | Planner Run #11_
+_Last updated: 2026-03-21 | Planner Run #12_
 
 ---
 
 ## Active Tasks
-
----
-
-### TASK-012
-- **id**: TASK-012
-- **title**: Create Privacy Policy Screen & Hosted URL
-- **description**: The app collects personal data (email/password via Supabase Auth; learning progress via AsyncStorage). Google Play Store requires a privacy policy URL for all apps that handle personal data — submission without one will be rejected. Steps: (1) create `src/screens/PrivacyPolicyScreen.tsx` rendering the policy as scrollable text, (2) add route `app/privacy-policy.tsx`, (3) add "Privacy Policy" link in the Profile tab settings section, (4) host the policy as a static HTML page (GitHub Pages or similar) so a URL is available for Play Console. Policy must cover: data collected (email, display name), purpose (auth + personalized learning), storage (Supabase cloud + AsyncStorage on-device), no third-party advertising, deletion rights, contact email.
-- **domain**: Legal & Trust / Google Play Store Readiness
-- **priority**: P1
-- **status**: TODO
-- **dependencies**: none
-- **acceptance_criteria**:
-  - `src/screens/PrivacyPolicyScreen.tsx` exists and renders a complete, readable privacy policy
-  - Policy covers: data collected (email, name), purpose, storage, no ad data sharing, deletion rights, contact info
-  - `app/privacy-policy.tsx` route exists and renders `PrivacyPolicyScreen`
-  - Profile tab contains a "Privacy Policy" pressable link navigating to `/privacy-policy`
-  - A hosted URL for the policy is documented in `PROGRESS.md` for entry into `app.json` and Play Console
-  - Screen is accessible without authentication
 
 ---
 
@@ -85,7 +67,74 @@ _Last updated: 2026-03-21 | Planner Run #11_
 
 ---
 
+### TASK-014
+- **id**: TASK-014
+- **title**: Add Terms of Service Screen
+- **description**: The app requires user account creation (email + password via Supabase Auth) and stores personal learning data. Google Play Store expects apps with user accounts to surface Terms of Service. The ToS defines the relationship between the user and the app, protects the developer legally, and signals trustworthiness to users and reviewers. Steps: (1) create `src/screens/TermsOfServiceScreen.tsx` rendering ToS as scrollable text sections covering: acceptance of terms, service description (educational content, not financial advice), user obligations, account termination, limitation of liability, governing law, and contact information, (2) add route `app/terms-of-service.tsx`, (3) add "Terms of Service" pressable link in the Profile tab settings section alongside the Privacy Policy link, (4) add acknowledgment checkbox or text on the sign-up screen referencing ToS. The ToS text must clearly state the app provides financial *education* only and is not a licensed financial advisor.
+- **domain**: Legal & Trust / Google Play Store Readiness
+- **priority**: P2
+- **status**: TODO
+- **dependencies**: TASK-012
+- **acceptance_criteria**:
+  - `src/screens/TermsOfServiceScreen.tsx` exists and renders a complete, readable Terms of Service document
+  - ToS covers: acceptance, service description (educational only, not financial advice), user obligations, account termination, liability limitation, governing law, contact info
+  - `app/terms-of-service.tsx` route exists and renders `TermsOfServiceScreen`
+  - Profile tab contains a "Terms of Service" pressable link navigating to `/terms-of-service`, placed near the Privacy Policy link
+  - Sign-up form in `app/auth/index.tsx` includes a note like "By signing up, you agree to our Terms of Service and Privacy Policy" with links
+  - Screen is accessible without authentication
+
+---
+
+---
+
+### TASK-015
+- **id**: TASK-015
+- **title**: Implement Push Notifications for Streak Reminders
+- **description**: Day-2 retention is the most critical metric for any education app — if users don't return the next day, they almost certainly never will. Push notifications for streak reminders are the highest-ROI retention tool available. The app already has a full streak system (TASK-008 ✅) but there is no mechanism to remind users to maintain their streak. Steps: (1) install `expo-notifications` and `expo-device`, (2) create `src/lib/notifications/notificationService.ts` with functions: `requestNotificationPermissions()`, `scheduleDailyStreakReminder(hour: number, minute: number)`, `cancelAllStreakReminders()`, `sendBadgeUnlockNotification(badgeName: string)`, (3) request notification permissions during onboarding (screen 3 or post-completion), with clear explanation of what notifications will be sent, (4) schedule a daily reminder at 8 PM local time if user hasn't completed a lesson that day, (5) add Notifications settings toggle in Profile tab allowing users to enable/disable, (6) add `expo-notifications` plugin to `app.json` plugins array.
+- **domain**: Product & UX / Analytics & Observability
+- **priority**: P2
+- **status**: TODO
+- **dependencies**: TASK-006 ✅, TASK-008 ✅
+- **acceptance_criteria**:
+  - `expo-notifications` is installed and listed in `package.json` dependencies
+  - `src/lib/notifications/notificationService.ts` exports `requestNotificationPermissions`, `scheduleDailyStreakReminder`, `cancelAllStreakReminders`
+  - Notification permission is requested at the end of onboarding or after first lesson completion (not on cold launch)
+  - A daily streak reminder is scheduled for 8 PM local time using `Notifications.scheduleNotificationAsync` with a daily trigger
+  - Notification title/body is personalized (e.g. "🔥 Your streak is waiting! Open Prosper Learn to keep it alive.")
+  - Profile settings tab includes a toggle to enable/disable notifications, persisted to AsyncStorage
+  - `app.json` includes `expo-notifications` in the plugins array
+
+---
+
+---
+
+### TASK-016
+- **id**: TASK-016
+- **title**: Create App Landing Page on GitHub Pages
+- **description**: Prosper Learn has no web presence. A landing page serves three critical functions: (1) it hosts the privacy policy at a stable, public URL required by Google Play Console (supporting TASK-012), (2) it provides a credible "about the app" page that Play Store reviewers and users can visit, (3) it acts as a lightweight growth/marketing touchpoint for sharing on social media before and after launch. The page should be a single-file HTML page hosted on GitHub Pages (free, no infrastructure needed). Content: hero section with app name + tagline, brief feature overview (financial education tracks, XP system, achievements), screenshots when available, CTA to Play Store (can be added after submission), Privacy Policy link, Terms of Service link, contact email. The URL of the hosted page should be added to `app.json` as `expo.web.bundler` metadata and documented in `PROGRESS.md` as the canonical privacy policy host URL.
+- **domain**: Growth & Marketing / Legal & Trust
+- **priority**: P3
+- **status**: TODO
+- **dependencies**: TASK-012, TASK-014
+- **acceptance_criteria**:
+  - A single `index.html` file is created in the repo under a `/docs` folder (GitHub Pages standard) OR a dedicated `gh-pages` branch
+  - The page includes: app name "Prosper Learn", tagline, feature overview (3+ features), links to Privacy Policy and Terms of Service
+  - The page is mobile-responsive (works on phone browser)
+  - The GitHub Pages URL is documented in `PROGRESS.md` for use in Play Console and app.json
+  - Privacy Policy is either embedded on the page or linked to a `/privacy-policy` subpage on the same domain
+  - The page does not require any backend or server — pure static HTML/CSS
+
+---
+
 ## Completed Tasks
+
+---
+
+### TASK-012 ✅
+- **id**: TASK-012
+- **title**: Create Privacy Policy Screen & Hosted URL
+- **completed**: 2026-03-21 (Executor Run #12)
+- **summary**: Created `src/screens/PrivacyPolicyScreen.tsx` — a complete, scrollable privacy policy covering: data collected (email, display name), purpose (authentication + personalized learning), storage (Supabase cloud + AsyncStorage on-device), no third-party advertising, data security, deletion rights (30-day turnaround), children's privacy, and contact email. Added `app/privacy-policy.tsx` route. Added "Privacy Policy" pressable link in Profile tab under a new "Legal" settings section. Updated `_layout.tsx` to register the route and allow unauthenticated access. Added i18n translations (EN + pt-BR). Note: hosted URL pending TASK-016 (GitHub Pages landing page).
 
 ---
 

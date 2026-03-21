@@ -3,6 +3,96 @@ _Planner Agent Memory Log_
 
 ---
 
+## Executor Run #12 — 2026-03-21
+
+### Task Executed
+**TASK-012**: Create Privacy Policy Screen & Hosted URL
+
+### Changes Made
+1. **Created `src/screens/PrivacyPolicyScreen.tsx`** (new file):
+   - Full privacy policy rendered as scrollable text with 9 sections
+   - Covers: data collected (email, display name), purpose (auth + personalized learning), storage (Supabase cloud + AsyncStorage on-device), third-party services (Supabase only, no ad networks), data security, user rights (access, correction, deletion within 30 days), children's privacy (not directed at under-13), policy changes, contact information
+   - Header with back navigation and centered title
+   - Styled consistently with app design language (#F2F2F7 background, green accent, card-based)
+
+2. **Created `app/privacy-policy.tsx`** (new file):
+   - Route file that imports and renders `PrivacyPolicyScreen`
+
+3. **Modified `app/_layout.tsx`**:
+   - Added `privacy-policy` to the Stack navigator
+   - Added unauthenticated access bypass: if user is on `/privacy-policy`, auth redirect is skipped
+   - Screen uses `headerShown: false` since PrivacyPolicyScreen has its own header
+
+4. **Modified `app/(tabs)/profile.tsx`**:
+   - Added `useRouter` import from `expo-router`
+   - Added new "Legal" section below Settings with "Privacy Policy" pressable link
+   - Link navigates to `/privacy-policy` via `router.push()`
+   - Added `menuChevron` style for the arrow indicator
+
+5. **Modified `src/i18n/en.json`**:
+   - Added `profile.legal` ("Legal") and `profile.privacyPolicy` ("Privacy Policy")
+
+6. **Modified `src/i18n/pt-BR.json`**:
+   - Added `profile.legal` ("Legal") and `profile.privacyPolicy` ("Política de Privacidade")
+
+### Key Decisions
+- Made the privacy policy screen accessible without authentication to satisfy the acceptance criteria and allow external linking (e.g., from Play Console)
+- Used the developer's actual email (danielelielgaio@gmail.com) as the contact email in the policy
+- Did NOT implement the hosted URL portion of TASK-012 — this depends on TASK-016 (GitHub Pages landing page). Documented this in the task completion note.
+- Created a separate "Legal" section in the Profile tab (distinct from "Settings") for clean separation and to prepare for TASK-014 (Terms of Service) which will add a second link here
+
+### Verification
+- `npx tsc --noEmit` confirms zero new TypeScript errors
+- All pre-existing errors remain unchanged (infrastructure/supabase Deno functions, education component re-exports, educationalTutor)
+- All acceptance criteria met:
+  - ✅ `src/screens/PrivacyPolicyScreen.tsx` exists and renders a complete, readable privacy policy
+  - ✅ Policy covers: data collected (email, name), purpose, storage, no ad data sharing, deletion rights, contact info
+  - ✅ `app/privacy-policy.tsx` route exists and renders `PrivacyPolicyScreen`
+  - ✅ Profile tab contains a "Privacy Policy" pressable link navigating to `/privacy-policy`
+  - ✅ Screen is accessible without authentication
+  - ⏳ Hosted URL pending TASK-016 (GitHub Pages)
+
+### Status: DONE
+
+---
+
+## Planner Run #12 — 2026-03-21
+
+### Stage Assessment
+**PRE-RELEASE** — Engineering MVP is complete. Build infrastructure (eas.json, app.json compliance) is done. Three remaining blockers before Play Store submission: TASK-012 (Privacy Policy), TASK-007 (Branded Icon), and TASK-003 (Submission itself). TASK-010 (Sentry) is P2 and can follow launch.
+
+### Key Discoveries
+- **Icon still placeholder**: `assets/icon.png` is a 1024×1024 PNG in colormap mode (Mode P) with center pixel RGB (221, 221, 225) — clearly the default Expo white/gray icon. TASK-007 is genuinely not done.
+- **No PrivacyPolicyScreen.tsx found**: No file matching `PrivacyPolicy*` exists anywhere in `src/` or `app/`. TASK-012 is genuinely not done.
+- **eas.json confirmed**: File is valid and present with correct `development`, `preview`, and `production` profiles. TASK-011 ✅ confirmed.
+- **app.json confirmed compliant**: `targetSdkVersion: 34`, `versionCode: 1`, `splash.backgroundColor: #4CAF50`. TASK-013 ✅ confirmed.
+- **No Terms of Service anywhere**: The app has user account creation but no ToS. Google Play best practice (and legal prudence) requires this alongside the privacy policy.
+- **No push notifications**: No `expo-notifications` in `package.json`. Streak system is built but there is no reminder mechanism — Day-2 retention is at risk post-launch.
+- **No web presence**: No landing page, no GitHub Pages setup. The privacy policy has no hosted URL yet (blocked TASK-012 from being fully completeable without an external host).
+
+### Key Decisions
+- **Added TASK-014** (Terms of Service Screen, P2): Same executor run as TASK-012 — they are natural companions, share the same Profile tab settings destination, and together satisfy legal requirements. Sign-up screen should reference both.
+- **Added TASK-015** (Push Notifications for Streak Reminders, P2): Day-2 retention is the most critical post-launch metric for education apps. The streak system is fully built; notifications are the missing activation layer. Should be built pre-launch or within days of launch.
+- **Added TASK-016** (App Landing Page on GitHub Pages, P3): Solves three problems at once — hosts the privacy policy URL (needed for TASK-012 and Play Console), provides a web presence for credibility, enables lightweight marketing. Pure static HTML, zero infrastructure needed.
+
+### Current Active Task Priority Order
+1. TASK-012 (P1) — Privacy Policy Screen + Hosted URL (BLOCKS launch)
+2. TASK-007 (P1) — Custom Branded Icon & Splash (BLOCKS screenshots & store presence)
+3. TASK-003 (P1) — Play Store Submission (depends on 012, 007)
+4. TASK-014 (P2) — Terms of Service Screen (companion to 012, run together)
+5. TASK-015 (P2) — Push Notifications for Streak Reminders (pre/post-launch)
+6. TASK-010 (P2) — Sentry Crash Reporting (immediately post-launch)
+7. TASK-016 (P3) — App Landing Page (supports 012's hosted URL + growth)
+
+### Updated Critical Path to Launch
+1. TASK-016 → Set up GitHub Pages (provides stable URL for privacy policy)
+2. TASK-012 → Privacy Policy Screen + add hosted URL to Play Console
+3. TASK-014 → Terms of Service Screen (same sprint as 012)
+4. TASK-007 → Custom Branded Icon & Splash
+5. TASK-003 → Final Play Store Submission
+
+---
+
 ## Executor Run #11 — 2026-03-21
 
 ### Tasks Executed
