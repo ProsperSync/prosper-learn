@@ -1,5 +1,5 @@
 # TASKS
-_Last updated: 2026-03-21 | Executor Run #9_
+_Last updated: 2026-03-21 | Executor Run #10_
 
 ---
 
@@ -25,21 +25,6 @@ _Last updated: 2026-03-21 | Executor Run #9_
   - Content rating questionnaire completed in Play Console
 
 ---
-
-### TASK-006
-- **id**: TASK-006
-- **title**: Implement User Onboarding Flow
-- **description**: There is no onboarding experience for first-time users. After sign-up, users land directly on the Education tab with no context about how the app works, what they can learn, or how XP and badges function. This creates friction and high early drop-off. A minimal onboarding flow (3–4 screens) should introduce: (1) the app's value proposition (learn personal finance, earn XP), (2) the track-based learning system, (3) a goal-setting step (e.g., "What do you want to learn first?"). This is a key retention lever — users who understand the product in the first 60 seconds are far more likely to complete their first lesson.
-- **domain**: Product & UX
-- **priority**: P1
-- **status**: TODO
-- **dependencies**: TASK-001 ✅, TASK-002 ✅ (onboarding should lead into first lesson)
-- **acceptance_criteria**:
-  - Onboarding screens are shown only on first launch (gated by AsyncStorage flag `onboarding_complete`)
-  - At least 3 screens: welcome/value prop, how learning tracks work, pick a first track or category
-  - User can skip onboarding
-  - After completing or skipping, `onboarding_complete` flag is set and onboarding never shows again
-  - Onboarding CTA leads the user directly to the Education tab or a specific recommended track
 
 ---
 
@@ -82,6 +67,14 @@ _Last updated: 2026-03-21 | Executor Run #9_
 ---
 
 ## Completed Tasks
+
+---
+
+### TASK-006 ✅
+- **id**: TASK-006
+- **title**: Implement User Onboarding Flow
+- **completed**: 2026-03-21 (Executor Run #10)
+- **summary**: Created `src/screens/OnboardingScreen.tsx` — a 3-screen horizontal-swipe onboarding flow: (1) Welcome screen with value proposition and feature highlights (lessons, XP, badges), (2) Track system explainer with a visual demo card, (3) Category picker where users choose their first learning topic. Onboarding is gated by `AsyncStorage` key `onboarding_complete` — only shown on first login. Users can skip at any time via a "Skip" button. Completing or skipping sets the flag and redirects to the Education tab. Created `app/onboarding/index.tsx` route. Updated `app/_layout.tsx` `AuthGate` to check onboarding status and redirect authenticated users who haven't completed onboarding. Full i18n support (EN + pt-BR). Zero new TypeScript errors.
 
 ---
 

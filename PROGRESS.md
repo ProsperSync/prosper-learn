@@ -3,6 +3,60 @@ _Planner Agent Memory Log_
 
 ---
 
+## Executor Run #10 — 2026-03-21
+
+### Task Executed
+**TASK-006**: Implement User Onboarding Flow
+
+### Changes Made
+1. **Created `src/screens/OnboardingScreen.tsx`** (new file):
+   - 3-screen horizontal-swipe onboarding using `FlatList` with `pagingEnabled`
+   - **Screen 1 (Welcome)**: Hero emoji, "Welcome to Prosper Learn" title, description, and 3 feature highlight cards (lessons, XP, badges)
+   - **Screen 2 (Tracks)**: Explains the track-based learning system with a visual demo card showing a sample track with progress bar, lesson count, and XP
+   - **Screen 3 (Pick Topic)**: Category selector with 5 options (Basics, Budgeting, Investing, Debt, Goals) — tap to select, visual checkmark feedback
+   - "Skip" button (top-right) available on all screens
+   - "Next" / "Get Started" button at bottom advances pages or completes onboarding
+   - Page indicator dots (active dot is wider + green)
+   - On complete/skip: sets `AsyncStorage` key `onboarding_complete` to `'true'` and calls `router.replace('/')`
+   - Exports `ONBOARDING_COMPLETE_KEY` constant for use in `_layout.tsx`
+
+2. **Created `app/onboarding/index.tsx`** (new file):
+   - Route file that imports and renders `OnboardingScreen`
+
+3. **Modified `app/_layout.tsx`**:
+   - Added `AsyncStorage` check for `onboarding_complete` key on mount
+   - `AuthGate` now tracks `onboardingChecked` and `onboardingComplete` state
+   - Routing logic updated: authenticated users who haven't completed onboarding are redirected to `/onboarding`; users who have completed it are redirected to main app
+   - Added `<Stack.Screen name="onboarding">` to the navigator
+   - Loading screen waits for both auth and onboarding check before rendering
+
+4. **Modified `src/i18n/en.json`**:
+   - Added `onboarding` section with 12 translation keys covering all 3 screens
+
+5. **Modified `src/i18n/pt-BR.json`**:
+   - Added Portuguese translations for all onboarding keys
+
+### Key Decisions
+- Used `FlatList` with `pagingEnabled` rather than a third-party carousel — keeps dependencies minimal and leverages native scroll behavior
+- Category selection on screen 3 is optional (user can proceed without choosing) — avoids forcing a choice that might feel premature
+- `onboarding_complete` defaults to `true` in state to prevent flash of onboarding screens for existing users; only set to `false` after AsyncStorage confirms no flag exists
+- Placed onboarding AFTER auth (not before) — user must sign up/in first, then sees onboarding. This ensures userId is available if we later want to persist their category preference
+- Exported `ONBOARDING_COMPLETE_KEY` from OnboardingScreen to ensure a single source of truth for the key string
+
+### Verification
+- `npx tsc --noEmit` confirms zero new TypeScript errors
+- All pre-existing errors remain unchanged (infrastructure/supabase Deno functions, education component re-exports, educationalTutor)
+- All acceptance criteria met:
+  - ✅ Onboarding shown only on first launch (gated by AsyncStorage `onboarding_complete`)
+  - ✅ 3 screens: welcome/value prop, track system explainer, pick a category
+  - ✅ User can skip onboarding via "Skip" button on any screen
+  - ✅ After completing or skipping, `onboarding_complete` is set and onboarding never shows again
+  - ✅ Onboarding CTA leads user to Education tab (main app) via `router.replace('/')`
+
+### Status: DONE
+
+---
+
 ## Executor Run #9 — 2026-03-21
 
 ### Task Executed

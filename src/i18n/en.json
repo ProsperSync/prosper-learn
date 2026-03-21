@@ -245,6 +245,21 @@
     "passwordRequired": "Password is required",
     "passwordMinLength": "Password must be at least 6 characters"
   },
+  "onboarding": {
+    "skip": "Skip",
+    "next": "Next",
+    "getStarted": "Get Started",
+    "welcomeTitle": "Welcome to Prosper Learn",
+    "welcomeDescription": "Your personal journey to financial confidence starts here. Learn at your own pace and build real money skills.",
+    "feature1": "Bite-sized lessons on budgeting, investing, debt, and more",
+    "feature2": "Earn XP and level up as you learn",
+    "feature3": "Unlock badges and build daily learning streaks",
+    "tracksTitle": "Learn Your Way",
+    "tracksDescription": "Content is organized into tracks — structured paths that take you from basics to mastery, one lesson at a time.",
+    "sampleTrackTitle": "Financial Basics 101",
+    "pickTitle": "What interests you most?",
+    "pickDescription": "Pick a topic to explore first. You can always change your mind later."
+  },
   "profile": {
     "title": "Profile",
     "settings": "Settings",

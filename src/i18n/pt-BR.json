@@ -245,6 +245,21 @@
     "passwordRequired": "Senha é obrigatória",
     "passwordMinLength": "A senha deve ter pelo menos 6 caracteres"
   },
+  "onboarding": {
+    "skip": "Pular",
+    "next": "Próximo",
+    "getStarted": "Começar",
+    "welcomeTitle": "Bem-vindo ao Prosper Learn",
+    "welcomeDescription": "Sua jornada pessoal para a confiança financeira começa aqui. Aprenda no seu ritmo e desenvolva habilidades reais com dinheiro.",
+    "feature1": "Aulas curtas sobre orçamento, investimentos, dívidas e mais",
+    "feature2": "Ganhe XP e suba de nível enquanto aprende",
+    "feature3": "Desbloqueie conquistas e construa sequências diárias de aprendizado",
+    "tracksTitle": "Aprenda do Seu Jeito",
+    "tracksDescription": "O conteúdo é organizado em trilhas — caminhos estruturados que levam você do básico ao avançado, uma aula de cada vez.",
+    "sampleTrackTitle": "Fundamentos Financeiros 101",
+    "pickTitle": "O que mais te interessa?",
+    "pickDescription": "Escolha um tema para explorar primeiro. Você pode mudar de ideia depois."
+  },
   "profile": {
     "title": "Perfil",
     "settings": "Configurações",
