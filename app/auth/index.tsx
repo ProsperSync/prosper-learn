@@ -12,6 +12,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { useRouter } from 'expo-router';
 import { useAuth } from '../../src/hooks/useAuth';
 
 type AuthMode = 'signIn' | 'signUp';
@@ -19,6 +20,7 @@ type AuthMode = 'signIn' | 'signUp';
 export default function AuthScreen() {
   const { t } = useTranslation();
   const { signIn, signUp } = useAuth();
+  const router = useRouter();
 
   const [mode, setMode] = useState<AuthMode>('signIn');
   const [email, setEmail] = useState('');
@@ -145,6 +147,27 @@ export default function AuthScreen() {
             )}
           </Pressable>
 
+          {mode === 'signUp' && (
+            <View style={styles.legalNotice}>
+              <Text style={styles.legalText}>
+                {t('auth.agreePrefix')}{' '}
+                <Text
+                  style={styles.legalLink}
+                  onPress={() => router.push('/terms-of-service')}
+                >
+                  {t('profile.termsOfService')}
+                </Text>
+                {' '}{t('auth.agreeAnd')}{' '}
+                <Text
+                  style={styles.legalLink}
+                  onPress={() => router.push('/privacy-policy')}
+                >
+                  {t('profile.privacyPolicy')}
+                </Text>
+              </Text>
+            </View>
+          )}
+
           <View style={styles.switchContainer}>
             <Text style={styles.switchText}>
               {mode === 'signIn' ? t('auth.noAccount') : t('auth.hasAccount')}{' '}
@@ -264,6 +287,20 @@ const styles = StyleSheet.create({
   },
   switchLink: {
     fontSize: 14,
+    color: '#4CAF50',
+    fontWeight: '600',
+  },
+  legalNotice: {
+    marginTop: 16,
+    paddingHorizontal: 4,
+  },
+  legalText: {
+    fontSize: 13,
+    color: '#888',
+    textAlign: 'center',
+    lineHeight: 20,
+  },
+  legalLink: {
     color: '#4CAF50',
     fontWeight: '600',
   },
