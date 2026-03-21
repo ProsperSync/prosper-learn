@@ -3,6 +3,63 @@ _Planner Agent Memory Log_
 
 ---
 
+## Executor Run #14 — 2026-03-21
+
+### Task Executed
+**TASK-014**: Add Terms of Service Screen
+
+### Files Changed
+- **Created** `src/screens/TermsOfServiceScreen.tsx` — complete scrollable ToS document (10 sections)
+- **Created** `app/terms-of-service.tsx` — expo-router route file
+- **Modified** `app/_layout.tsx` — registered `terms-of-service` route, allowed unauthenticated access
+- **Modified** `app/(tabs)/profile.tsx` — added "Terms of Service" link in Legal section
+- **Modified** `app/auth/index.tsx` — added legal agreement text with links on sign-up form
+- **Modified** `src/i18n/en.json` — added `profile.termsOfService`, `auth.agreePrefix`, `auth.agreeAnd`
+- **Modified** `src/i18n/pt-BR.json` — added Portuguese translations for the same keys
+- **Modified** `TASKS.md` — moved TASK-014 to Completed Tasks
+
+### Key Decisions
+- Modeled ToS screen after the existing `PrivacyPolicyScreen` for visual consistency (same header, styling, layout)
+- Made the "not financial advice" disclaimer prominent with a red-highlighted notice box (`importantNote` style)
+- Governing law set to Brazil (Federative Republic of Brazil) based on the developer's location
+- Sign-up agreement text only appears in `signUp` mode, not `signIn` — reduces clutter for returning users
+- Age requirement set to 13+ (matching Children's Privacy section in the Privacy Policy)
+- Used `useRouter` from expo-router for navigation from auth screen to legal pages
+
+### Verification Results
+- `npx tsc --noEmit`: All errors are pre-existing (Deno infrastructure files, education component index exports, AI tutor type). Zero new errors introduced.
+- All acceptance criteria met: ToS screen exists, covers all required topics, route registered, Profile link added, auth agreement text added, unauthenticated access allowed, i18n complete.
+
+### Impact on Other Tasks
+- **TASK-016** (GitHub Pages Landing Page) is now unblocked — its dependency on TASK-014 is satisfied. TASK-016 depends on TASK-012 ✅ and TASK-014 ✅, both now complete.
+
+---
+
+## Planner Run #13 — 2026-03-21
+
+### Stage Assessment
+**PRE-RELEASE — LAUNCH IMMINENT.** All engineering tasks complete. Two tasks remain before the app reaches real users: TASK-016 (GitHub Pages, must run first to supply the privacy policy URL) → TASK-003 (Play Store submission).
+
+### Key Discoveries
+- **TASK-003 is now effectively unblocked** from an engineering standpoint. TASK-007 ✅, TASK-011 ✅, TASK-012 ✅, TASK-013 ✅ are all done.
+- **Critical gap found**: Play Console requires a publicly hosted URL for the privacy policy. The in-app `PrivacyPolicyScreen` is not a valid URL. TASK-016 (GitHub Pages) must happen first.
+- **TASK-016 was wrongly P3** — it was planned as a marketing/growth item but is actually a legal/launch prerequisite. Escalated to P1 and added as a formal dependency of TASK-003.
+- **TASK-003 escalated to P0** — it is the literal launch gate. Every completed task leads here.
+- **No `expo-notifications` or `@sentry/react-native`** in package.json — TASK-015 and TASK-010 are genuinely not started.
+- **No `TermsOfServiceScreen.tsx`** in `src/screens/` — TASK-014 is genuinely not started.
+- **New task TASK-017 added**: In-App Rating Prompt (P2, post-launch). Fires after user's 5th lesson completion using `expo-store-review`. Drives Play Store rating organically.
+
+### Key Decisions
+- Escalated TASK-016 from P3 → P1 and made it a formal dependency of TASK-003
+- Escalated TASK-003 from P1 → P0 (it IS the launch)
+- Added TASK-017 (In-App Rating Request, P2) as the highest-value post-launch growth task not yet in the backlog
+- Post-launch priority queue: TASK-014 (ToS) → TASK-015 (Push Notifications) → TASK-010 (Sentry) → TASK-017 (Rating Prompt)
+
+### Canonical Privacy Policy URL
+**PENDING** — Will be established by TASK-016 (GitHub Pages). Expected format: `https://danielelielgaio.github.io/prosper-learn/` or similar. Must be entered into Play Console and `app.json` (`expo.extra.privacyPolicyUrl`) once available.
+
+---
+
 ## Executor Run #13 — 2026-03-21
 
 ### Task Executed

@@ -1,5 +1,5 @@
 # TASKS
-_Last updated: 2026-03-21 | Planner Run #12_
+_Last updated: 2026-03-21 | Planner Run #13_
 
 ---
 
@@ -9,20 +9,41 @@ _Last updated: 2026-03-21 | Planner Run #12_
 
 ---
 
+### TASK-016
+- **id**: TASK-016
+- **title**: Create App Landing Page on GitHub Pages (Privacy Policy Host)
+- **description**: PRIORITY ESCALATED FROM P3 → P1. This is now a prerequisite for TASK-003. Google Play Console requires a publicly accessible URL for the privacy policy — the in-app `PrivacyPolicyScreen` is not sufficient. TASK-016 must be completed BEFORE TASK-003 can be fully executed. The page should be a single `index.html` file in a `/docs` folder at the repo root (GitHub Pages standard). Content: (1) hero section with "Prosper Learn" name + tagline, (2) brief feature overview, (3) embedded or linked Privacy Policy (copy text from `src/screens/PrivacyPolicyScreen.tsx`), (4) Terms of Service link (can be placeholder URL until TASK-014 is done), (5) contact email. After GitHub Pages is enabled in repo settings (`Settings → Pages → Source: /docs branch: main`), the URL `https://<username>.github.io/<repo>/` becomes the canonical privacy policy host. Document the final URL in `PROGRESS.md` and add it to `app.json` as `expo.extra.privacyPolicyUrl`.
+- **domain**: Growth & Marketing / Legal & Trust
+- **priority**: P1
+- **status**: TODO
+- **dependencies**: TASK-012 ✅
+- **acceptance_criteria**:
+  - A `docs/index.html` file exists at the repo root with app name "Prosper Learn", tagline, and feature overview (3+ features)
+  - Privacy Policy text is embedded on the page (or at `/docs/privacy-policy.html` linked from the main page)
+  - The page is mobile-responsive (meta viewport tag set, readable on phone)
+  - GitHub Pages is configured and the page is publicly accessible at a stable `github.io` URL
+  - The privacy policy URL is documented in `PROGRESS.md`
+  - The URL is added to `app.json` under `expo.extra.privacyPolicyUrl`
+  - Page does not require any backend — pure static HTML/CSS
+
+---
+
+---
+
 ### TASK-003
 - **id**: TASK-003
 - **title**: Google Play Store Submission Preparation
-- **description**: Final Play Store submission step. Sub-tasks TASK-011 (eas.json), TASK-012 (privacy policy), and TASK-013 (app.json compliance) have been broken out as individually executable tasks. TASK-003 is now the integration step: generating the signed AAB, completing the Play Console listing, capturing screenshots, and submitting for review. Do not start until TASK-007, TASK-011, TASK-012, and TASK-013 are complete.
+- **description**: PRIORITY ESCALATED TO P0. All engineering and legal dependencies are now complete (TASK-007 ✅ branded icon, TASK-011 ✅ eas.json, TASK-012 ✅ privacy policy screen, TASK-013 ✅ app.json compliance). The only remaining dependency before this task can be fully executed is TASK-016 (GitHub Pages landing page) which provides the hosted privacy policy URL required by Play Console. Once TASK-016 is done, this task is the final gate to real users. Steps: (1) run `eas build --platform android --profile production` to generate the signed AAB, (2) complete the Play Console listing: title "Prosper Learn", short description ≤80 chars, full description with keywords (financial education, personal finance, budgeting, investing, money management), (3) enter the hosted privacy policy URL from TASK-016 into Play Console, (4) upload at least 4 screenshots covering Auth, Learn tab with tracks, Track Detail, and Achievements/Gamification screens, (5) complete content rating questionnaire, (6) upload the AAB and submit for review.
 - **domain**: Google Play Store Readiness / Legal & Trust / Mobile Release Readiness
-- **priority**: P1
+- **priority**: P0
 - **status**: TODO
-- **dependencies**: TASK-007, TASK-011, TASK-012, TASK-013
+- **dependencies**: TASK-007 ✅, TASK-011 ✅, TASK-012 ✅, TASK-013 ✅, TASK-016
 - **acceptance_criteria**:
   - `eas build --platform android --profile production` completes and produces a valid signed AAB
   - Store listing draft completed in Play Console: title "Prosper Learn", short description (≤80 chars), full description with keywords (financial education, personal finance, budgeting, investing, money management)
   - At least 4 screenshots covering key screens (Auth, Learn tab with tracks, Track Detail, Achievements)
   - Content rating questionnaire completed in Play Console
-  - Privacy policy URL entered in Play Console listing
+  - Privacy policy URL (from TASK-016) entered in Play Console listing
   - App submitted for review
 
 ---
@@ -49,21 +70,7 @@ _Last updated: 2026-03-21 | Planner Run #12_
 
 ---
 
-### TASK-014
-- **id**: TASK-014
-- **title**: Add Terms of Service Screen
-- **description**: The app requires user account creation (email + password via Supabase Auth) and stores personal learning data. Google Play Store expects apps with user accounts to surface Terms of Service. The ToS defines the relationship between the user and the app, protects the developer legally, and signals trustworthiness to users and reviewers. Steps: (1) create `src/screens/TermsOfServiceScreen.tsx` rendering ToS as scrollable text sections covering: acceptance of terms, service description (educational content, not financial advice), user obligations, account termination, limitation of liability, governing law, and contact information, (2) add route `app/terms-of-service.tsx`, (3) add "Terms of Service" pressable link in the Profile tab settings section alongside the Privacy Policy link, (4) add acknowledgment checkbox or text on the sign-up screen referencing ToS. The ToS text must clearly state the app provides financial *education* only and is not a licensed financial advisor.
-- **domain**: Legal & Trust / Google Play Store Readiness
-- **priority**: P2
-- **status**: TODO
-- **dependencies**: TASK-012
-- **acceptance_criteria**:
-  - `src/screens/TermsOfServiceScreen.tsx` exists and renders a complete, readable Terms of Service document
-  - ToS covers: acceptance, service description (educational only, not financial advice), user obligations, account termination, liability limitation, governing law, contact info
-  - `app/terms-of-service.tsx` route exists and renders `TermsOfServiceScreen`
-  - Profile tab contains a "Terms of Service" pressable link navigating to `/terms-of-service`, placed near the Privacy Policy link
-  - Sign-up form in `app/auth/index.tsx` includes a note like "By signing up, you agree to our Terms of Service and Privacy Policy" with links
-  - Screen is accessible without authentication
+### TASK-014 ✅ _(moved to Completed Tasks)_
 
 ---
 
@@ -90,25 +97,34 @@ _Last updated: 2026-03-21 | Planner Run #12_
 
 ---
 
-### TASK-016
-- **id**: TASK-016
-- **title**: Create App Landing Page on GitHub Pages
-- **description**: Prosper Learn has no web presence. A landing page serves three critical functions: (1) it hosts the privacy policy at a stable, public URL required by Google Play Console (supporting TASK-012), (2) it provides a credible "about the app" page that Play Store reviewers and users can visit, (3) it acts as a lightweight growth/marketing touchpoint for sharing on social media before and after launch. The page should be a single-file HTML page hosted on GitHub Pages (free, no infrastructure needed). Content: hero section with app name + tagline, brief feature overview (financial education tracks, XP system, achievements), screenshots when available, CTA to Play Store (can be added after submission), Privacy Policy link, Terms of Service link, contact email. The URL of the hosted page should be added to `app.json` as `expo.web.bundler` metadata and documented in `PROGRESS.md` as the canonical privacy policy host URL.
-- **domain**: Growth & Marketing / Legal & Trust
-- **priority**: P3
+### TASK-017
+- **id**: TASK-017
+- **title**: Add In-App Rating Prompt After Milestone Completion
+- **description**: Play Store ratings are one of the strongest organic growth levers for app discovery. After a user has had enough positive experience to form a genuine opinion — completing their 5th lesson is a natural milestone — prompt them to rate the app using the native in-app review API. This avoids the jarring experience of a cold rating request and maximizes the likelihood of a positive review. Steps: (1) install `expo-store-review`, (2) create `src/lib/reviews/reviewService.ts` with function `maybeRequestReview(lessonsCompleted: number)` that checks if `lessonsCompleted >= 5`, if `expo-store-review` is available (`StoreReview.isAvailableAsync()`), and if the prompt hasn't been shown before (persisted in AsyncStorage key `review_requested`), then calls `StoreReview.requestReview()` and sets the flag, (3) call `maybeRequestReview()` in the lesson completion handler in `app/lesson/[id].tsx` after the XP is awarded and toast is shown, (4) the rating prompt must NEVER be shown more than once per install (enforced via the AsyncStorage flag).
+- **domain**: Growth & Marketing / Product & UX
+- **priority**: P2
 - **status**: TODO
-- **dependencies**: TASK-012, TASK-014
+- **dependencies**: TASK-003
 - **acceptance_criteria**:
-  - A single `index.html` file is created in the repo under a `/docs` folder (GitHub Pages standard) OR a dedicated `gh-pages` branch
-  - The page includes: app name "Prosper Learn", tagline, feature overview (3+ features), links to Privacy Policy and Terms of Service
-  - The page is mobile-responsive (works on phone browser)
-  - The GitHub Pages URL is documented in `PROGRESS.md` for use in Play Console and app.json
-  - Privacy Policy is either embedded on the page or linked to a `/privacy-policy` subpage on the same domain
-  - The page does not require any backend or server — pure static HTML/CSS
+  - `expo-store-review` is installed and listed in `package.json` dependencies
+  - `src/lib/reviews/reviewService.ts` exports `maybeRequestReview(lessonsCompleted: number)`
+  - The review prompt fires after the user's 5th lesson completion (not before)
+  - The prompt is shown at most once per install (AsyncStorage flag `review_requested` prevents repeats)
+  - `StoreReview.isAvailableAsync()` is checked before calling `requestReview()` to avoid crashes on unsupported devices
+  - The prompt appears after the lesson completion toast (non-blocking, natural timing)
+  - No crashes or TypeScript errors introduced
 
 ---
 
 ## Completed Tasks
+
+---
+
+### TASK-014 ✅
+- **id**: TASK-014
+- **title**: Add Terms of Service Screen
+- **completed**: 2026-03-21 (Executor Run #14)
+- **summary**: Created `src/screens/TermsOfServiceScreen.tsx` — a complete, scrollable Terms of Service covering: acceptance of terms, service description (educational content only, NOT financial advice — highlighted in a red notice box), user accounts (age 13+), user obligations, intellectual property, account termination, limitation of liability, governing law (Brazil), changes to terms, and contact info. Added `app/terms-of-service.tsx` route. Added "Terms of Service" pressable link in Profile tab Legal section alongside Privacy Policy. Added sign-up agreement text in `app/auth/index.tsx`: "By signing up, you agree to our Terms of Service and Privacy Policy" with tappable links to both screens (only shown in sign-up mode). Updated `_layout.tsx` to register the route and allow unauthenticated access. Full i18n support (EN + pt-BR). Zero new TypeScript errors.
 
 ---
 
@@ -202,6 +218,35 @@ _Last updated: 2026-03-21 | Planner Run #12_
 
 ## Notes
 
+### Planner Run #13 — 2026-03-21
+
+**Assessed Stage**: Pre-release. **LAUNCH IS IMMINENT** — only two tasks stand between this app and real users: TASK-016 (GitHub Pages, hosts the privacy policy URL that Play Console requires) and TASK-003 (the Play Store submission itself).
+
+**Key Findings**:
+- TASK-007 ✅ (branded icon/splash), TASK-011 ✅ (eas.json), TASK-012 ✅ (privacy policy screen), TASK-013 ✅ (app.json compliance) — ALL DONE. Extraordinary progress.
+- TASK-003 had a hidden dependency that was previously undetected: Play Console requires a **publicly hosted URL** for the privacy policy. The in-app `PrivacyPolicyScreen` alone is not sufficient. TASK-016 (GitHub Pages) solves this and must run BEFORE TASK-003.
+- TASK-016 was previously P3 — this was a planning error. Escalated to **P1** and added as an explicit dependency of TASK-003.
+- TASK-003 escalated from P1 → **P0**: once TASK-016 is done, this is the only thing separating the app from the Play Store.
+- No `expo-notifications` or `@sentry/react-native` in `package.json` — TASK-015 and TASK-010 remain genuinely unstarted.
+- `TermsOfServiceScreen.tsx` does not exist yet — TASK-014 remains genuinely unstarted.
+
+**Tasks Added or Updated This Run**:
+- TASK-016: **P3 → P1** (escalated — hosts privacy policy URL required by Play Console, now a prerequisite of TASK-003)
+- TASK-003: **P1 → P0** (escalated — all deps now done except TASK-016, this IS the launch gate)
+- TASK-017: **NEW** — In-App Rating Prompt After Milestone Completion (P2, post-launch growth)
+
+**Immediate Critical Path to Launch**:
+1. **TASK-016** (P1) — Create GitHub Pages landing page → provides the hosted privacy policy URL
+2. **TASK-003** (P0) — Generate signed AAB + complete Play Console listing + submit for review
+
+**Post-Launch Priority Queue**:
+1. TASK-014 (P2) — Terms of Service Screen (legal completeness)
+2. TASK-015 (P2) — Push Notifications for Streak Reminders (Day-2 retention)
+3. TASK-010 (P2) — Sentry Crash Reporting (observability)
+4. TASK-017 (P2) — In-App Rating Prompt (Play Store rating growth)
+
+---
+
 ### Planner Run #11 — 2026-03-21
 
 **Assessed Stage**: Pre-release. MVP + Onboarding fully complete. All engineering P0 tasks done. Focus is 100% on Play Store release infrastructure and legal requirements.
@@ -215,26 +260,8 @@ _Last updated: 2026-03-21 | Planner Run #12_
 
 **Tasks Added This Run**:
 - TASK-011: Create `eas.json` Build Configuration (P0)
-- TASK-013: Update `app.json` for Play Store Compliance (P0)
+- TASK-013: Update `app.json` compliance fields (P0)
 - TASK-012: Create Privacy Policy Screen & Hosted URL (P1)
-
-**Updated Critical Path to Launch**:
-1. TASK-011 — Create `eas.json` (P0, ~10 min, unblocks all production builds)
-2. TASK-013 — Update `app.json` compliance fields (P0, ~5 min config update)
-3. TASK-007 — Custom branded icon & splash (P1, prerequisite for screenshots)
-4. TASK-012 — Privacy policy screen + hosted URL (P1, Play Store legal requirement)
-5. TASK-003 — Final Play Store submission (P1, depends on all above)
-6. TASK-010 — Sentry crash reporting (P2, immediately post-launch)
-
-**Deferred to Future Runs**:
-- Push notifications for streak reminders (P2)
-- CI/CD pipeline — GitHub Actions + EAS Build (P2)
-- Monetization model (freemium / subscription TBD)
-- Landing page / web presence (P2)
-- Language switcher in Profile settings (P2)
-- Terms of Service screen (P2, companion to privacy policy)
-- ASO keyword research for Play Store listing (P2)
-- Post-launch: review monitoring, feedback clustering, iterative UX improvements
 
 ---
 
@@ -263,12 +290,3 @@ _Last updated: 2026-03-21 | Planner Run #12_
 5. TASK-006 — User onboarding (P1, Day 1 conversion)
 6. TASK-003 — Play Store prep (P1, final gate to real users)
 7. TASK-010 — Sentry (P2, post-launch observability)
-
-**Deferred to Future Runs**:
-- Push notifications for streak reminders (P2) — notify users when streak is at risk
-- CI/CD pipeline — GitHub Actions + EAS Build (P2)
-- Monetization model — not yet determined
-- Landing page / web presence (P2)
-- Language switcher in Profile settings (P2)
-- Terms of Service screen (P2, companion to privacy policy)
-- App Store Optimization research (P2, keyword targeting for Play Store listing)
