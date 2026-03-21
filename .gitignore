@@ -12,3 +12,4 @@ web-build/
 .env.local
 coverage/
 .turbo/
+google-service-account.json

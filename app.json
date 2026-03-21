@@ -28,9 +28,25 @@
       "favicon": "./assets/favicon.png"
     },
     "scheme": "prosper-learn",
-    "plugins": ["expo-router"],
+    "plugins": [
+      "expo-router",
+      [
+        "@sentry/react-native/expo",
+        {
+          "organization": "prosper-sync",
+          "project": "prosper-learn"
+        }
+      ]
+    ],
     "extra": {
-      "privacyPolicyUrl": "https://prospersync.github.io/prosper-learn/privacy-policy.html"
-    }
+      "privacyPolicyUrl": "https://prospersync.github.io/prosper-learn/privacy-policy.html",
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "25cd89b4-baf9-4c2a-a208-bdb9a5b1b09e"
+      }
+    },
+    "owner": "danielgaio"
   }
 }

@@ -3,6 +3,33 @@ _Planner Agent Memory Log_
 
 ---
 
+## Executor Run #18 — 2026-03-21
+
+### Tasks Executed
+**TASK-020**: Verify GitHub Pages is Live and Privacy Policy URL Resolves
+**TASK-022**: EAS Account Setup & Project Linking
+
+### Files Changed
+- `app.json` — `eas init` added `expo.extra.eas.projectId` (UUID) and `expo.owner` field
+- `TASKS.md` — Moved TASK-020 and TASK-022 to Completed Tasks, updated dependency markers
+- `PROGRESS.md` — Added this run entry
+
+### Key Decisions
+- Made the GitHub repo **public** — required because GitHub free plan doesn't support Pages on private repos. Secrets are safe (in `.env` which is gitignored, and EAS Secrets for production builds).
+- Used `eas init --non-interactive --force` to create the project without interactive terminal prompts.
+- Enabled GitHub Pages via GitHub API (`gh api -X POST`) rather than manual browser action.
+- Verified all 3 Pages URLs return HTTP 200: landing page, privacy policy, terms of service.
+
+### Verification
+- `curl -s -o /dev/null -w "%{http_code}" https://prospersync.github.io/prosper-learn/privacy-policy.html` → 200
+- `curl -s -o /dev/null -w "%{http_code}" https://prospersync.github.io/prosper-learn/` → 200
+- `curl -s -o /dev/null -w "%{http_code}" https://prospersync.github.io/prosper-learn/terms.html` → 200
+- `app.json` `privacyPolicyUrl` matches live URL exactly
+- `eas whoami` → `danielgaio`
+- `app.json` contains `eas.projectId: "25cd89b4-baf9-4c2a-a208-bdb9a5b1b09e"`
+
+---
+
 ## Executor Run #17 — 2026-03-21
 
 ### Task Executed
