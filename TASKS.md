@@ -29,24 +29,6 @@ _Last updated: 2026-03-21 | Planner Run #12_
 
 ---
 
-### TASK-007
-- **id**: TASK-007
-- **title**: Create Custom Branded App Icon & Splash Screen
-- **description**: The current `assets/icon.png`, `assets/adaptive-icon.png`, and `assets/splash.png` are default Expo placeholders (white background, generic icon). Submitting these to the Play Store would immediately signal an unpolished app and is likely to result in rejection or low conversion. Custom branded assets must be created before Play Store screenshots can be taken (TASK-003 depends on this). The brand colors are green (#4CAF50 primary, consistent throughout the app UI). The icon should be a simple, memorable logomark that communicates "learning + financial growth" — e.g., a stylized book combined with an upward arrow or currency symbol. The splash screen should use the brand green background with the Prosper Learn wordmark centered. Assets required: `icon.png` (1024×1024 PNG), `adaptive-icon.png` foreground (1024×1024 PNG, transparent background), `splash.png` (1242×2436 PNG). All assets must be saved in the `assets/` folder and referenced correctly in `app.json`.
-- **domain**: Google Play Store Readiness / Product & UX
-- **priority**: P1
-- **status**: TODO
-- **dependencies**: none
-- **acceptance_criteria**:
-  - `assets/icon.png` is a custom branded 1024×1024 PNG (not default Expo white square)
-  - `assets/adaptive-icon.png` is a custom branded foreground icon (1024×1024, transparent BG) for Android adaptive icons
-  - `assets/splash.png` displays the Prosper Learn wordmark/logo on brand-colored background
-  - `app.json` `splash.backgroundColor` matches brand green (#4CAF50 or close equivalent)
-  - Icons are visually consistent with the app's green color scheme and financial education theme
-  - No Expo default assets remain in use
-
----
-
 ---
 
 ### TASK-010
@@ -127,6 +109,14 @@ _Last updated: 2026-03-21 | Planner Run #12_
 ---
 
 ## Completed Tasks
+
+---
+
+### TASK-007 ✅
+- **id**: TASK-007
+- **title**: Create Custom Branded App Icon & Splash Screen
+- **completed**: 2026-03-21 (Executor Run #13)
+- **summary**: Generated custom branded assets using Python Pillow: `icon.png` (1024×1024, green background with white book+arrow logomark), `adaptive-icon.png` (1024×1024, transparent background with white logomark for Android adaptive icons), `splash.png` (1242×2436, green background with logomark + "Prosper Learn" wordmark + subtitle), and `favicon.png` (48×48 scaled icon). The logomark depicts an open book with text lines and an upward arrow emerging from it, symbolizing learning and financial growth. All assets use brand green (#4CAF50) and are consistent with the app's design language. `app.json` already correctly references all asset paths and has `splash.backgroundColor: "#4CAF50"`.
 
 ---
 

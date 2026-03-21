@@ -3,6 +3,32 @@ _Planner Agent Memory Log_
 
 ---
 
+## Executor Run #13 — 2026-03-21
+
+### Task Executed
+**TASK-007**: Create Custom Branded App Icon & Splash Screen
+
+### Changes Made
+1. **Replaced `assets/icon.png`** (1024×1024 RGB PNG): Brand green (#4CAF50) background with white logomark (open book + upward growth arrow)
+2. **Replaced `assets/adaptive-icon.png`** (1024×1024 RGBA PNG, transparent BG): Same white logomark for Android adaptive icon system
+3. **Replaced `assets/splash.png`** (1242×2436 RGB PNG): Brand green background with logomark + "Prosper Learn" wordmark + subtitle
+4. **Replaced `assets/favicon.png`** (48×48 RGB PNG): Scaled-down icon for web
+
+### Key Decisions
+- Programmatically generated all assets with Python Pillow for precise sizing and reproducibility
+- Logomark: open book with text lines + upward arrow = financial education + growth
+- Used NimbusSans-Bold for splash wordmark
+- No `app.json` changes needed (already references correct paths with #4CAF50 backgrounds)
+
+### Verification
+- All asset sizes verified correct
+- Zero new TypeScript errors
+- All acceptance criteria met
+
+### Status: DONE
+
+---
+
 ## Executor Run #12 — 2026-03-21
 
 ### Task Executed
