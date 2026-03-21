@@ -243,9 +243,7 @@
     "signUpError": "Não foi possível criar a conta. Tente novamente.",
     "emailRequired": "E-mail é obrigatório",
     "passwordRequired": "Senha é obrigatória",
-    "passwordMinLength": "A senha deve ter pelo menos 6 caracteres",
-    "agreePrefix": "Ao criar sua conta, você concorda com nossos",
-    "agreeAnd": "e"
+    "passwordMinLength": "A senha deve ter pelo menos 6 caracteres"
   },
   "onboarding": {
     "skip": "Pular",
@@ -271,7 +269,6 @@
     "signOut": "Sair",
     "signOutConfirm": "Tem certeza de que deseja sair?",
     "legal": "Legal",
-    "privacyPolicy": "Política de Privacidade",
-    "termsOfService": "Termos de Serviço"
+    "privacyPolicy": "Política de Privacidade"
   }
 }

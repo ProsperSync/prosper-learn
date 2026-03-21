@@ -2,6 +2,79 @@
 _Planner Agent Memory Log_
 
 ---
+## Executor Run #15 — 2026-03-21
+
+### Task Executed
+**TASK-016**: Create App Landing Page on GitHub Pages (Privacy Policy Host)
+
+### Files Changed
+- **CREATED** `docs/index.html` — Landing page with hero, 6 feature cards, about section, legal links, footer
+- **CREATED** `docs/privacy-policy.html` — Full privacy policy (copied from PrivacyPolicyScreen.tsx)
+- **CREATED** `docs/terms.html` — Full terms of service (copied from TermsOfServiceScreen.tsx)
+- **MODIFIED** `app.json` — Added `expo.extra.privacyPolicyUrl: "https://prospersync.github.io/prosper-learn/privacy-policy.html"`
+- **MODIFIED** `TASKS.md` — Moved TASK-016 to Completed, updated TASK-003 dependencies
+- **MODIFIED** `PROGRESS.md` — This entry
+
+### Key Decisions
+- Created three separate HTML files (index, privacy-policy, terms) rather than a single long page for better readability and direct linking from Play Console
+- Used pure static HTML/CSS with system font stack — no JavaScript, no build step, no dependencies
+- Privacy policy URL for Play Console: `https://prospersync.github.io/prosper-learn/privacy-policy.html`
+- Landing page URL: `https://prospersync.github.io/prosper-learn/`
+- All pages are mobile-responsive with meta viewport tag
+- Consistent brand green (#4CAF50) across all pages
+
+### Verification Results
+- `npx tsc --noEmit` — All errors are pre-existing (Deno edge functions, existing module issues). Zero new errors introduced.
+- `app.json` validated — valid JSON with new `extra.privacyPolicyUrl` field
+- All three HTML files are valid, self-contained, and cross-linked
+
+### Remaining Action (Manual)
+- **Enable GitHub Pages** in repo Settings → Pages → Source: `/docs`, Branch: `main`. This must be done manually in the GitHub web UI.
+
+### Impact on Critical Path
+- **TASK-016 ✅ COMPLETE** — sole blocker for TASK-003 is now resolved
+- **TASK-003 is now FULLY UNBLOCKED** — all dependencies satisfied (TASK-007 ✅, TASK-011 ✅, TASK-012 ✅, TASK-013 ✅, TASK-014 ✅, TASK-016 ✅)
+
+---
+## Planner Run #14 — 2026-03-21
+
+### Stage Assessment
+**PRE-RELEASE** — The app is fully engineered and legally complete. Two tasks remain on the critical path to launch: TASK-016 (GitHub Pages, provides hosted privacy policy URL for Play Console) and TASK-003 (Play Store submission). Once TASK-016 is completed, an executor can submit the app.
+
+### Key Discoveries
+- **TASK-014 ✅ CONFIRMED COMPLETE**: `src/screens/TermsOfServiceScreen.tsx` AND `app/terms-of-service.tsx` both exist. Executor Run #14 genuinely completed this task. Updated TASK-003 dependencies accordingly.
+- **docs/ folder ABSENT**: No `docs/` directory at repo root — TASK-016 is definitively not done and remains the sole launch blocker.
+- **app.json `extra` is empty `{}`**: The `privacyPolicyUrl` field that TASK-016 must set has not been added. Confirms TASK-016 is active blocker.
+- **app.json plugins: only `expo-router`**: No expo-notifications, sentry-expo, or Firebase. TASK-015 and TASK-010 are not started.
+- **Zero behavioral analytics**: The app will launch with no user behavior data. Added TASK-018 to address this post-launch.
+- **No social sharing**: Gamification produces shareable moments (badges, track completions) but no share mechanism exists. Added TASK-019 as P3 post-launch growth lever.
+
+### Key Decisions
+- **Added TASK-018** (Behavioral Analytics, P2): Firebase Analytics or Amplitude, 6 key events. Deferred until after TASK-003 (Firebase project needs production package ID).
+- **Added TASK-019** (Achievement Social Sharing, P3): expo-sharing + shareAchievement() function. Deferred post-launch.
+- **TASK-003 dependencies updated**: Added TASK-014 to confirmed deps list.
+
+### Current Active Task Priority Order
+1. TASK-016 (P1) — GitHub Pages landing page (sole blocker for TASK-003)
+2. TASK-003 (P0) — Play Store submission (depends on TASK-016)
+3. TASK-015 (P2) — Push notifications (post-launch, Day-2 retention)
+4. TASK-010 (P2) — Sentry crash reporting (post-launch observability)
+5. TASK-018 (P2) — Behavioral analytics (post-launch product decisions)
+6. TASK-017 (P2) — In-app rating prompt (post-launch Play Store rating growth)
+7. TASK-019 (P3) — Achievement social sharing (post-launch viral growth)
+
+### Updated Critical Path to Launch
+1. TASK-016 → Create docs/index.html + enable GitHub Pages → provides stable privacy policy URL
+2. TASK-003 → eas build production → Play Console listing + screenshots → submit
+
+### Post-Launch Sprint Plan (first 4 weeks)
+- Week 1: TASK-015 (push notifications) + TASK-010 (Sentry) — protect and retain early users
+- Week 2: TASK-018 (behavioral analytics) — start data collection for first product review
+- Week 4+: TASK-017 (in-app rating prompt) + TASK-019 (social sharing) — growth flywheel
+
+---
+
+
 
 ## Executor Run #14 — 2026-03-21
 

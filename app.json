@@ -28,6 +28,9 @@
       "favicon": "./assets/favicon.png"
     },
     "scheme": "prosper-learn",
-    "plugins": ["expo-router"]
+    "plugins": ["expo-router"],
+    "extra": {
+      "privacyPolicyUrl": "https://prospersync.github.io/prosper-learn/privacy-policy.html"
+    }
   }
 }

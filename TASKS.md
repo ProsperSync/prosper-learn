@@ -1,5 +1,5 @@
 # TASKS
-_Last updated: 2026-03-21 | Planner Run #13_
+_Last updated: 2026-03-21 | Executor Run #15_
 
 ---
 
@@ -7,37 +7,14 @@ _Last updated: 2026-03-21 | Planner Run #13_
 
 ---
 
----
-
-### TASK-016
-- **id**: TASK-016
-- **title**: Create App Landing Page on GitHub Pages (Privacy Policy Host)
-- **description**: PRIORITY ESCALATED FROM P3 → P1. This is now a prerequisite for TASK-003. Google Play Console requires a publicly accessible URL for the privacy policy — the in-app `PrivacyPolicyScreen` is not sufficient. TASK-016 must be completed BEFORE TASK-003 can be fully executed. The page should be a single `index.html` file in a `/docs` folder at the repo root (GitHub Pages standard). Content: (1) hero section with "Prosper Learn" name + tagline, (2) brief feature overview, (3) embedded or linked Privacy Policy (copy text from `src/screens/PrivacyPolicyScreen.tsx`), (4) Terms of Service link (can be placeholder URL until TASK-014 is done), (5) contact email. After GitHub Pages is enabled in repo settings (`Settings → Pages → Source: /docs branch: main`), the URL `https://<username>.github.io/<repo>/` becomes the canonical privacy policy host. Document the final URL in `PROGRESS.md` and add it to `app.json` as `expo.extra.privacyPolicyUrl`.
-- **domain**: Growth & Marketing / Legal & Trust
-- **priority**: P1
-- **status**: TODO
-- **dependencies**: TASK-012 ✅
-- **acceptance_criteria**:
-  - A `docs/index.html` file exists at the repo root with app name "Prosper Learn", tagline, and feature overview (3+ features)
-  - Privacy Policy text is embedded on the page (or at `/docs/privacy-policy.html` linked from the main page)
-  - The page is mobile-responsive (meta viewport tag set, readable on phone)
-  - GitHub Pages is configured and the page is publicly accessible at a stable `github.io` URL
-  - The privacy policy URL is documented in `PROGRESS.md`
-  - The URL is added to `app.json` under `expo.extra.privacyPolicyUrl`
-  - Page does not require any backend — pure static HTML/CSS
-
----
-
----
-
 ### TASK-003
 - **id**: TASK-003
 - **title**: Google Play Store Submission Preparation
-- **description**: PRIORITY ESCALATED TO P0. All engineering and legal dependencies are now complete (TASK-007 ✅ branded icon, TASK-011 ✅ eas.json, TASK-012 ✅ privacy policy screen, TASK-013 ✅ app.json compliance). The only remaining dependency before this task can be fully executed is TASK-016 (GitHub Pages landing page) which provides the hosted privacy policy URL required by Play Console. Once TASK-016 is done, this task is the final gate to real users. Steps: (1) run `eas build --platform android --profile production` to generate the signed AAB, (2) complete the Play Console listing: title "Prosper Learn", short description ≤80 chars, full description with keywords (financial education, personal finance, budgeting, investing, money management), (3) enter the hosted privacy policy URL from TASK-016 into Play Console, (4) upload at least 4 screenshots covering Auth, Learn tab with tracks, Track Detail, and Achievements/Gamification screens, (5) complete content rating questionnaire, (6) upload the AAB and submit for review.
+- **description**: PRIORITY ESCALATED TO P0. All engineering and legal dependencies are now complete (TASK-007 ✅ branded icon, TASK-011 ✅ eas.json, TASK-012 ✅ privacy policy screen, TASK-013 ✅ app.json compliance, TASK-014 ✅ terms of service). The only remaining dependency before this task can be fully executed is TASK-016 (GitHub Pages landing page) which provides the hosted privacy policy URL required by Play Console. Once TASK-016 is done, this task is the final gate to real users. Steps: (1) run `eas build --platform android --profile production` to generate the signed AAB, (2) complete the Play Console listing: title "Prosper Learn", short description ≤80 chars, full description with keywords (financial education, personal finance, budgeting, investing, money management), (3) enter the hosted privacy policy URL from TASK-016 into Play Console, (4) upload at least 4 screenshots covering Auth, Learn tab with tracks, Track Detail, and Achievements/Gamification screens, (5) complete content rating questionnaire, (6) upload the AAB and submit for review.
 - **domain**: Google Play Store Readiness / Legal & Trust / Mobile Release Readiness
 - **priority**: P0
 - **status**: TODO
-- **dependencies**: TASK-007 ✅, TASK-011 ✅, TASK-012 ✅, TASK-013 ✅, TASK-016
+- **dependencies**: TASK-007 ✅, TASK-011 ✅, TASK-012 ✅, TASK-013 ✅, TASK-014 ✅, TASK-016 ✅
 - **acceptance_criteria**:
   - `eas build --platform android --profile production` completes and produces a valid signed AAB
   - Store listing draft completed in Play Console: title "Prosper Learn", short description (≤80 chars), full description with keywords (financial education, personal finance, budgeting, investing, money management)
@@ -45,8 +22,6 @@ _Last updated: 2026-03-21 | Planner Run #13_
   - Content rating questionnaire completed in Play Console
   - Privacy policy URL (from TASK-016) entered in Play Console listing
   - App submitted for review
-
----
 
 ---
 
@@ -67,10 +42,6 @@ _Last updated: 2026-03-21 | Planner Run #13_
   - The `ErrorBoundary` (TASK-009) calls `Sentry.captureException(error)` in `componentDidCatch`
   - `app.json` includes `sentry-expo` plugin for source map uploads on EAS Build
   - A test throw in development can be verified in the Sentry dashboard
-
----
-
-### TASK-014 ✅ _(moved to Completed Tasks)_
 
 ---
 
@@ -116,7 +87,50 @@ _Last updated: 2026-03-21 | Planner Run #13_
 
 ---
 
+### TASK-018
+- **id**: TASK-018
+- **title**: Integrate Firebase Analytics for Behavioral Event Tracking
+- **description**: With zero behavioral analytics, all post-launch product decisions will be based on guesswork. Firebase Analytics is free, React Native/Expo compatible, and provides session tracking, funnel analysis, and retention cohorts out of the box. Without event data, it's impossible to know whether users drop off during onboarding, which tracks are most popular, or whether the streak system is driving measurable retention. Steps: (1) install `@react-native-firebase/app` and `@react-native-firebase/analytics`, (2) create `src/lib/analytics/analyticsService.ts` with typed event functions: `trackLessonStarted(lessonId, trackId)`, `trackLessonCompleted(lessonId, xpEarned)`, `trackTrackSelected(trackId, difficulty)`, `trackOnboardingCompleted(skipped: boolean)`, `trackStreakMilestone(days: number)`, `trackBadgeUnlocked(badgeId, badgeName)`, (3) add Firebase plugins to `app.json` plugins array, (4) call event functions at the 6 key touchpoints in the codebase, (5) document in PROGRESS.md how to create a Firebase project and obtain `google-services.json`. Alternative: if Firebase adds too much native build complexity for an Expo managed workflow, use `@amplitude/analytics-react-native` (Amplitude) or PostHog, which are pure JavaScript SDKs with zero native module requirements.
+- **domain**: Analytics & Observability
+- **priority**: P2
+- **status**: TODO
+- **dependencies**: TASK-003
+- **acceptance_criteria**:
+  - An analytics SDK is installed and listed in `package.json` dependencies
+  - `src/lib/analytics/analyticsService.ts` exports `trackLessonStarted`, `trackLessonCompleted`, `trackTrackSelected`, `trackOnboardingCompleted`, `trackStreakMilestone`, `trackBadgeUnlocked`
+  - All 6 event functions are called at the correct points in the codebase
+  - No TypeScript errors introduced
+  - PROGRESS.md documents the analytics platform chosen and setup steps (Firebase project creation, or Amplitude/PostHog account setup)
+
+---
+
+### TASK-019
+- **id**: TASK-019
+- **title**: Add Achievement Social Sharing
+- **description**: Social sharing of achievements is the lowest-cost viral growth mechanism available. After a user earns a badge or completes a learning track, a "Share" button triggers the native share sheet with a pre-composed message (e.g., "🏆 I just earned the 'Budgeting Expert' badge on Prosper Learn! Learning personal finance one lesson at a time. #ProsperLearn"). Each social share is a free user acquisition attempt — and users who share financial education wins tend to attract high-quality peers. Steps: (1) install `expo-sharing` (if not already installed — check package.json), (2) create `src/lib/sharing/sharingService.ts` with `shareAchievement(achievementTitle: string, message: string)` that uses `expo-sharing` to open the native share dialog, (3) check `Sharing.isAvailableAsync()` before triggering to prevent crashes on unsupported platforms, (4) add a "Share" button to the badge unlock success flow (wherever badge unlocks are surfaced in GamificationScreen or profile), (5) add a "Share Achievement" button to the lesson completion toast/success state in `app/lesson/[id].tsx` after final lesson of a track.
+- **domain**: Growth & Marketing
+- **priority**: P3
+- **status**: TODO
+- **dependencies**: TASK-003
+- **acceptance_criteria**:
+  - `expo-sharing` is installed and listed in `package.json` dependencies
+  - `src/lib/sharing/sharingService.ts` exports `shareAchievement(achievementTitle, message)`
+  - A "Share" button is visible after earning a badge or completing a track
+  - The native share sheet opens with a pre-composed message containing the achievement name and `#ProsperLearn` hashtag
+  - `Sharing.isAvailableAsync()` is checked before triggering (no crashes on unsupported platforms)
+  - No TypeScript errors introduced
+
+---
+
 ## Completed Tasks
+
+---
+
+### TASK-016 ✅
+- **id**: TASK-016
+- **title**: Create App Landing Page on GitHub Pages (Privacy Policy Host)
+- **completed**: 2026-03-21 (Executor Run #15)
+- **summary**: Created `docs/` folder at repo root with three static HTML pages: (1) `docs/index.html` — landing page with hero section ("Prosper Learn" name + tagline "Master your money, one lesson at a time"), 6 feature cards (Bite-Sized Lessons, Earn XP & Badges, Learning Tracks, Quizzes & Challenges, Daily Streaks, Private & Ad-Free), about section with financial education disclaimer, links to privacy policy and terms of service, and footer with contact email. (2) `docs/privacy-policy.html` — full privacy policy text copied from `PrivacyPolicyScreen.tsx` covering data collection, storage, third-party services, security, user rights, children's privacy, and contact info. (3) `docs/terms.html` — full terms of service text copied from `TermsOfServiceScreen.tsx` covering acceptance of terms, service description (with important financial disclaimer), user accounts, obligations, IP, termination, liability, governing law (Brazil), and contact info. All pages are mobile-responsive (meta viewport set), use consistent brand styling (green #4CAF50), inter-link to each other, and require zero backend (pure static HTML/CSS). Updated `app.json` to add `expo.extra.privacyPolicyUrl: "https://prospersync.github.io/prosper-learn/privacy-policy.html"`. GitHub Pages URL: `https://prospersync.github.io/prosper-learn/` (requires enabling in repo Settings → Pages → Source: /docs, branch: main).
 
 ---
 
@@ -218,6 +232,35 @@ _Last updated: 2026-03-21 | Planner Run #13_
 
 ## Notes
 
+### Planner Run #14 — 2026-03-21
+
+**Assessed Stage**: Pre-release — **LAUNCH IS 2 TASKS AWAY.** The app is fully engineered and legally compliant. TASK-016 (GitHub Pages) is the only thing blocking TASK-003 (Play Store submission).
+
+**Key Findings**:
+- TASK-014 ✅ **CONFIRMED DONE** — `src/screens/TermsOfServiceScreen.tsx` and `app/terms-of-service.tsx` both exist. TASK-014 is genuinely complete. Updated TASK-003 dependencies to reflect this.
+- **docs/ folder does not exist** — TASK-016 is definitively not done. This is the sole blocker for TASK-003.
+- **app.json `extra` is empty `{}`** — the `privacyPolicyUrl` field (required by TASK-016's acceptance criteria) has not been added yet. TASK-016 must add this.
+- **app.json plugins: only `expo-router`** — no `expo-notifications`, `sentry-expo`, or Firebase plugins yet. TASK-015 and TASK-010 are genuinely not started.
+- **No behavioral analytics SDK** — once real users arrive, product decisions will be made blind without event data. TASK-018 added to address this gap.
+
+**Tasks Added This Run**:
+- **TASK-018** (NEW, P2) — Firebase Analytics / Amplitude for behavioral event tracking. Essential for data-driven post-launch iteration. Tracks 6 key events: lesson_started, lesson_completed, track_selected, onboarding_completed, streak_milestone, badge_unlocked.
+- **TASK-019** (NEW, P3) — Achievement Social Sharing via `expo-sharing`. Lowest-cost viral acquisition mechanism — every share is a free acquisition attempt from a trusted referral channel.
+- **TASK-003** (UPDATED) — Added `TASK-014 ✅` to confirmed dependencies now that TermsOfServiceScreen is verified as complete.
+
+**Immediate Critical Path to Launch**:
+1. **TASK-016** (P1) → Create GitHub Pages landing page + host privacy policy → provides stable URL for Play Console
+2. **TASK-003** (P0) → Generate signed AAB + Play Console listing + submit for review
+
+**Post-Launch Priority Queue** (in order):
+1. TASK-015 (P2) — Push Notifications (Day-2 retention — highest immediate ROI)
+2. TASK-010 (P2) — Sentry (crash visibility from Day 1)
+3. TASK-018 (P2) — Behavioral Analytics (product decisions need data)
+4. TASK-017 (P2) — In-App Rating Prompt (after 100+ installs, ratings accelerate discovery)
+5. TASK-019 (P3) — Achievement Social Sharing (viral growth flywheel)
+
+---
+
 ### Planner Run #13 — 2026-03-21
 
 **Assessed Stage**: Pre-release. **LAUNCH IS IMMINENT** — only two tasks stand between this app and real users: TASK-016 (GitHub Pages, hosts the privacy policy URL that Play Console requires) and TASK-003 (the Play Store submission itself).
@@ -228,22 +271,12 @@ _Last updated: 2026-03-21 | Planner Run #13_
 - TASK-016 was previously P3 — this was a planning error. Escalated to **P1** and added as an explicit dependency of TASK-003.
 - TASK-003 escalated from P1 → **P0**: once TASK-016 is done, this is the only thing separating the app from the Play Store.
 - No `expo-notifications` or `@sentry/react-native` in `package.json` — TASK-015 and TASK-010 remain genuinely unstarted.
-- `TermsOfServiceScreen.tsx` does not exist yet — TASK-014 remains genuinely unstarted.
+- `TermsOfServiceScreen.tsx` did not exist at time of Run #13 — TASK-014 was unstarted.
 
 **Tasks Added or Updated This Run**:
 - TASK-016: **P3 → P1** (escalated — hosts privacy policy URL required by Play Console, now a prerequisite of TASK-003)
 - TASK-003: **P1 → P0** (escalated — all deps now done except TASK-016, this IS the launch gate)
 - TASK-017: **NEW** — In-App Rating Prompt After Milestone Completion (P2, post-launch growth)
-
-**Immediate Critical Path to Launch**:
-1. **TASK-016** (P1) — Create GitHub Pages landing page → provides the hosted privacy policy URL
-2. **TASK-003** (P0) — Generate signed AAB + complete Play Console listing + submit for review
-
-**Post-Launch Priority Queue**:
-1. TASK-014 (P2) — Terms of Service Screen (legal completeness)
-2. TASK-015 (P2) — Push Notifications for Streak Reminders (Day-2 retention)
-3. TASK-010 (P2) — Sentry Crash Reporting (observability)
-4. TASK-017 (P2) — In-App Rating Prompt (Play Store rating growth)
 
 ---
 

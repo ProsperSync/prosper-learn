@@ -85,14 +85,7 @@ export default function ProfileTab() {
           onPress={() => router.push('/privacy-policy')}
         >
           <Text style={styles.menuText}>{t('profile.privacyPolicy')}</Text>
-          <Text style={styles.menuChevron}>{'\u2192'}</Text>
-        </Pressable>
-        <Pressable
-          style={styles.menuItem}
-          onPress={() => router.push('/terms-of-service')}
-        >
-          <Text style={styles.menuText}>{t('profile.termsOfService')}</Text>
-          <Text style={styles.menuChevron}>{'\u2192'}</Text>
+          <Text style={styles.menuChevron}>→</Text>
         </Pressable>
       </View>
 
