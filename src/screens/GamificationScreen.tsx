@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { View, Text, StyleSheet, ScrollView, RefreshControl, Pressable, Modal } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, RefreshControl, Pressable, Modal, ActivityIndicator } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import type { Badge, Streak, UserXP, GamificationStats } from '../lib/types';
 import { BadgeDisplay, BadgeDetail } from '../components/gamification/BadgeDisplay';
@@ -8,6 +8,8 @@ import { XPProgressBar, XPEventFeed } from '../components/gamification/XPProgres
 import { gamificationService } from '../services';
 import { useTheme, type ThemeColors } from '../hooks/useTheme';
 import { useAuth } from '../hooks/useAuth';
+import { openaiClient, isOpenAIConfigured } from '../config/openai';
+import { ProgressInsightsService, type ProgressInsight } from '../lib/ai/progressInsights';
 
 type Tab = 'overview' | 'badges' | 'streaks' | 'activity';
 
@@ -26,6 +28,8 @@ export function GamificationScreen() {
   const [stats, setStats] = useState<GamificationStats | null>(null);
   const [xpEvents, setXPEvents] = useState<any[]>([]);
   const [selectedBadge, setSelectedBadge] = useState<Badge | null>(null);
+  const [insightMessage, setInsightMessage] = useState<string | null>(null);
+  const [insightLoading, setInsightLoading] = useState(false);
 
   const { user } = useAuth();
   const userId = user?.id ?? '';
@@ -126,6 +130,46 @@ export function GamificationScreen() {
           <StreakList streaks={streaks.slice(0, 2)} />
         </View>
       )}
+
+      {/* AI Progress Insights */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Progress Insights</Text>
+        {!isOpenAIConfigured ? (
+          <View style={styles.insightCard}>
+            <Text style={styles.insightText}>
+              AI-powered progress insights will be available once the OpenAI integration is configured.
+            </Text>
+          </View>
+        ) : insightMessage ? (
+          <View style={styles.insightCard}>
+            <Text style={styles.insightText}>{insightMessage}</Text>
+          </View>
+        ) : (
+          <Pressable
+            style={styles.insightButton}
+            onPress={async () => {
+              if (!openaiClient || insightLoading) return;
+              setInsightLoading(true);
+              try {
+                const service = new ProgressInsightsService(openaiClient);
+                const msg = await service.generateQuickInsight([], [], 'week', 'en');
+                setInsightMessage(msg);
+              } catch {
+                setInsightMessage('Unable to generate insights right now. Try again later.');
+              } finally {
+                setInsightLoading(false);
+              }
+            }}
+            disabled={insightLoading}
+          >
+            {insightLoading ? (
+              <ActivityIndicator size="small" color="#4CAF50" />
+            ) : (
+              <Text style={styles.insightButtonText}>Generate Insights</Text>
+            )}
+          </Pressable>
+        )}
+      </View>
     </ScrollView>
   );
 
@@ -404,6 +448,37 @@ const createStyles = (colors: ThemeColors) => StyleSheet.create({
     fontSize: 20,
     fontWeight: '700',
     color: colors.text.primary,
+  },
+  insightCard: {
+    backgroundColor: colors.background.primary,
+    borderRadius: 12,
+    padding: 16,
+    marginTop: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  insightText: {
+    fontSize: 14,
+    color: colors.text.secondary,
+    lineHeight: 20,
+  },
+  insightButton: {
+    backgroundColor: colors.background.primary,
+    borderRadius: 12,
+    padding: 16,
+    marginTop: 8,
+    alignItems: 'center',
+    borderWidth: 1.5,
+    borderColor: colors.primary.main,
+    borderStyle: 'dashed',
+  },
+  insightButtonText: {
+    fontSize: 15,
+    color: colors.primary.main,
+    fontWeight: '600',
   },
   modalOverlay: {
     flex: 1,

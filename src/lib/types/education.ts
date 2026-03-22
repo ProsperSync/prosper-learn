@@ -28,3 +28,11 @@ export const EducationalTrackSummarySchema = z.object({
 export type TrackDifficulty = z.infer<typeof TrackDifficultySchema>;
 export type EducationalModule = z.infer<typeof EducationalModuleSchema>;
 export type EducationalTrackSummary = z.infer<typeof EducationalTrackSummarySchema>;
+
+/**
+ * A single message in an AI tutor conversation.
+ */
+export interface ConversationMessage {
+  role: 'user' | 'assistant';
+  content: string;
+}

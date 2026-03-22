@@ -108,24 +108,6 @@ _Last updated: 2026-03-22 | Planner Run #24_
 
 ---
 
-### TASK-029
-- **id**: TASK-029
-- **title**: Wire AI Services to App UI (AI Tutor Screen + Adaptive Quiz)
-- **description**: Three AI service files exist and are fully implemented but are dead code — they are NOT imported by any screen: `src/lib/ai/educationalTutor.ts` (conversational tutor), `src/lib/ai/adaptiveQuiz.ts` (AI-generated quiz questions), and `src/lib/ai/progressInsights.ts` (personalized learning insights). ⚠️ UNBLOCKED — no longer requires TASK-003 first; wire up the UI now and handle missing API key gracefully (show a user-facing message instead of crashing). Requires `EXPO_PUBLIC_OPENAI_API_KEY` to be set for full functionality (see TASK-025), but all code paths must fail gracefully if the key is absent. Steps: (1) Add an "AI Tutor" tab or a "Chat with Tutor" button inside the lesson detail screen (`app/lesson/[id].tsx`) that opens a chat interface using `EducationalTutorService`, (2) In `app/lesson/[id].tsx`, after a lesson is completed, optionally call `AdaptiveQuizService` to generate follow-up questions dynamically (supplement or replace static `lesson.content.quizQuestions`), (3) On the Profile or Achievements screen, add a "Progress Insights" section that calls `ProgressInsightsService.generateInsightReport(userId, history)` and displays a personalized summary, (4) Create `src/config/openai.ts` (similar to `src/config/supabase.ts`) that initializes the OpenAI client from `process.env.EXPO_PUBLIC_OPENAI_API_KEY` and exports it, (5) Update all three AI service constructors to accept the shared OpenAI client instance. Note: `educationalTutor.ts` also has a TypeScript error — `ConversationMessage` is imported from `../types` but not exported there; define `ConversationMessage` in `src/lib/types/education.ts` as `{ role: 'user' | 'assistant'; content: string }` before wiring.
-- **domain**: Product & UX / AI Features
-- **priority**: P2
-- **status**: TODO
-- **dependencies**: TASK-025
-- **acceptance_criteria**:
-  - `src/config/openai.ts` exports an initialized `OpenAI` client using `EXPO_PUBLIC_OPENAI_API_KEY`
-  - At least one AI service is reachable from a visible screen (e.g., "Ask Tutor" button in lesson detail or dedicated tab)
-  - `ConversationMessage` type is defined in `src/lib/types/education.ts` (fixes pre-existing TS error)
-  - `npx tsc --noEmit` reports no new errors in `src/` beyond pre-existing Deno infrastructure errors
-  - AI Tutor chat sends user message and receives a response (gracefully handles empty/missing API key with a user-facing error message, not a crash)
-  - `EXPO_PUBLIC_OPENAI_API_KEY` is added to EAS secrets (via TASK-025 update)
-
----
-
 ### TASK-019
 - **id**: TASK-019
 - **title**: Add Achievement Social Sharing
@@ -144,26 +126,14 @@ _Last updated: 2026-03-22 | Planner Run #24_
 
 ---
 
-### TASK-030
-- **id**: TASK-030
-- **title**: Commit Uncommitted TASK-018 Analytics Implementation Files
-- **description**: The PostHog analytics integration (TASK-018) was fully implemented by the executor but the changes were never committed to git. The following files are modified/untracked in the working tree and need to be staged and committed: `src/lib/analytics/analyticsService.ts` (NEW — PostHog wrapper with 7 typed event functions), `app/_layout.tsx` (PostHogProvider + PostHogBridge added), `app/lesson/[id].tsx` (trackLessonStarted, trackLessonCompleted, trackStreakMilestone calls), `src/screens/EducationScreen.tsx` (trackTrackSelected call), `src/screens/OnboardingScreen.tsx` (trackOnboardingCompleted call), `src/services/gamificationService.ts` (trackBadgeUnlocked call), `package.json` + `package-lock.json` (posthog-react-native@4.37.5 added), `.env.example` (EXPO_PUBLIC_POSTHOG_API_KEY + EXPO_PUBLIC_POSTHOG_HOST added). Also commit the pending TASKS.md and PROGRESS.md planner updates. Steps: (1) `git add src/lib/analytics/ app/_layout.tsx app/lesson/[id].tsx src/screens/EducationScreen.tsx src/screens/OnboardingScreen.tsx src/services/gamificationService.ts package.json package-lock.json .env.example TASKS.md PROGRESS.md`, (2) `git commit -m "feat: integrate PostHog analytics for behavioral event tracking (TASK-018)"`, (3) `git push origin main`, (4) verify `git status` shows clean working tree.
-- **domain**: Engineering / Analytics & Observability
-- **priority**: P0
-- **status**: TODO
-- **dependencies**: None (all code already written)
-- **acceptance_criteria**:
-  - `git status` shows clean working tree (no modified or untracked files in `src/lib/analytics/` or the 8 modified files)
-  - `git log --oneline -1` shows the TASK-018 commit
-  - `git push` succeeds and remote is up to date
-  - `npx tsc --noEmit` reports no new errors after commit
-
 ---
 
 ## Completed Tasks
 
 ---
 
+- **TASK-029** ✅ — Wire AI Services to App UI (AI Tutor Screen + Progress Insights)
+- **TASK-030** ✅ — Commit Uncommitted TASK-018 Analytics Implementation Files
 - **TASK-018** ✅ — Integrate Analytics for Behavioral Event Tracking (PostHog)
 - **TASK-017** ✅ — Add In-App Rating Prompt After Milestone Completion
 - **TASK-028** ✅ — Commit Uncommitted TASK-015 & TASK-010 Implementation Files

@@ -516,6 +516,16 @@ export default function LessonScreen() {
           </Pressable>
         )}
 
+        {/* Ask AI Tutor Button (always visible when lesson loaded) */}
+        {!completed && (
+          <Pressable
+            style={styles.askTutorButton}
+            onPress={() => router.push({ pathname: '/ai-tutor', params: { lessonId: lesson.id } })}
+          >
+            <Text style={styles.askTutorButtonText}>Ask AI Tutor</Text>
+          </Pressable>
+        )}
+
         {/* Post-Completion Actions */}
         {completed && (
           <View style={styles.postComplete}>
@@ -523,9 +533,17 @@ export default function LessonScreen() {
             <Text style={styles.postCompleteTitle}>Lesson Completed!</Text>
             <Text style={styles.postCompleteXP}>You earned {earnedXP} XP</Text>
 
-            <Pressable style={styles.nextButton} onPress={() => router.back()}>
-              <Text style={styles.nextButtonText}>Back to Track</Text>
-            </Pressable>
+            <View style={styles.postCompleteActions}>
+              <Pressable
+                style={styles.askTutorButtonSmall}
+                onPress={() => router.push({ pathname: '/ai-tutor', params: { lessonId: lesson.id } })}
+              >
+                <Text style={styles.askTutorButtonSmallText}>Ask AI Tutor</Text>
+              </Pressable>
+              <Pressable style={styles.nextButton} onPress={() => router.back()}>
+                <Text style={styles.nextButtonText}>Back to Track</Text>
+              </Pressable>
+            </View>
           </View>
         )}
       </ScrollView>
@@ -887,6 +905,38 @@ const styles = StyleSheet.create({
     color: '#4CAF50',
     fontWeight: '600',
     marginBottom: 20,
+  },
+  postCompleteActions: {
+    flexDirection: 'row',
+    gap: 12,
+    marginTop: 4,
+  },
+  askTutorButton: {
+    backgroundColor: '#E3F2FD',
+    borderWidth: 1.5,
+    borderColor: '#2196F3',
+    padding: 14,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  askTutorButtonText: {
+    color: '#1565C0',
+    fontSize: 15,
+    fontWeight: '600',
+  },
+  askTutorButtonSmall: {
+    backgroundColor: '#E3F2FD',
+    borderWidth: 1.5,
+    borderColor: '#2196F3',
+    paddingHorizontal: 20,
+    paddingVertical: 14,
+    borderRadius: 12,
+  },
+  askTutorButtonSmallText: {
+    color: '#1565C0',
+    fontSize: 15,
+    fontWeight: '600',
   },
   nextButton: {
     backgroundColor: '#007AFF',

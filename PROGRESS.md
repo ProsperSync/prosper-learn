@@ -3,50 +3,37 @@ _Planner Agent Memory Log_
 
 ---
 
-## Planner Run #24 — 2026-03-22
+## Executor Run #23 — 2026-03-22
 
-### State Snapshot
-**Stage**: Final Play Store Release Readiness — all code complete, awaiting git commit + human P0 actions
-**Completion**: 24 of 30 tasks complete (80%) — TASK-018 done, TASK-030 added
-**Critical Path**: TASK-030 (commit analytics files, executor-actionable) → TASK-025 → TASK-023 → TASK-026 → TASK-024 → TASK-003
+### Tasks Executed
+**TASK-030**: Marked complete (already committed at `7761341` — analytics files were committed by executor run #22)
+**TASK-029**: Wire AI Services to App UI (AI Tutor Screen + Progress Insights)
 
-### Key Findings
+### Files Changed
+- `src/config/openai.ts` — NEW: shared OpenAI client with graceful missing-key handling (`openaiClient` and `isOpenAIConfigured` exports)
+- `src/lib/types/education.ts` — added `ConversationMessage` interface (`{ role: 'user' | 'assistant'; content: string }`) — fixes pre-existing TS error
+- `src/lib/ai/educationalTutor.ts` — updated `formatConversationHistory` to use `msg.content` (string) instead of `msg.content.text`; removed dead `'system'` role check
+- `app/ai-tutor.tsx` — NEW: full AI Tutor chat screen with conversation UI, graceful missing-key handling (shows user-facing message), lesson context support
+- `app/lesson/[id].tsx` — added "Ask AI Tutor" button (visible during and after lesson completion), navigates to `/ai-tutor?lessonId=X`
+- `src/screens/GamificationScreen.tsx` — added "Progress Insights" section to overview tab with `ProgressInsightsService` integration; shows unavailable banner when API key missing, "Generate Insights" button when configured
+- `TASKS.md` — moved TASK-029 and TASK-030 to Completed Tasks
+- `PROGRESS.md` — compressed and added this entry
 
-1. **TASK-018 (Analytics) FULLY IMPLEMENTED but NOT COMMITTED**:
-   - `posthog-react-native@4.37.5` added to `package.json`
-   - `src/lib/analytics/analyticsService.ts` created with 7 typed event functions (all fail silently when PostHog key absent)
-   - `app/_layout.tsx` wrapped in `<PostHogProvider>` with `PostHogBridge` component to pass client to analytics service module
-   - Events wired at all 6 key touchpoints: lesson_started, lesson_completed, track_selected, onboarding_completed, streak_milestone, badge_unlocked
-   - `.env.example` updated with `EXPO_PUBLIC_POSTHOG_API_KEY` and `EXPO_PUBLIC_POSTHOG_HOST`
-   - `npx tsc --noEmit` confirms zero new TypeScript errors
-   - TASKS.md already has TASK-018 in Completed Tasks section ✅
-   - **Uncommitted files**: `src/lib/analytics/` (new), `app/_layout.tsx`, `app/lesson/[id].tsx`, `src/screens/EducationScreen.tsx`, `src/screens/OnboardingScreen.tsx`, `src/services/gamificationService.ts`, `package.json`, `package-lock.json`, `.env.example`, `TASKS.md`, `PROGRESS.md`
+### Design Decisions
+- AI services keep their existing constructor pattern (accepting `OpenAI` instance) — the shared client from `src/config/openai.ts` is passed when instantiating services in UI code
+- `openaiClient` is `null` when API key is absent; all UI code checks `isOpenAIConfigured` before offering AI features
+- AI Tutor chat is a standalone route (`/ai-tutor`) rather than a tab, accessed via button in lesson detail screen
+- Progress Insights uses a "Generate Insights" button (lazy-loaded) to avoid unnecessary API calls on every screen visit
 
-2. **TASK-030 Added (NEW — P0)**: Commit TASK-018 analytics implementation files. Executor-actionable, no manual steps required, no dependencies. Should be the top priority for the next executor run.
-
-3. **TASK-025 Updated**: Now requires 4 EAS secrets (added `EXPO_PUBLIC_POSTHOG_API_KEY` — PostHog project API key from us.posthog.com). Description and acceptance criteria updated in TASKS.md.
-
-4. **TypeScript Error Inventory** (pre-existing, no new errors):
-   - `src/components/education/index.ts` — module export issues (pre-existing)
-   - `src/lib/ai/educationalTutor.ts` — `ConversationMessage` not exported from types (will be fixed in TASK-029)
-
-5. **All P0 Launch Blockers — Status Unchanged**:
-   - **TASK-030**: Commit analytics files (EXECUTOR-ACTIONABLE — do this next)
-   - **TASK-025**: EAS secrets (4 keys: Supabase URL, Supabase anon key, Sentry DSN, PostHog API key) — manual
-   - **TASK-023**: Google Play Developer account + service account JSON — manual ($25)
-   - **TASK-026**: Smoke test on Android device — manual
-   - **TASK-024**: Play Store screenshots (4 minimum) — manual
-   - **TASK-003**: Play Store submission — depends on TASK-023/024/025/026
-
-### Planner Decisions
-- Added TASK-030 to track the uncommitted analytics files. Same pattern as TASK-028 (which successfully committed the notifications + Sentry files). The analytics implementation is clean and complete — just needs a git commit.
-- TASK-025 description updated to list PostHog as a 4th required EAS secret (previously only 3 required). Acceptance criteria updated to match.
-- No other task changes needed — TASK-029 and TASK-019 remain correctly prioritized as post-launch work.
-
-### File State
-- `TASKS.md`: Updated with TASK-030 (new), TASK-025 (PostHog secret added), header → Planner Run #24
-- `PROGRESS.md`: Compressed — last 3 runs in full, runs #22(TASK-017) and #20 moved to archive
-- All source code ready for production build once TASK-030 commit lands
+### Verification
+- `npx tsc --noEmit` — zero new errors (only pre-existing: 2 education component re-exports + Deno infrastructure errors)
+- All 6 acceptance criteria met:
+  1. ✅ `src/config/openai.ts` exports initialized OpenAI client
+  2. ✅ AI Tutor reachable from "Ask AI Tutor" button in lesson detail
+  3. ✅ `ConversationMessage` type defined in `src/lib/types/education.ts`
+  4. ✅ No new TypeScript errors
+  5. ✅ AI Tutor gracefully handles missing API key with user-facing message
+  6. ✅ Progress Insights section added to Achievements screen
 
 ---
 
@@ -149,3 +136,6 @@ All remaining work on this project was assessed as manual-only (before TASK-018 
 - **Executor Run #21**: No actionable tasks — all P0/P1 tasks require manual human intervention (EAS secrets, Play Console account, device screenshots).
 - **Planner Run #22**: Unblocked TASK-029/TASK-017/TASK-018 from TASK-003 dependency; updated TASK-018 to recommend PostHog over Firebase; compressed PROGRESS.md.
 - **Executor Run #22 (TASK-017)**: TASK-017 ✅ — In-app rating prompt after 5th lesson (expo-store-review, reviewService.ts, wired in lesson/[id].tsx).
+- **Executor Run #22 (TASK-018)**: TASK-018 ✅ — PostHog analytics integration (7 event functions, 6 touchpoints wired).
+- **Planner Run #23**: Final assessment — all engineering complete, 5 P0 blockers manual-only.
+- **Planner Run #24**: Added TASK-030 (commit analytics), updated TASK-025 (PostHog secret).

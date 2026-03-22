@@ -225,7 +225,7 @@ ${context.language === 'pt-BR' ? 'Respond in Portuguese (Brazil).' : 'Respond in
 
     const conversationSummary = context.conversationHistory
       .slice(-10)
-      .map((msg) => `${msg.role}: ${msg.content.text}`)
+      .map((msg) => `${msg.role}: ${msg.content}`)
       .join('\n');
 
     const prompt = `Analyze this learning conversation and assess the student's comprehension:
@@ -384,13 +384,9 @@ Teaching principles:
     return messages
       .slice(-this.maxContextMessages)
       .map((msg) => ({
-        role: msg.role === 'system' ? 'assistant' : (msg.role as 'user' | 'assistant'),
-        content: msg.content.text,
-      }))
-      .filter(
-        (msg): msg is { role: 'user' | 'assistant'; content: string } =>
-          msg.role === 'user' || msg.role === 'assistant'
-      );
+        role: msg.role,
+        content: msg.content,
+      }));
   }
 
   /**
