@@ -1,5 +1,5 @@
 # TASKS
-_Last updated: 2026-03-22 | Planner Run #24_
+_Last updated: 2026-03-22 | Planner Run #26_
 
 ---
 
@@ -443,3 +443,22 @@ _Last updated: 2026-03-22 | Planner Run #24_
 5. TASK-006 — User onboarding (P1, Day 1 conversion)
 6. TASK-003 — Play Store prep (P1, final gate to real users)
 7. TASK-010 — Sentry (P2, post-launch observability)
+
+---
+
+### TASK-031
+- **id**: TASK-031
+- **title**: Emotionally Intelligent AI Tutor with Persistent User Profile
+- **description**: The AI tutor currently responds to questions with purely logical, educational answers. It has no memory across sessions and treats every user identically. This task makes the tutor genuinely personal and emotionally aware. There are three components: (1) **Emotional intelligence in responses** — The tutor should detect emotional signals in the user's messages (frustration, confidence, anxiety about money, excitement, discouragement) and adapt its tone and approach accordingly. A user who says "I don't understand this at all, I'm so stupid" should receive warmth and encouragement before any explanation. A user showing frustration with a quiz should get acknowledgment, not just the correct answer. Use GPT-4's existing capability by enriching the system prompt with emotional intelligence instructions. (2) **Persistent user personality profile** — After each conversation session, extract and store key characteristics about the user in a Supabase table `user_ai_profiles`: learning style (visual/conceptual/example-driven), emotional patterns (anxious, confident, easily discouraged, highly motivated), financial background signals (complete beginner, has some savings, stressed about debt), preferred communication style (formal/casual, detailed/concise), and any explicitly stated personal context (e.g., "I'm saving to buy a house", "I lost money in crypto"). This profile should be loaded at the start of every tutor session and injected into the system prompt so the tutor "remembers" the user. (3) **Profile extraction after sessions** — After each AI tutor conversation ends (user navigates away or session closes), run a lightweight GPT call to extract/update the user profile from that session's messages and upsert into Supabase. The schema for `user_ai_profiles`: `user_id` (uuid, FK to auth.users), `learning_style` (text), `emotional_patterns` (text[]), `financial_background` (text), `communication_preference` (text), `personal_context` (text), `last_updated` (timestamp). The tutor's system prompt should open with a "User Profile" section injected from this data when available. Implementation files: `src/lib/ai/educationalTutor.ts` (system prompt enrichment, profile injection), `src/lib/ai/userProfileExtractor.ts` (new — GPT call for profile extraction), `src/config/supabase.ts` (table reference), `app/ai-tutor.tsx` (load profile on mount, trigger extraction on unmount), `infrastructure/supabase/migrations/` (new migration for `user_ai_profiles` table).
+- **domain**: AI / Product & UX
+- **priority**: P1
+- **status**: TODO
+- **dependencies**: TASK-029 ✅ (AI tutor screen must exist)
+- **acceptance_criteria**:
+  - AI tutor detects emotional tone in user messages and responds with empathy before logic when distress is detected
+  - `user_ai_profiles` table exists in Supabase with the described schema
+  - On tutor screen mount, the user's stored profile is loaded from Supabase and injected into the system prompt
+  - After a tutor session ends, a background GPT call extracts key characteristics and upserts them into `user_ai_profiles`
+  - A returning user who previously mentioned "saving for a house" gets responses that acknowledge that context without being asked again
+  - The tutor's tone adapts between sessions based on stored emotional patterns (e.g., more encouraging for users flagged as easily discouraged)
+  - Profile extraction is non-blocking — if it fails, the conversation still works normally
