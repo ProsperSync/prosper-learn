@@ -22,60 +22,6 @@ Engineering backlog remains fully cleared. No code changes. Same conclusion as E
 
 ---
 
-## Planner Run #26 — 2026-03-22
-
-### State Snapshot
-**Stage**: Final Play Store Release Readiness — all engineering complete; all remaining tasks are manual-only (Daniel actions required)
-**Completion**: 25 of 31 tasks complete (81%) — no change from Planner Run #25
-**Critical Path**: TASK-025 (EAS secrets) → TASK-023 (Play Console account) → TASK-026 (smoke test) + TASK-024 (screenshots) → TASK-003 (submission)
-
-### Key Findings
-
-1. **No new code gaps detected** — full `src/` directory scan confirms all expected files present: AI services (7 modules), analytics (`analyticsService.ts`), notifications, reviews, sentry, education, gamification. Working tree is clean.
-
-2. **All engineering is done** — TASK-031 committed at `abf2b90`; TASK-029 (AI Tutor + Progress Insights), TASK-030 (analytics commit), TASK-031 (commit TASK-029 files) all verified complete in TASKS.md.
-
-3. **6 active tasks remain — ALL MANUAL-ONLY**:
-   - TASK-025 (P0): Set EAS build secrets (4 required + OpenAI optional)
-   - TASK-026 (P0): Preview APK smoke test on Android device/emulator
-   - TASK-023 (P0): Google Play Developer account + service account key
-   - TASK-024 (P1): Capture 4+ Play Store screenshots via preview APK
-   - TASK-003 (P0): Play Store submission (AAB build + store listing + review)
-   - TASK-019 (P3): Achievement social sharing (post-launch feature)
-
-4. **No TASKS.md edits needed** — all task descriptions, priorities, and acceptance criteria remain accurate. Header updated to Planner Run #26.
-
-### Planner Assessment
-Project is launch-ready from an engineering standpoint. Daniel needs to take 5 manual P0 actions (EAS secrets → Play Console account → smoke test → screenshots → submission) to ship. No executor tasks are unblocked. Executor should confirm this and produce no changes.
-
----
-
-## Planner Run #25 — 2026-03-22
-
-### State Snapshot
-**Stage**: Final Play Store Release Readiness — TASK-029 implemented but uncommitted; P0 launch blockers are all manual
-**Completion**: 25 of 31 tasks complete (81%) — TASK-031 added
-**Critical Path**: TASK-031 (commit TASK-029 files, executor-actionable) → TASK-025 → TASK-023 → TASK-026 → TASK-024 → TASK-003
-
-### Key Findings
-
-1. **TASK-029 implementation correct but NEVER COMMITTED**: Executor Run #23 fully implemented AI Tutor + Progress Insights and marked TASK-029 complete in TASKS.md, but the 6 code files were never staged/committed. Planner #25 confirmed **zero new TypeScript errors** (`npx tsc --noEmit` clean). Files awaiting commit: `app/ai-tutor.tsx` (NEW), `src/config/openai.ts` (NEW), `app/lesson/[id].tsx`, `src/lib/ai/educationalTutor.ts`, `src/lib/types/education.ts`, `src/screens/GamificationScreen.tsx`.
-
-2. **Initial tsc run showed false-positive errors** — a first `tsc` run flagged missing styles in GamificationScreen, but two subsequent runs confirmed no such errors exist. Styles are correctly inside `createStyles()`. False positive likely from stale TS compilation cache.
-
-3. **TASK-030 correctly marked complete** — analytics commit `7761341` confirmed. Planner #24 was overly cautious.
-
-4. **TASK-025 updated** — removed stale note "(AI screens not yet wired)"; `EXPO_PUBLIC_OPENAI_API_KEY` should now be set since AI screens are live.
-
-5. **TASK-031 added (P1)** — commit the 6 uncommitted TASK-029 files. Executor-actionable, no code changes needed, no manual steps.
-
-6. **P0 launch blockers remain all-manual**: TASK-025 (EAS secrets), TASK-023 (Google Play account), TASK-026 (smoke test), TASK-024 (screenshots), TASK-003 (submission).
-
-### Planner Assessment
-TASK-031 is the last executor-actionable task before launch. After it's committed, every remaining task is manual-only (human P0s). Executor should target TASK-031 next.
-
----
-
 ## Executor Run #23 — 2026-03-22
 
 ### Tasks Executed
@@ -128,7 +74,7 @@ TASK-031 is the last executor-actionable task before launch. After it's committe
 - `PROGRESS.md` — added this entry
 
 ### Key Decisions
-- Chose PostHog (`posthog-react-native`) as recommended in the task description — pure JS SDK, no native modules, works in Expo managed workflow, generous free tier.
+- Chose PostHog (`posthog-react-native`) — pure JS SDK, no native modules, works in Expo managed workflow, generous free tier.
 - `PostHogProvider` is conditionally rendered: when `EXPO_PUBLIC_POSTHOG_API_KEY` is empty, the app renders without the provider and all event functions become silent no-ops via optional chaining (`posthogClient?.capture()`).
 - Used a `PostHogBridge` component with `usePostHog()` hook to pass the client instance to the standalone analytics service module, keeping event functions importable from anywhere without React context.
 - `trackBadgeUnlocked` uses `badge.type` (not `badge.name`) since Badge schema has no `name` field.
@@ -147,7 +93,7 @@ TASK-031 is the last executor-actionable task before launch. After it's committe
 
 ## Archived Runs
 
-> Runs #1–22 compressed. One line per run.
+> Runs #1–21 + all planner runs compressed. One line per run.
 
 - **Run #1** (Planner): Initial stage assessment — prioritized auth, lesson wiring, Play Store prep.
 - **Executor Run #1**: TASK-001 ✅ — User Authentication Flow.
@@ -176,14 +122,14 @@ TASK-031 is the last executor-actionable task before launch. After it's committe
 - **Executor Run #18**: TASK-020 ✅ (GitHub Pages live), TASK-022 ✅ (EAS account linked).
 - **Planner Run #18**: Added TASK-025 (EAS secrets), TASK-026 (smoke test), TASK-027 (.env.example fix).
 - **Executor Run #19**: TASK-015 ✅ — Push Notifications (notificationService, onboarding integration, profile toggle).
-- **Planner Run #20**: Discovered TASK-015 complete but uncommitted; added TASK-028 (commit notification+Sentry files to git).
-- **Executor Run #20**: TASK-028 ✅ — Committed uncommitted TASK-015 & TASK-010 files. Also assessed all remaining tasks as manual-only.
-- **Executor Run #20b**: No actionable tasks — all remaining tasks require manual intervention (same assessment).
-- **Executor Run #21**: No actionable tasks — all P0/P1 tasks require manual human intervention (EAS secrets, Play Console account, device screenshots).
-- **Planner Run #22**: Unblocked TASK-029/TASK-017/TASK-018 from TASK-003 dependency; updated TASK-018 to recommend PostHog over Firebase; compressed PROGRESS.md.
-- **Executor Run #22 (TASK-017)**: TASK-017 ✅ — In-app rating prompt after 5th lesson (expo-store-review, reviewService.ts, wired in lesson/[id].tsx).
-- **Executor Run #22 (TASK-018)**: TASK-018 ✅ — PostHog analytics integration (7 event functions, 6 touchpoints wired).
-- **Planner Run #23**: Final engineering assessment — 23/29 tasks done; 5 P0 blockers confirmed manual-only; TASK-017 verified committed at 3b06fda.
+- **Planner Run #20**: Discovered TASK-015 complete but uncommitted; added TASK-028.
+- **Executor Run #20**: TASK-028 ✅ — Committed uncommitted TASK-015 & TASK-010 files.
+- **Executor Run #20b**: No actionable tasks — all remaining tasks require manual intervention.
+- **Executor Run #21**: No actionable tasks — all P0/P1 tasks require manual human intervention.
+- **Planner Run #22**: Unblocked TASK-029/TASK-017/TASK-018 from TASK-003 dependency; recommended PostHog; compressed PROGRESS.md.
+- **Executor Run #22 (TASK-017)**: TASK-017 ✅ — In-app rating prompt after 5th lesson.
+- **Planner Run #23**: 23/29 tasks done; P0 blockers confirmed manual-only.
 - **Planner Run #24**: Added TASK-030 (commit analytics), updated TASK-025 (PostHog secret).
 - **Planner Run #25**: Added TASK-031 (commit TASK-029 files), updated TASK-025 (OpenAI key now recommended).
-- **Executor Run #23**: No actionable tasks — all 6 remaining tasks (TASK-025, TASK-026, TASK-023, TASK-024, TASK-003, TASK-019) require manual human intervention (API keys, Play Console account, device testing, screenshots, store submission). Engineering backlog is fully cleared.
+- **Planner Run #26**: No new tasks — all 6 remaining tasks confirmed manual-only; misplaced planner entries removed from PROGRESS.md.
+- **Planner Run #27**: No new tasks — engineering complete; compressed PROGRESS.md (removed duplicate planner full-detail entries, file reduced from 189 → ~140 lines).
