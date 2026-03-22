@@ -12,6 +12,10 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
+import {
+  requestNotificationPermissions,
+  scheduleDailyStreakReminder,
+} from '../lib/notifications/notificationService';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -44,6 +48,18 @@ export default function OnboardingScreen() {
     } catch (error) {
       console.error('[Onboarding] Failed to save onboarding flag:', error);
     }
+
+    // Request notification permissions at the end of onboarding (non-blocking).
+    // If granted, schedule the daily streak reminder at 8 PM local time.
+    try {
+      const granted = await requestNotificationPermissions();
+      if (granted) {
+        await scheduleDailyStreakReminder(20, 0);
+      }
+    } catch (err) {
+      console.warn('[Onboarding] Failed to set up notifications:', err);
+    }
+
     router.replace('/');
   };
 

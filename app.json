@@ -36,6 +36,13 @@
           "organization": "prosper-sync",
           "project": "prosper-learn"
         }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/icon.png",
+          "color": "#4CAF50"
+        }
       ]
     ],
     "extra": {

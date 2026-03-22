@@ -108,25 +108,6 @@ _Last updated: 2026-03-21 | Executor Run #18_
 
 ---
 
-### TASK-015
-- **id**: TASK-015
-- **title**: Implement Push Notifications for Streak Reminders
-- **description**: Day-2 retention is the most critical metric for any education app — if users don't return the next day, they almost certainly never will. Push notifications for streak reminders are the highest-ROI retention tool available. The app already has a full streak system (TASK-008 ✅) but there is no mechanism to remind users to maintain their streak. Steps: (1) install `expo-notifications` and `expo-device`, (2) create `src/lib/notifications/notificationService.ts` with functions: `requestNotificationPermissions()`, `scheduleDailyStreakReminder(hour: number, minute: number)`, `cancelAllStreakReminders()`, `sendBadgeUnlockNotification(badgeName: string)`, (3) request notification permissions during onboarding (screen 3 or post-completion), with clear explanation of what notifications will be sent, (4) schedule a daily reminder at 8 PM local time if user hasn't completed a lesson that day, (5) add Notifications settings toggle in Profile tab allowing users to enable/disable, (6) add `expo-notifications` plugin to `app.json` plugins array.
-- **domain**: Product & UX / Analytics & Observability
-- **priority**: P2
-- **status**: TODO
-- **dependencies**: TASK-006 ✅, TASK-008 ✅
-- **acceptance_criteria**:
-  - `expo-notifications` is installed and listed in `package.json` dependencies
-  - `src/lib/notifications/notificationService.ts` exports `requestNotificationPermissions`, `scheduleDailyStreakReminder`, `cancelAllStreakReminders`
-  - Notification permission is requested at the end of onboarding or after first lesson completion (not on cold launch)
-  - A daily streak reminder is scheduled for 8 PM local time using `Notifications.scheduleNotificationAsync` with a daily trigger
-  - Notification title/body is personalized (e.g. "🔥 Your streak is waiting! Open Prosper Learn to keep it alive.")
-  - Profile settings tab includes a toggle to enable/disable notifications, persisted to AsyncStorage
-  - `app.json` includes `expo-notifications` in the plugins array
-
----
-
 ---
 
 ### TASK-017
@@ -186,6 +167,14 @@ _Last updated: 2026-03-21 | Executor Run #18_
 ---
 
 ## Completed Tasks
+
+---
+
+### TASK-015 ✅
+- **id**: TASK-015
+- **title**: Implement Push Notifications for Streak Reminders
+- **completed**: 2026-03-21 (Executor Run #19)
+- **summary**: Installed `expo-notifications` and `expo-device`. Created `src/lib/notifications/notificationService.ts` with `requestNotificationPermissions`, `scheduleDailyStreakReminder`, `cancelAllStreakReminders`, `sendBadgeUnlockNotification`, `areNotificationsEnabled`, `setNotificationsEnabled`. Permission requested at end of onboarding (non-blocking). Daily streak reminder scheduled for 8 PM local time. Profile tab notifications row replaced with functional Switch toggle, persisted to AsyncStorage. `expo-notifications` plugin added to `app.json`.
 
 ---
 

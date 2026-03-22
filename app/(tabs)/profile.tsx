@@ -1,9 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, StyleSheet, ScrollView, Pressable, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Pressable, Alert, Switch } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useRouter } from 'expo-router';
 import { useAuth } from '../../src/hooks/useAuth';
 import { gamificationService } from '../../src/services';
+import {
+  areNotificationsEnabled,
+  setNotificationsEnabled,
+} from '../../src/lib/notifications/notificationService';
 
 export default function ProfileTab() {
   const { t } = useTranslation();
@@ -12,6 +16,7 @@ export default function ProfileTab() {
 
   const [level, setLevel] = useState(1);
   const [totalXP, setTotalXP] = useState(0);
+  const [notificationsOn, setNotificationsOn] = useState(true);
 
   const loadGamificationData = useCallback(async () => {
     if (!user?.id) return;
@@ -26,9 +31,30 @@ export default function ProfileTab() {
     }
   }, [user?.id]);
 
+  const loadNotificationSetting = useCallback(async () => {
+    try {
+      const enabled = await areNotificationsEnabled();
+      setNotificationsOn(enabled);
+    } catch (error) {
+      console.error('Failed to load notification setting:', error);
+    }
+  }, []);
+
   useEffect(() => {
     loadGamificationData();
-  }, [loadGamificationData]);
+    loadNotificationSetting();
+  }, [loadGamificationData, loadNotificationSetting]);
+
+  const handleToggleNotifications = async (value: boolean) => {
+    setNotificationsOn(value);
+    try {
+      await setNotificationsEnabled(value);
+    } catch (error) {
+      console.error('Failed to update notification setting:', error);
+      // Revert on failure
+      setNotificationsOn(!value);
+    }
+  };
 
   const handleSignOut = () => {
     Alert.alert(
@@ -68,10 +94,15 @@ export default function ProfileTab() {
           <Text style={styles.menuText}>{t('profile.language')}</Text>
           <Text style={styles.menuValue}>English</Text>
         </Pressable>
-        <Pressable style={styles.menuItem}>
+        <View style={styles.menuItem}>
           <Text style={styles.menuText}>{t('profile.notifications')}</Text>
-          <Text style={styles.menuValue}>On</Text>
-        </Pressable>
+          <Switch
+            value={notificationsOn}
+            onValueChange={handleToggleNotifications}
+            trackColor={{ false: '#ccc', true: '#81C784' }}
+            thumbColor={notificationsOn ? '#4CAF50' : '#f4f3f4'}
+          />
+        </View>
         <Pressable style={styles.menuItem}>
           <Text style={styles.menuText}>{t('profile.about')}</Text>
           <Text style={styles.menuValue}>v1.0.0</Text>

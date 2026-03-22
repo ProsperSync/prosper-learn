@@ -3,6 +3,30 @@ _Planner Agent Memory Log_
 
 ---
 
+## Executor Run #19 — 2026-03-21
+
+### Tasks Executed
+**TASK-015**: Implement Push Notifications for Streak Reminders
+
+### Changes Made
+- **New file**: `src/lib/notifications/notificationService.ts` — exports `requestNotificationPermissions`, `scheduleDailyStreakReminder`, `cancelAllStreakReminders`, `sendBadgeUnlockNotification`, `areNotificationsEnabled`, `setNotificationsEnabled`
+- **Modified**: `src/screens/OnboardingScreen.tsx` — requests notification permission at onboarding completion, schedules daily 8 PM streak reminder if granted
+- **Modified**: `app/(tabs)/profile.tsx` — replaced static "On" text with functional `Switch` toggle for notifications, persisted to AsyncStorage via `setNotificationsEnabled`
+- **Modified**: `app.json` — added `expo-notifications` plugin with icon and color config
+- **Modified**: `package.json` — added `expo-notifications` and `expo-device` dependencies
+
+### Acceptance Criteria Verification
+- ✅ `expo-notifications` installed in `package.json`
+- ✅ `notificationService.ts` exports all required functions
+- ✅ Permission requested at end of onboarding (not cold launch)
+- ✅ Daily reminder scheduled at 8 PM via `SchedulableTriggerInputTypes.DAILY`
+- ✅ Notification content: "Your streak is waiting! Open Prosper Learn to keep your learning streak alive."
+- ✅ Profile tab has Switch toggle persisted to AsyncStorage
+- ✅ `app.json` includes `expo-notifications` in plugins array
+- ✅ No new TypeScript errors introduced (pre-existing Deno/education errors unchanged)
+
+---
+
 ## Executor Run #18 — 2026-03-21
 
 ### Tasks Executed
@@ -86,55 +110,33 @@ Identified critical silent-failure risks in the production build pipeline: EAS c
 
 ---
 
-## Planner Run #17 — 2026-03-21
-
-### Planning Focus
-Identifying untracked execution prerequisites for TASK-003 (Play Store submission) that would silently block launch.
-
-### Key Decisions
-- **EAS Account gap identified**: `eas build` requires `eas init` to embed a `projectId` in `app.json`. This was mentioned in TASK-003's description as context ("requires EAS account") but never tracked as its own actionable task. Added TASK-022 (P0).
-- **Play Console account gap identified**: `eas.json` references `./google-service-account.json` which does not exist in the repo. A Google Play Developer account ($25) and GCP service account linked to Play Console are required. Added TASK-023 (P0).
-- **Screenshot process gap identified**: TASK-003 acceptance criteria requires "4 screenshots" but the how was completely unspecified. Fastest path for Expo managed workflow is a preview APK → Android emulator. Added TASK-024 (P1).
-- **Post-launch task queue is complete** — no new P2/P3 tasks needed; TASK-010, TASK-015, TASK-017, TASK-018, TASK-019 cover all post-launch domains.
-
-### Tasks Added
-- TASK-022 (P0): EAS Account Setup & Project Linking
-- TASK-023 (P0): Google Play Developer Account & Service Account Key Setup
-- TASK-024 (P1): Capture Play Store Screenshots via Preview Build
-
-### Revised Launch Critical Path
-TASK-022 + TASK-023 + TASK-020 (parallel) → TASK-024 → TASK-003
-
----
-
----
-
 ## Archived Runs
 
-> Runs #1–16 compressed by Planner Run #19 on 2026-03-21. One line per run.
+> Runs #1–18 compressed. One line per run.
 
-- **Run #1** (Planner, 2026-03-21): Initial stage assessment — MVP foundation exists but UI not connected to backend; prioritized auth, lesson wiring, Play Store prep.
-- **Executor Run #1** (2026-03-21): TASK-001 — Implement User Authentication Flow ✅ (AuthContext, auth screen, auth gate, real userId propagation).
-- **Run #2** (Planner, 2026-03-21): Stage assessment — auth complete; navigation API mismatch in EducationalTrackScreen is P0 blocker; promoted TASK-004 and TASK-005.
-- **Executor Run #3** (2026-03-21): TASK-004 — Fix Navigation Bug in EducationalTrackScreen ✅ (expo-router  replacing React Navigation ).
-- **Planner Run #5** (2026-03-21): Stage assessment — MVP Advanced; TASK-002 (Track Detail Screen) is sole remaining P0 before full core loop.
-- **Executor Run #4** (2026-03-21): TASK-005 — Implement Lesson Screen Content Rendering ✅ (lesson content, quiz, XP award, completion flow).
-- **Executor Run #7** (2026-03-21): TASK-002 — Build Track Detail Screen & Wire into Route ✅ (track detail, lesson list, progress bar, XP stats).
-- **Planner Run #6** (2026-03-21): Stage assessment — MVP COMPLETE; full auth→track→lesson→XP loop functional; focus shifts to Play Store and retention.
-- **Executor Run #8** (2026-03-21): TASK-008 — Auto-Update Daily Learning Streak on Lesson Completion ✅.
-- **Executor Run #9** (2026-03-21): TASK-009 — Add Global React Error Boundary ✅ (integrated with Sentry captureError).
-- **Executor Run #10** (2026-03-21): TASK-006 — Implement User Onboarding Flow ✅ (3-screen onboarding, skippable, persisted state).
-- **Planner Run #11** (2026-03-21): Stage assessment — PRE-RELEASE; engineering MVP complete; shifted focus to Play Store infrastructure and legal compliance.
-- **Executor Run #11** (2026-03-21): TASK-011 — Create  Build Configuration for Production AAB ✅ (development/preview/production profiles, submit config).
-- **Planner Run #12** (2026-03-21): Stage assessment — PRE-RELEASE; 3 blockers remain (TASK-012 privacy policy, TASK-007 icon, TASK-003 submission).
-- **Executor Run #12** (2026-03-21): TASK-012 — Create Privacy Policy Screen & Hosted URL ✅ (scrollable screen, Profile tab link, i18n EN+pt-BR).
-- **Executor Run #13** (2026-03-21): TASK-007 — Create Custom Branded App Icon & Splash Screen ✅ (green brand icon, adaptive icon, splash, favicon via Pillow).
-- **Planner Run #13** (2026-03-21): Stage assessment — PRE-RELEASE; two tasks remain before launch: TASK-016 (GitHub Pages) → TASK-003 (submission).
-- **Executor Run #14** (2026-03-21): TASK-014 — Add Terms of Service Screen ✅ (full ToS, Profile tab link, sign-up agreement text, i18n).
-- **Planner Run #14** (2026-03-21): Stage assessment — PRE-RELEASE; GitHub Pages is the only remaining engineering blocker before TASK-003.
-- **Executor Run #15** (2026-03-21): TASK-016 — Create App Landing Page on GitHub Pages ✅ (docs/index.html, privacy-policy.html, terms.html; app.json privacyPolicyUrl set).
-- **Planner Run #15** (2026-03-21): Stage assessment — LAUNCH READY; added TASK-020 (GitHub Pages activation pre-flight) and TASK-021 (Play Store listing copy).
-- **Executor Run #16** (2026-03-21): TASK-021 — Write Optimized Play Store Full Listing Description ✅ (docs/store-listing.md; short desc 71 chars; full desc ~1920 chars; 8 keywords).
-- **Planner Run #17** (2026-03-21): Identified TASK-022 (EAS account), TASK-023 (Play Console account + service key), TASK-024 (screenshots process) as untracked launch prerequisites.
-- **Planner Run #18** (2026-03-21): Identified EAS secrets gap and .env.example naming bug; added TASK-025 (EAS secrets), TASK-026 (smoke test), TASK-027 (.env.example fix).
+- **Run #1** (Planner): Initial stage assessment — prioritized auth, lesson wiring, Play Store prep.
+- **Executor Run #1**: TASK-001 ✅ — User Authentication Flow.
+- **Run #2** (Planner): Promoted TASK-004 and TASK-005.
+- **Executor Run #3**: TASK-004 ✅ — Fix Navigation Bug.
+- **Planner Run #5**: TASK-002 is sole remaining P0.
+- **Executor Run #4**: TASK-005 ✅ — Lesson Screen Content Rendering.
+- **Executor Run #7**: TASK-002 ✅ — Track Detail Screen.
+- **Planner Run #6**: MVP COMPLETE.
+- **Executor Run #8**: TASK-008 ✅ — Daily Learning Streak.
+- **Executor Run #9**: TASK-009 ✅ — Global React Error Boundary.
+- **Executor Run #10**: TASK-006 ✅ — User Onboarding Flow.
+- **Planner Run #11**: PRE-RELEASE; shifted to Play Store infra.
+- **Executor Run #11**: TASK-011 ✅ — EAS Build Configuration.
+- **Planner Run #12**: 3 blockers remain.
+- **Executor Run #12**: TASK-012 ✅ — Privacy Policy Screen.
+- **Executor Run #13**: TASK-007 ✅ — Branded App Icon & Splash.
+- **Planner Run #13**: Two tasks to launch.
+- **Executor Run #14**: TASK-014 ✅ — Terms of Service Screen.
+- **Planner Run #14**: GitHub Pages only engineering blocker.
+- **Executor Run #15**: TASK-016 ✅ — GitHub Pages Landing.
+- **Planner Run #15**: LAUNCH READY; added TASK-020, TASK-021.
+- **Executor Run #16**: TASK-021 ✅ — Play Store Listing Description.
+- **Planner Run #17**: Added TASK-022, TASK-023, TASK-024.
+- **Executor Run #18**: TASK-020 ✅ (GitHub Pages live), TASK-022 ✅ (EAS account linked).
+- **Planner Run #18**: Added TASK-025 (EAS secrets), TASK-026 (smoke test), TASK-027 (.env.example fix).
 
