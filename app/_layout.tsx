@@ -6,7 +6,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AuthProvider, useAuth } from '../src/hooks/useAuth';
 import { ONBOARDING_COMPLETE_KEY } from '../src/screens/OnboardingScreen';
 import ErrorBoundary from '../src/components/ErrorBoundary';
+import { initSentry, wrapWithSentry } from '../src/lib/sentry/sentryService';
 import '../src/i18n';
+
+// Initialize Sentry before any UI renders
+initSentry();
 
 function AuthGate() {
   const { session, loading } = useAuth();
@@ -110,7 +114,7 @@ function AuthGate() {
   );
 }
 
-export default function RootLayout() {
+function RootLayout() {
   return (
     <ErrorBoundary>
       <AuthProvider>
@@ -119,6 +123,9 @@ export default function RootLayout() {
     </ErrorBoundary>
   );
 }
+
+// Wrap with Sentry for automatic performance monitoring and error tracking
+export default wrapWithSentry(RootLayout);
 
 const styles = StyleSheet.create({
   loadingContainer: {

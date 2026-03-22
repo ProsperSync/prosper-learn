@@ -1,5 +1,6 @@
 import React, { Component, ErrorInfo, ReactNode } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { captureError } from '../lib/sentry/sentryService';
 
 interface ErrorBoundaryProps {
   children: ReactNode;
@@ -21,9 +22,14 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
-    // Log the error for debugging (and eventually to Sentry via TASK-010)
+    // Log the error for debugging
     console.error('[ErrorBoundary] Uncaught error:', error);
     console.error('[ErrorBoundary] Component stack:', errorInfo.componentStack);
+
+    // Report to Sentry with component stack context
+    captureError(error, {
+      componentStack: errorInfo.componentStack ?? 'unknown',
+    });
   }
 
   handleReset = (): void => {
