@@ -144,6 +144,20 @@ _Last updated: 2026-03-22 | Planner Run #24_
 
 ---
 
+### TASK-030
+- **id**: TASK-030
+- **title**: Commit Uncommitted TASK-018 Analytics Implementation Files
+- **description**: The PostHog analytics integration (TASK-018) was fully implemented by the executor but the changes were never committed to git. The following files are modified/untracked in the working tree and need to be staged and committed: `src/lib/analytics/analyticsService.ts` (NEW — PostHog wrapper with 7 typed event functions), `app/_layout.tsx` (PostHogProvider + PostHogBridge added), `app/lesson/[id].tsx` (trackLessonStarted, trackLessonCompleted, trackStreakMilestone calls), `src/screens/EducationScreen.tsx` (trackTrackSelected call), `src/screens/OnboardingScreen.tsx` (trackOnboardingCompleted call), `src/services/gamificationService.ts` (trackBadgeUnlocked call), `package.json` + `package-lock.json` (posthog-react-native@4.37.5 added), `.env.example` (EXPO_PUBLIC_POSTHOG_API_KEY + EXPO_PUBLIC_POSTHOG_HOST added). Also commit the pending TASKS.md and PROGRESS.md planner updates. Steps: (1) `git add src/lib/analytics/ app/_layout.tsx app/lesson/[id].tsx src/screens/EducationScreen.tsx src/screens/OnboardingScreen.tsx src/services/gamificationService.ts package.json package-lock.json .env.example TASKS.md PROGRESS.md`, (2) `git commit -m "feat: integrate PostHog analytics for behavioral event tracking (TASK-018)"`, (3) `git push origin main`, (4) verify `git status` shows clean working tree.
+- **domain**: Engineering / Analytics & Observability
+- **priority**: P0
+- **status**: TODO
+- **dependencies**: None (all code already written)
+- **acceptance_criteria**:
+  - `git status` shows clean working tree (no modified or untracked files in `src/lib/analytics/` or the 8 modified files)
+  - `git log --oneline -1` shows the TASK-018 commit
+  - `git push` succeeds and remote is up to date
+  - `npx tsc --noEmit` reports no new errors after commit
+
 ---
 
 ## Completed Tasks
