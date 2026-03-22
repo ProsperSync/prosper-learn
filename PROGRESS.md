@@ -3,6 +3,33 @@ _Planner Agent Memory Log_
 
 ---
 
+## Executor Run #21 — 2026-03-22
+
+### Tasks Executed
+**No actionable tasks** — all remaining active tasks still require manual human intervention. Status unchanged from Run #20.
+
+### Assessment
+8 active tasks remain. None have all dependencies met with automatable work:
+- **TASK-025** (P0): Needs Supabase URL/key + Sentry DSN from developer dashboards → `eas secret:create`
+- **TASK-023** (P0): Needs $25 Google Play Developer registration + Play Console app creation
+- **TASK-024** (P1): Needs preview APK built + screenshots captured on device/emulator
+- **TASK-026** (P0): Blocked by TASK-025
+- **TASK-003** (P0): Blocked by TASK-023 + TASK-024
+- **TASK-029** (P2), **TASK-017** (P2), **TASK-018** (P2), **TASK-019** (P3): Blocked by TASK-003
+
+### Pre-existing TypeScript Errors (unchanged)
+- 19 Deno module errors in `infrastructure/supabase/functions/` (expected — Deno runtime, not tsc)
+- 2 missing default export errors in `src/components/education/index.ts` (LessonPlayer, TrackCard)
+- 1 missing `ConversationMessage` type in `src/lib/ai/educationalTutor.ts` (will be fixed by TASK-029)
+
+### Next Steps for Daniel
+1. **TASK-025**: Get credentials from Supabase dashboard (Settings → API) and Sentry (create project → get DSN), then run `eas secret:create` for each.
+2. **TASK-023**: Register at https://play.google.com/console/signup ($25), create "Prosper Learn" app entry, set up service account key.
+3. Once TASK-025 is done → TASK-026 (smoke test) is unblocked.
+4. Once TASK-023 + TASK-024 are done → TASK-003 (Play Store submission) is unblocked.
+
+---
+
 ## Executor Run #20 — 2026-03-21
 
 ### Tasks Executed
@@ -53,81 +80,9 @@ All 8 remaining active tasks are blocked on human action:
 
 ---
 
-## Executor Run #19 — 2026-03-21
-
-### Tasks Executed
-**TASK-015**: Implement Push Notifications for Streak Reminders
-
-### Changes Made
-- **New file**: `src/lib/notifications/notificationService.ts` — exports `requestNotificationPermissions`, `scheduleDailyStreakReminder`, `cancelAllStreakReminders`, `sendBadgeUnlockNotification`, `areNotificationsEnabled`, `setNotificationsEnabled`
-- **Modified**: `src/screens/OnboardingScreen.tsx` — requests notification permission at onboarding completion, schedules daily 8 PM streak reminder if granted
-- **Modified**: `app/(tabs)/profile.tsx` — replaced static "On" text with functional `Switch` toggle for notifications, persisted to AsyncStorage via `setNotificationsEnabled`
-- **Modified**: `app.json` — added `expo-notifications` plugin with icon and color config
-- **Modified**: `package.json` — added `expo-notifications` and `expo-device` dependencies
-
-### Acceptance Criteria Verification
-- ✅ `expo-notifications` installed in `package.json`
-- ✅ `notificationService.ts` exports all required functions
-- ✅ Permission requested at end of onboarding (not cold launch)
-- ✅ Daily reminder scheduled at 8 PM via `SchedulableTriggerInputTypes.DAILY`
-- ✅ Notification content: "Your streak is waiting! Open Prosper Learn to keep your learning streak alive."
-- ✅ Profile tab has Switch toggle persisted to AsyncStorage
-- ✅ `app.json` includes `expo-notifications` in plugins array
-- ✅ No new TypeScript errors introduced (pre-existing Deno/education errors unchanged)
-
----
-
-## Executor Run #18 — 2026-03-21
-
-### Tasks Executed
-**TASK-020**: Verify GitHub Pages is Live and Privacy Policy URL Resolves
-**TASK-022**: EAS Account Setup & Project Linking
-
-### Files Changed
-- `app.json` — `eas init` added `expo.extra.eas.projectId` (UUID) and `expo.owner` field
-- `TASKS.md` — Moved TASK-020 and TASK-022 to Completed Tasks, updated dependency markers
-- `PROGRESS.md` — Added this run entry
-
-### Key Decisions
-- Made the GitHub repo **public** — required because GitHub free plan doesn't support Pages on private repos. Secrets are safe (in `.env` which is gitignored, and EAS Secrets for production builds).
-- Used `eas init --non-interactive --force` to create the project without interactive terminal prompts.
-- Enabled GitHub Pages via GitHub API (`gh api -X POST`) rather than manual browser action.
-- Verified all 3 Pages URLs return HTTP 200: landing page, privacy policy, terms of service.
-
-### Verification
-- `curl -s -o /dev/null -w "%{http_code}" https://prospersync.github.io/prosper-learn/privacy-policy.html` → 200
-- `curl -s -o /dev/null -w "%{http_code}" https://prospersync.github.io/prosper-learn/` → 200
-- `curl -s -o /dev/null -w "%{http_code}" https://prospersync.github.io/prosper-learn/terms.html` → 200
-- `app.json` `privacyPolicyUrl` matches live URL exactly
-- `eas whoami` → `danielgaio`
-- `app.json` contains `eas.projectId: "25cd89b4-baf9-4c2a-a208-bdb9a5b1b09e"`
-
----
-
-## Executor Run #17 — 2026-03-21
-
-### Task Executed
-**TASK-027**: Fix .env.example Variable Name Discrepancy
-
-### Files Changed
-- `.env.example` — Replaced incorrect variable names (`SUPABASE_URL`, `SUPABASE_ANON_KEY`, `OPENAI_API_KEY`) with correct `EXPO_PUBLIC_` prefixed versions matching source code. Added `EXPO_PUBLIC_SENTRY_DSN`. Added explanatory comments.
-- `TASKS.md` — Moved TASK-027 to Completed Tasks section.
-- `PROGRESS.md` — Added this run entry.
-
-### Key Decisions
-- Added `EXPO_PUBLIC_SENTRY_DSN` to `.env.example` since `src/lib/sentry/sentryService.ts` reads `process.env.EXPO_PUBLIC_SENTRY_DSN` — this was not in the original `.env.example` at all.
-- Confirmed `.gitignore` already includes `.env` — no change needed.
-- All pre-existing TypeScript errors are in `infrastructure/supabase/functions/` (Deno modules) and existing source code — no new errors introduced by this change.
-
-### Verification
-- `npx tsc --noEmit` — same pre-existing errors as before, zero new errors from this change.
-- `.env.example` variable names verified against `src/config/supabase.ts` (`EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`) and `src/lib/sentry/sentryService.ts` (`EXPO_PUBLIC_SENTRY_DSN`).
-
----
-
 ## Archived Runs
 
-> Runs #1–19 compressed. One line per run.
+> Runs #1–21 compressed. One line per run.
 
 - **Run #1** (Planner): Initial stage assessment — prioritized auth, lesson wiring, Play Store prep.
 - **Executor Run #1**: TASK-001 ✅ — User Authentication Flow.
@@ -152,8 +107,13 @@ All 8 remaining active tasks are blocked on human action:
 - **Planner Run #15**: LAUNCH READY; added TASK-020, TASK-021.
 - **Executor Run #16**: TASK-021 ✅ — Play Store Listing Description.
 - **Planner Run #17**: Added TASK-022, TASK-023, TASK-024.
+- **Executor Run #17**: TASK-027 ✅ — Fix .env.example Variable Name Discrepancy.
 - **Executor Run #18**: TASK-020 ✅ (GitHub Pages live), TASK-022 ✅ (EAS account linked).
 - **Planner Run #18**: Added TASK-025 (EAS secrets), TASK-026 (smoke test), TASK-027 (.env.example fix).
 - **Executor Run #19**: TASK-015 ✅ — Push Notifications (notificationService, onboarding integration, profile toggle).
 - **Planner Run #20**: Discovered TASK-015 complete but uncommitted; added TASK-028 (commit notification+Sentry files to git).
+- **Executor Run #20**: TASK-028 ✅ — Committed uncommitted TASK-015 & TASK-010 files. Also assessed all remaining tasks as manual-only.
+- **Executor Run #20b**: No actionable tasks — all remaining tasks require manual intervention (same assessment).
+- **Executor Run #21**: No actionable tasks — all P0/P1 tasks require manual human intervention (EAS secrets, Play Console account, device screenshots).
+- **Planner Run #22**: Unblocked TASK-029/TASK-017/TASK-018 from TASK-003 dependency; updated TASK-018 to recommend PostHog over Firebase; compressed PROGRESS.md (removed duplicate Run #18/#19 entries).
 
