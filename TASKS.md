@@ -1,5 +1,5 @@
 # TASKS
-_Last updated: 2026-03-21 | Executor Run #18_
+_Last updated: 2026-03-21 | Planner Run #20_
 
 ---
 
@@ -104,9 +104,18 @@ _Last updated: 2026-03-21 | Executor Run #18_
 
 ---
 
----
-
----
+### TASK-028
+- **id**: TASK-028
+- **title**: Commit Uncommitted TASK-015 & TASK-010 Implementation Files
+- **description**: `src/lib/notifications/` and `src/lib/sentry/` are untracked in git (not in any commit), even though both TASK-015 and TASK-010 are complete. Additionally, several source files modified during these tasks are also unstaged: `src/screens/OnboardingScreen.tsx`, `app/(tabs)/profile.tsx`, `app/_layout.tsx`, `src/components/ErrorBoundary.tsx`, `app.json` (expo-notifications plugin), `package.json` (new deps). These changes exist in the working tree and EAS will pick them up for local builds — but they are at risk of loss if the working directory is reset or synced from git. Steps: `git add src/lib/notifications/ src/lib/sentry/ src/screens/OnboardingScreen.tsx app/(tabs)/profile.tsx app/_layout.tsx src/components/ErrorBoundary.tsx app.json package.json package-lock.json && git commit -m "feat: implement push notifications (TASK-015) and Sentry crash reporting (TASK-010)"`. Verify with `git status` — working tree should be clean for these files.
+- **domain**: Engineering / Developer Experience
+- **priority**: P1
+- **status**: TODO
+- **dependencies**: None (work is already done, this is just the commit)
+- **acceptance_criteria**:
+  - `git status` shows `src/lib/notifications/` and `src/lib/sentry/` as tracked (not `??`)
+  - `git log --oneline -1` shows the commit message referencing TASK-015 and TASK-010
+  - No untracked implementation files remain related to notifications or Sentry
 
 ---
 

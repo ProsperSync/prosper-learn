@@ -75,44 +75,9 @@ _Planner Agent Memory Log_
 
 ---
 
-## Planner Run #18 — 2026-03-21
-
-### Planning Focus
-Identified critical silent-failure risks in the production build pipeline: EAS cloud builds do not include local `.env` files, and the `.env.example` documents wrong variable names vs. what the code actually reads.
-
-### Key Discoveries
-- **CRITICAL: `.env.example` uses wrong variable names** — File documents `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `OPENAI_API_KEY`, but `src/config/supabase.ts` reads `EXPO_PUBLIC_SUPABASE_URL` and `EXPO_PUBLIC_SUPABASE_ANON_KEY`. `src/lib/ai/` similarly uses `EXPO_PUBLIC_OPENAI_API_KEY`. Any build following `.env.example` will silently initialize Supabase with empty strings.
-- **CRITICAL: EAS Secrets never tracked** — `eas build` runs on Expo's cloud servers. Local `.env` files are not uploaded. All three production secrets must be explicitly set via `eas secret:create` before the production build. This was an untracked P0 gap.
-- **No smoke test task existed** — TASK-003 acceptance criteria require a signed AAB submission, but there was no task to verify the production build actually functions before uploading to Play Console.
-- **Stage confirmed**: Pre-release. All engineering and legal tasks are complete. All remaining P0 blockers are external-account / human-action tasks.
-- **Post-launch task queue remains full and valid** — TASK-010, TASK-015, TASK-017, TASK-018, TASK-019 correctly deferred post-TASK-003.
-
-### Key Decisions
-- **Added TASK-025** (P0): EAS Build Secrets — configure `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`, `EXPO_PUBLIC_OPENAI_API_KEY` as EAS project secrets via `eas secret:create`. Hard dependency of TASK-026 and a hidden blocker for TASK-003.
-- **Added TASK-026** (P0): Production APK Smoke Test — install preview APK on Android device/emulator and verify 7 key flows (cold launch, sign-up, onboarding, lesson completion, AI Tutor, profile, legal links) before submitting to Play Store.
-- **Added TASK-027** (P1): Fix `.env.example` — rename variables to `EXPO_PUBLIC_` prefix to match actual code and add explanatory comment. 5-minute fix, prevents silent misconfiguration.
-- **Revised launch critical path**: TASK-022 + TASK-023 + TASK-020 (parallel) → TASK-025 → TASK-026 → TASK-024 → TASK-003
-
-### Tasks Added
-- TASK-025 (P0): Configure EAS Build Secrets
-- TASK-026 (P0): Production APK Smoke Test
-- TASK-027 (P1): Fix .env.example Variable Names
-
-### Updated Critical Path to Launch
-1. TASK-022 — EAS account + `eas init` (parallel with TASK-023, TASK-020)
-2. TASK-023 — Google Play Developer account + service account key (parallel)
-3. TASK-020 — Enable GitHub Pages + verify privacy policy URL resolves (parallel)
-4. TASK-025 — Set EAS Secrets (EXPO_PUBLIC_SUPABASE_URL, EXPO_PUBLIC_SUPABASE_ANON_KEY, EXPO_PUBLIC_OPENAI_API_KEY) — depends on TASK-022
-5. TASK-027 — Fix .env.example (can run any time)
-6. TASK-026 — Preview APK smoke test (depends on TASK-025)
-7. TASK-024 — Capture 4 Play Store screenshots (depends on TASK-022, overlaps with TASK-026)
-8. TASK-003 — Production EAS build + Play Console submission (the launch)
-
----
-
 ## Archived Runs
 
-> Runs #1–18 compressed. One line per run.
+> Runs #1–19 compressed. One line per run.
 
 - **Run #1** (Planner): Initial stage assessment — prioritized auth, lesson wiring, Play Store prep.
 - **Executor Run #1**: TASK-001 ✅ — User Authentication Flow.
@@ -139,4 +104,6 @@ Identified critical silent-failure risks in the production build pipeline: EAS c
 - **Planner Run #17**: Added TASK-022, TASK-023, TASK-024.
 - **Executor Run #18**: TASK-020 ✅ (GitHub Pages live), TASK-022 ✅ (EAS account linked).
 - **Planner Run #18**: Added TASK-025 (EAS secrets), TASK-026 (smoke test), TASK-027 (.env.example fix).
+- **Executor Run #19**: TASK-015 ✅ — Push Notifications (notificationService, onboarding integration, profile toggle).
+- **Planner Run #20**: Discovered TASK-015 complete but uncommitted; added TASK-028 (commit notification+Sentry files to git).
 
