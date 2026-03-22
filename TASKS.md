@@ -10,14 +10,14 @@ _Last updated: 2026-03-22 | Planner Run #24_
 ### TASK-025
 - **id**: TASK-025
 - **title**: Configure EAS Build Secrets for Production Environment
-- **description**: The production EAS build runs on Expo's cloud servers — local `.env` files are NOT included. The app requires `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY` (verified in `src/config/supabase.ts`), `EXPO_PUBLIC_SENTRY_DSN` (used by `src/lib/sentry/sentryService.ts`), and `EXPO_PUBLIC_POSTHOG_API_KEY` (used by `src/lib/analytics/analyticsService.ts` — analytics silently no-op if absent, but set it so events are captured from day-1 installs). ⚠️ NOTE: `EXPO_PUBLIC_OPENAI_API_KEY` is optional for initial launch (AI screens not yet wired — see TASK-029); set it as a placeholder or skip until TASK-029 is done. Note: `.env.example` has already been fixed to use correct `EXPO_PUBLIC_` prefix names (TASK-027) and includes the PostHog key (TASK-018). Steps: (1) Obtain the production Supabase URL and anon key from your Supabase project dashboard (Settings → API), (2) Obtain or create a Sentry DSN from sentry.io (free tier is sufficient), (3) Create a PostHog project at https://us.posthog.com and copy the Project API Key, (4) Set each secret via EAS CLI: `eas secret:create --scope project --name EXPO_PUBLIC_SUPABASE_URL --value "https://xxxx.supabase.co"`, repeat for `EXPO_PUBLIC_SUPABASE_ANON_KEY`, `EXPO_PUBLIC_SENTRY_DSN`, and `EXPO_PUBLIC_POSTHOG_API_KEY`, (5) Optionally set `EXPO_PUBLIC_OPENAI_API_KEY` if you want AI features ready for TASK-029, (6) Verify with `eas secret:list` — at minimum 4 secrets (`SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SENTRY_DSN`, `POSTHOG_API_KEY`) must appear.
+- **description**: The production EAS build runs on Expo's cloud servers — local `.env` files are NOT included. The app requires `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY` (verified in `src/config/supabase.ts`), `EXPO_PUBLIC_SENTRY_DSN` (used by `src/lib/sentry/sentryService.ts`), and `EXPO_PUBLIC_POSTHOG_API_KEY` (used by `src/lib/analytics/analyticsService.ts` — analytics silently no-op if absent, but set it so events are captured from day-1 installs). ⚠️ NOTE: `EXPO_PUBLIC_OPENAI_API_KEY` should now be set — AI screens ARE wired (TASK-029 complete: AI Tutor chat + Progress Insights wired to app UI). Setting this key enables the AI Tutor feature from day-1 installs; without it the feature degrades gracefully with a user-facing message. Note: `.env.example` has already been fixed to use correct `EXPO_PUBLIC_` prefix names (TASK-027) and includes the PostHog key (TASK-018). Steps: (1) Obtain the production Supabase URL and anon key from your Supabase project dashboard (Settings → API), (2) Obtain or create a Sentry DSN from sentry.io (free tier is sufficient), (3) Create a PostHog project at https://us.posthog.com and copy the Project API Key, (4) Set each secret via EAS CLI: `eas secret:create --scope project --name EXPO_PUBLIC_SUPABASE_URL --value "https://xxxx.supabase.co"`, repeat for `EXPO_PUBLIC_SUPABASE_ANON_KEY`, `EXPO_PUBLIC_SENTRY_DSN`, and `EXPO_PUBLIC_POSTHOG_API_KEY`, (5) Optionally set `EXPO_PUBLIC_OPENAI_API_KEY` if you want AI features ready for TASK-029, (6) Verify with `eas secret:list` — at minimum 4 secrets (`SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SENTRY_DSN`, `POSTHOG_API_KEY`) must appear.
 - **domain**: Mobile Release Readiness / Engineering
 - **priority**: P0
 - **status**: TODO
 - **dependencies**: TASK-022 ✅
 - **acceptance_criteria**:
   - `eas secret:list` shows at minimum `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`, `EXPO_PUBLIC_SENTRY_DSN`, `EXPO_PUBLIC_POSTHOG_API_KEY` with scope `project`
-  - `EXPO_PUBLIC_OPENAI_API_KEY` is optional for initial launch (AI screens not yet wired — see TASK-029), but set it if available
+  - `EXPO_PUBLIC_OPENAI_API_KEY` is set (AI screens are now wired via TASK-029 — set this key so the AI Tutor is functional from day-1 installs)
   - After running `eas build --platform android --profile production`, the build logs confirm env vars are injected (no "undefined" warnings for the 3 required keys)
   - `.env.example` already uses correct `EXPO_PUBLIC_` prefixed names ✅ (done via TASK-027)
   - A smoke test (TASK-026) confirms auth works in the resulting build
@@ -125,6 +125,20 @@ _Last updated: 2026-03-22 | Planner Run #24_
   - No TypeScript errors introduced
 
 ---
+
+### TASK-031
+- **id**: TASK-031
+- **title**: Commit Uncommitted TASK-029 AI Feature Files
+- **description**: TASK-029 (AI Tutor + Progress Insights) was implemented by Executor Run #23 and marked complete, but the code was never committed to git. Planner Run #25 verified that `npx tsc --noEmit` produces zero new errors (only pre-existing Deno/education infrastructure errors remain — no fixes needed). The following files are in the working tree and must be committed: `app/ai-tutor.tsx` (NEW — AI Tutor chat screen), `src/config/openai.ts` (NEW — shared OpenAI client), `app/lesson/[id].tsx` (modified — Ask AI Tutor button added), `src/lib/ai/educationalTutor.ts` (modified — fixed msg.content), `src/lib/types/education.ts` (modified — ConversationMessage interface added), `src/screens/GamificationScreen.tsx` (modified — Progress Insights section). Steps: (1) `git add app/ai-tutor.tsx src/config/openai.ts app/lesson/[id].tsx src/lib/ai/educationalTutor.ts src/lib/types/education.ts src/screens/GamificationScreen.tsx`, (2) `git commit -m "feat: wire AI Tutor screen and Progress Insights to app UI (TASK-029)"`, (3) `git push origin main`, (4) verify `git status` is clean.
+- **domain**: Engineering / AI Features
+- **priority**: P1
+- **status**: TODO
+- **dependencies**: None (code is correct and TypeScript-clean — commit only)
+- **acceptance_criteria**:
+  - `git status` shows clean working tree (no remaining modified or untracked AI-feature files)
+  - `git log --oneline -1` shows the TASK-029 feat commit
+  - `npx tsc --noEmit` still reports no new errors after commit
+  - `git push` succeeds and remote is up to date
 
 ---
 
