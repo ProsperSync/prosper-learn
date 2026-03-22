@@ -126,26 +126,13 @@ _Last updated: 2026-03-22 | Planner Run #24_
 
 ---
 
-### TASK-031
-- **id**: TASK-031
-- **title**: Commit Uncommitted TASK-029 AI Feature Files
-- **description**: TASK-029 (AI Tutor + Progress Insights) was implemented by Executor Run #23 and marked complete, but the code was never committed to git. Planner Run #25 verified that `npx tsc --noEmit` produces zero new errors (only pre-existing Deno/education infrastructure errors remain — no fixes needed). The following files are in the working tree and must be committed: `app/ai-tutor.tsx` (NEW — AI Tutor chat screen), `src/config/openai.ts` (NEW — shared OpenAI client), `app/lesson/[id].tsx` (modified — Ask AI Tutor button added), `src/lib/ai/educationalTutor.ts` (modified — fixed msg.content), `src/lib/types/education.ts` (modified — ConversationMessage interface added), `src/screens/GamificationScreen.tsx` (modified — Progress Insights section). Steps: (1) `git add app/ai-tutor.tsx src/config/openai.ts app/lesson/[id].tsx src/lib/ai/educationalTutor.ts src/lib/types/education.ts src/screens/GamificationScreen.tsx`, (2) `git commit -m "feat: wire AI Tutor screen and Progress Insights to app UI (TASK-029)"`, (3) `git push origin main`, (4) verify `git status` is clean.
-- **domain**: Engineering / AI Features
-- **priority**: P1
-- **status**: TODO
-- **dependencies**: None (code is correct and TypeScript-clean — commit only)
-- **acceptance_criteria**:
-  - `git status` shows clean working tree (no remaining modified or untracked AI-feature files)
-  - `git log --oneline -1` shows the TASK-029 feat commit
-  - `npx tsc --noEmit` still reports no new errors after commit
-  - `git push` succeeds and remote is up to date
-
 ---
 
 ## Completed Tasks
 
 ---
 
+- **TASK-031** ✅ — Commit Uncommitted TASK-029 AI Feature Files (committed at `abf2b90` by executor concurrently with Planner Run #25)
 - **TASK-029** ✅ — Wire AI Services to App UI (AI Tutor Screen + Progress Insights)
 - **TASK-030** ✅ — Commit Uncommitted TASK-018 Analytics Implementation Files
 - **TASK-018** ✅ — Integrate Analytics for Behavioral Event Tracking (PostHog)
