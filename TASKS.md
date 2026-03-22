@@ -1,5 +1,5 @@
 # TASKS
-_Last updated: 2026-03-21 | Planner Run #21_
+_Last updated: 2026-03-22 | Planner Run #24_
 
 ---
 
@@ -10,13 +10,13 @@ _Last updated: 2026-03-21 | Planner Run #21_
 ### TASK-025
 - **id**: TASK-025
 - **title**: Configure EAS Build Secrets for Production Environment
-- **description**: The production EAS build runs on Expo's cloud servers — local `.env` files are NOT included. The app requires `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY` (verified in `src/config/supabase.ts`), and `EXPO_PUBLIC_SENTRY_DSN` (used by `src/lib/sentry/sentryService.ts`). ⚠️ NOTE: `EXPO_PUBLIC_OPENAI_API_KEY` is defined in `.env.example` but ALL AI service files (`educationalTutor.ts`, `adaptiveQuiz.ts`, `progressInsights.ts`) are NOT currently wired to any screen — the OpenAI key is optional for initial launch. Set it anyway as a placeholder so the build doesn't warn, or skip it and add it when AI features are wired (see TASK-029). Note: `.env.example` has already been fixed by TASK-027 to use correct `EXPO_PUBLIC_` prefix names. Steps: (1) Obtain the production Supabase URL and anon key from your Supabase project dashboard (Settings → API), (2) Obtain or create a Sentry DSN from sentry.io (free tier is sufficient), (3) Set each secret via EAS CLI: `eas secret:create --scope project --name EXPO_PUBLIC_SUPABASE_URL --value "https://xxxx.supabase.co"`, repeat for `EXPO_PUBLIC_SUPABASE_ANON_KEY` and `EXPO_PUBLIC_SENTRY_DSN`, (4) Optionally set `EXPO_PUBLIC_OPENAI_API_KEY` if you want AI features ready for TASK-029, (5) Verify with `eas secret:list` — at minimum 3 secrets (`SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SENTRY_DSN`) must appear.
+- **description**: The production EAS build runs on Expo's cloud servers — local `.env` files are NOT included. The app requires `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY` (verified in `src/config/supabase.ts`), `EXPO_PUBLIC_SENTRY_DSN` (used by `src/lib/sentry/sentryService.ts`), and `EXPO_PUBLIC_POSTHOG_API_KEY` (used by `src/lib/analytics/analyticsService.ts` — analytics silently no-op if absent, but set it so events are captured from day-1 installs). ⚠️ NOTE: `EXPO_PUBLIC_OPENAI_API_KEY` is optional for initial launch (AI screens not yet wired — see TASK-029); set it as a placeholder or skip until TASK-029 is done. Note: `.env.example` has already been fixed to use correct `EXPO_PUBLIC_` prefix names (TASK-027) and includes the PostHog key (TASK-018). Steps: (1) Obtain the production Supabase URL and anon key from your Supabase project dashboard (Settings → API), (2) Obtain or create a Sentry DSN from sentry.io (free tier is sufficient), (3) Create a PostHog project at https://us.posthog.com and copy the Project API Key, (4) Set each secret via EAS CLI: `eas secret:create --scope project --name EXPO_PUBLIC_SUPABASE_URL --value "https://xxxx.supabase.co"`, repeat for `EXPO_PUBLIC_SUPABASE_ANON_KEY`, `EXPO_PUBLIC_SENTRY_DSN`, and `EXPO_PUBLIC_POSTHOG_API_KEY`, (5) Optionally set `EXPO_PUBLIC_OPENAI_API_KEY` if you want AI features ready for TASK-029, (6) Verify with `eas secret:list` — at minimum 4 secrets (`SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SENTRY_DSN`, `POSTHOG_API_KEY`) must appear.
 - **domain**: Mobile Release Readiness / Engineering
 - **priority**: P0
 - **status**: TODO
 - **dependencies**: TASK-022 ✅
 - **acceptance_criteria**:
-  - `eas secret:list` shows at minimum `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`, `EXPO_PUBLIC_SENTRY_DSN` with scope `project`
+  - `eas secret:list` shows at minimum `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`, `EXPO_PUBLIC_SENTRY_DSN`, `EXPO_PUBLIC_POSTHOG_API_KEY` with scope `project`
   - `EXPO_PUBLIC_OPENAI_API_KEY` is optional for initial launch (AI screens not yet wired — see TASK-029), but set it if available
   - After running `eas build --platform android --profile production`, the build logs confirm env vars are injected (no "undefined" warnings for the 3 required keys)
   - `.env.example` already uses correct `EXPO_PUBLIC_` prefixed names ✅ (done via TASK-027)
@@ -126,23 +126,6 @@ _Last updated: 2026-03-21 | Planner Run #21_
 
 ---
 
-### TASK-018
-- **id**: TASK-018
-- **title**: Integrate Analytics for Behavioral Event Tracking
-- **description**: With zero behavioral analytics, all post-launch product decisions will be based on guesswork. ⚠️ UNBLOCKED — implement analytics before launch so day-1 install/launch events are captured from the first user. ✅ RECOMMENDED APPROACH: Use PostHog (`posthog-react-native`) — it is a pure JavaScript SDK with zero native module requirements, works perfectly in Expo managed workflow, has a generous free tier, and provides session recording, funnels, and retention cohorts. Steps: (1) install `posthog-react-native`, (2) create `src/lib/analytics/analyticsService.ts` with typed event functions: `trackLessonStarted(lessonId, trackId)`, `trackLessonCompleted(lessonId, xpEarned)`, `trackTrackSelected(trackId, difficulty)`, `trackOnboardingCompleted(skipped: boolean)`, `trackStreakMilestone(days: number)`, `trackBadgeUnlocked(badgeId, badgeName)` — all functions must be no-ops (fail silently) when the PostHog API key is not configured, (3) wrap the app root in `<PostHogProvider>` in `app/_layout.tsx`, (4) call event functions at the 6 key touchpoints in the codebase (lesson start, lesson complete, track selected, onboarding complete, streak milestone, badge unlock), (5) add `EXPO_PUBLIC_POSTHOG_API_KEY` to `.env.example` and TASKS.md note to add to EAS secrets (TASK-025). Alternative if Firebase is preferred: use `@react-native-firebase/app` + `@react-native-firebase/analytics` but note this requires adding native modules to the Expo build config and `google-services.json`.
-- **domain**: Analytics & Observability
-- **priority**: P2
-- **status**: TODO
-- **dependencies**: None
-- **acceptance_criteria**:
-  - An analytics SDK is installed and listed in `package.json` dependencies
-  - `src/lib/analytics/analyticsService.ts` exports `trackLessonStarted`, `trackLessonCompleted`, `trackTrackSelected`, `trackOnboardingCompleted`, `trackStreakMilestone`, `trackBadgeUnlocked`
-  - All 6 event functions are called at the correct points in the codebase
-  - No TypeScript errors introduced
-  - PROGRESS.md documents the analytics platform chosen and setup steps (Firebase project creation, or Amplitude/PostHog account setup)
-
----
-
 ### TASK-019
 - **id**: TASK-019
 - **title**: Add Achievement Social Sharing
@@ -167,6 +150,7 @@ _Last updated: 2026-03-21 | Planner Run #21_
 
 ---
 
+- **TASK-018** ✅ — Integrate Analytics for Behavioral Event Tracking (PostHog)
 - **TASK-017** ✅ — Add In-App Rating Prompt After Milestone Completion
 - **TASK-028** ✅ — Commit Uncommitted TASK-015 & TASK-010 Implementation Files
 

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, ScrollView, RefreshControl } from 'react-native';
 import { TrackList } from '../components/education/TrackList';
 import { EducationalTrackSummary } from '../lib/types';
+import { trackTrackSelected } from '../lib/analytics/analyticsService';
 
 // Mock data
 const MOCK_TRACKS: EducationalTrackSummary[] = [
@@ -51,6 +52,7 @@ export const EducationScreen = () => {
 
   const handleTrackPress = (track: EducationalTrackSummary) => {
     console.log('Track pressed:', track.title);
+    trackTrackSelected(track.id, track.difficulty);
     // TODO: Navigate to track detail
   };
 

@@ -6,6 +6,110 @@ _Planner Agent Memory Log_
 ## Executor Run #22 — 2026-03-22
 
 ### Tasks Executed
+**TASK-018**: Integrate Analytics for Behavioral Event Tracking (PostHog)
+
+### Files Changed
+- `package.json` / `package-lock.json` — added `posthog-react-native@^4.37.5`
+- `src/lib/analytics/analyticsService.ts` — NEW: analytics service with 6 typed event functions + `setPostHogClient` bridge
+- `app/_layout.tsx` — wrapped app root in `<PostHogProvider>` with `PostHogBridge` to share client with analytics service; graceful no-op when API key is absent
+- `app/lesson/[id].tsx` — wired `trackLessonStarted`, `trackLessonCompleted`, `trackStreakMilestone`
+- `src/screens/EducationScreen.tsx` — wired `trackTrackSelected` in `handleTrackPress`
+- `src/screens/OnboardingScreen.tsx` — wired `trackOnboardingCompleted(skipped)` in `completeOnboarding`
+- `src/services/gamificationService.ts` — wired `trackBadgeUnlocked` in `saveBadge` for new badge inserts
+- `.env.example` — added `EXPO_PUBLIC_POSTHOG_API_KEY` and `EXPO_PUBLIC_POSTHOG_HOST`
+- `TASKS.md` — moved TASK-018 to Completed Tasks
+- `PROGRESS.md` — added this entry
+
+### Key Decisions
+- Chose PostHog (`posthog-react-native`) as recommended in the task description — pure JS SDK, no native modules, works in Expo managed workflow, generous free tier.
+- `PostHogProvider` is conditionally rendered: when `EXPO_PUBLIC_POSTHOG_API_KEY` is empty, the app renders without the provider and all event functions become silent no-ops via optional chaining (`posthogClient?.capture()`).
+- Used a `PostHogBridge` component with `usePostHog()` hook to pass the client instance to the standalone analytics service module, keeping event functions importable from anywhere without React context.
+- `trackBadgeUnlocked` uses `badge.type` (not `badge.name`) since Badge schema has no `name` field.
+- Streak milestone detection checks if `reachedAt` matches today's date to only fire the event on the day the milestone is first reached.
+
+### Verification
+- `npx tsc --noEmit` — zero new errors (only pre-existing Deno/education/AI errors unchanged)
+- All 5 acceptance criteria met:
+  1. ✅ `posthog-react-native` in `package.json`
+  2. ✅ `analyticsService.ts` exports all 6 typed event functions
+  3. ✅ All 6 events wired at correct touchpoints
+  4. ✅ No new TypeScript errors
+  5. ✅ PROGRESS.md documents PostHog as chosen platform
+
+---
+
+## Planner Run #23 — 2026-03-22
+
+### State Snapshot
+**Stage**: Final Play Store Release Readiness (all engineering complete, all P0 blockers are manual-only)
+**Completion**: 23 of 29 tasks complete (79%)
+**Critical Path**: All 5 P0 launch blockers require human action outside codebase (API keys, account setup, device testing)
+
+### Key Findings
+
+1. **TASK-017 Executor Implementation Complete** — Code is fully implemented and tested:
+   - `src/lib/reviews/reviewService.ts` created with correct milestone logic (5th lesson trigger, one-time prompt via AsyncStorage flag)
+   - `app/lesson/[id].tsx` updated to call `maybeRequestReview()` after lesson completion
+   - `expo-store-review@55.0.9` added to `package.json` dependencies
+   - TASKS.md diff shows TASK-017 moved to Completed Tasks section
+   - Code is NOT YET COMMITTED — waiting on git index.lock permission issue (stale lock from previous session)
+
+2. **Play Store Launch Readiness Assessment**:
+   - ✅ All 22 completed engineering tasks are production-ready
+   - ✅ MVP + all supplementary features (notifications, crash reporting, gamification) fully implemented
+   - ✅ GitHub Pages hosting confirmed live
+   - ✅ EAS build configuration linked
+   - ✅ `.env.example` variable naming fixed
+   - 🚨 **5 P0 Launch Blockers** — ALL MANUAL ONLY:
+     - **TASK-025**: EAS secrets (Supabase URL, Supabase anon key, Sentry DSN, optionally OpenAI) — requires manual API key collection from dashboards + `eas secret:create` CLI calls
+     - **TASK-023**: Google Play Developer account — requires $25 USD registration + Play Console app entry setup + service account JSON creation
+     - **TASK-026**: Smoke test on Android device — requires physical device or emulator + manual testing checklist execution
+     - **TASK-024**: Play Store screenshots (4 minimum) — requires APK build + device + screenshot capture tool
+     - **TASK-003**: Play Store submission — depends on TASK-023, TASK-024, TASK-025, TASK-026 all complete
+
+3. **Post-Launch Priorities** (P2/P3 — can proceed after store launch):
+   - **TASK-029** (Wire AI Services): Has pre-existing TypeScript error (`ConversationMessage` not exported from types); refactoring required before wiring screens
+   - **TASK-018** (Analytics): Recommends PostHog (pure JS SDK, no native modules, free tier); alternative Firebase requires native build config
+   - **TASK-019** (App Store for iOS): Currently iOS submission is deprioritized, but TASK-019 task exists
+
+### Uncommitted Changes (Executor Run #22)
+- `app/lesson/[id].tsx` — review prompt call added after lesson completion
+- `src/lib/reviews/reviewService.ts` — new file, complete review service implementation
+- `TASKS.md` — TASK-017 moved to completed tasks (from active)
+- `PROGRESS.md` — executor run notes (present file)
+- `package.json` & `package-lock.json` — expo-store-review dependency added
+
+**Blocking Commit**: `.git/index.lock` exists from previous session; stale lock prevents git operations. Needs cleanup (likely resolved when session expires or process restarts).
+
+### Planner Assessment
+All remaining work on this project is **manual-only**:
+- 5 P0 launch blockers require human API key collection, account setup ($25 payment), and device testing
+- Code implementation is feature-complete and ready for production build
+- Executor runs have hit the boundary where human action is necessary (cannot be automated)
+
+### Recommendations for Next Steps
+1. **For Daniel (Human)**: Proceed with manual P0 tasks in this order:
+   - TASK-025: Collect API keys and set EAS secrets
+   - TASK-023: Register Google Play Developer account ($25) and create service account JSON
+   - TASK-026: Run smoke test on Android device (execute checklist)
+   - TASK-024: Build APK and capture 4 Play Store screenshots
+   - TASK-003: Submit to Play Store internal testing track
+
+2. **For Executor Agent**: Once uncommitted changes are committed (when git lock resolves):
+   - No further code implementation tasks available
+   - Next executor run can assess for pre-launch polish tasks (P1 refinements) but these are rare at this stage
+   - After TASK-025/TASK-023/TASK-026/TASK-024 are manually done, executor can assist with TASK-003 submission template and TASK-029/TASK-018 implementation
+
+### File State
+- `TASKS.md`: 476 lines, 5 active P0/P1 tasks, 23 completed tasks
+- `PROGRESS.md`: 96 lines (before this entry)
+- All source code ready for production build
+
+---
+
+## Executor Run #22 — 2026-03-22
+
+### Tasks Executed
 **TASK-017**: Add In-App Rating Prompt After Milestone Completion
 
 ### Files Changed

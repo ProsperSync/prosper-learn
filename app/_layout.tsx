@@ -3,14 +3,33 @@ import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
 import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { PostHogProvider, usePostHog } from 'posthog-react-native';
 import { AuthProvider, useAuth } from '../src/hooks/useAuth';
 import { ONBOARDING_COMPLETE_KEY } from '../src/screens/OnboardingScreen';
 import ErrorBoundary from '../src/components/ErrorBoundary';
 import { initSentry, wrapWithSentry } from '../src/lib/sentry/sentryService';
+import { setPostHogClient } from '../src/lib/analytics/analyticsService';
 import '../src/i18n';
 
 // Initialize Sentry before any UI renders
 initSentry();
+
+// PostHog configuration — no-op when API key is absent
+const POSTHOG_API_KEY = process.env.EXPO_PUBLIC_POSTHOG_API_KEY ?? '';
+const POSTHOG_HOST = process.env.EXPO_PUBLIC_POSTHOG_HOST ?? 'https://us.i.posthog.com';
+
+/**
+ * Bridges the PostHog client instance from the provider context into the
+ * analytics service module so that standalone event functions can fire events.
+ */
+function PostHogBridge({ children }: { children: React.ReactNode }) {
+  const posthog = usePostHog();
+  useEffect(() => {
+    setPostHogClient(posthog);
+    return () => setPostHogClient(null);
+  }, [posthog]);
+  return <>{children}</>;
+}
 
 function AuthGate() {
   const { session, loading } = useAuth();
@@ -114,13 +133,33 @@ function AuthGate() {
   );
 }
 
-function RootLayout() {
+function RootLayoutInner() {
   return (
     <ErrorBoundary>
-      <AuthProvider>
-        <AuthGate />
-      </AuthProvider>
+      <PostHogBridge>
+        <AuthProvider>
+          <AuthGate />
+        </AuthProvider>
+      </PostHogBridge>
     </ErrorBoundary>
+  );
+}
+
+function RootLayout() {
+  // When PostHog API key is absent, the provider still renders children
+  // but no events are sent — this keeps the app fully functional.
+  if (!POSTHOG_API_KEY) {
+    return <RootLayoutInner />;
+  }
+
+  return (
+    <PostHogProvider
+      apiKey={POSTHOG_API_KEY}
+      options={{ host: POSTHOG_HOST }}
+      autocapture={false}
+    >
+      <RootLayoutInner />
+    </PostHogProvider>
   );
 }
 

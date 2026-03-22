@@ -16,6 +16,7 @@ import {
   requestNotificationPermissions,
   scheduleDailyStreakReminder,
 } from '../lib/notifications/notificationService';
+import { trackOnboardingCompleted } from '../lib/analytics/analyticsService';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -42,12 +43,15 @@ export default function OnboardingScreen() {
   const [currentPage, setCurrentPage] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
-  const completeOnboarding = async () => {
+  const completeOnboarding = async (skipped: boolean) => {
     try {
       await AsyncStorage.setItem(ONBOARDING_COMPLETE_KEY, 'true');
     } catch (error) {
       console.error('[Onboarding] Failed to save onboarding flag:', error);
     }
+
+    // Analytics: track onboarding completion
+    trackOnboardingCompleted(skipped);
 
     // Request notification permissions at the end of onboarding (non-blocking).
     // If granted, schedule the daily streak reminder at 8 PM local time.
@@ -67,12 +71,12 @@ export default function OnboardingScreen() {
     if (currentPage < 2) {
       flatListRef.current?.scrollToIndex({ index: currentPage + 1, animated: true });
     } else {
-      completeOnboarding();
+      completeOnboarding(false);
     }
   };
 
   const handleSkip = () => {
-    completeOnboarding();
+    completeOnboarding(true);
   };
 
   const handleCategorySelect = (key: string) => {

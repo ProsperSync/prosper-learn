@@ -16,6 +16,11 @@ import { educationalTrackEngine, xpCalculator } from '../../src/lib/ai';
 import { educationalService, gamificationService } from '../../src/services';
 import { useAuth } from '../../src/hooks/useAuth';
 import { maybeRequestReview } from '../../src/lib/reviews/reviewService';
+import {
+  trackLessonStarted,
+  trackLessonCompleted,
+  trackStreakMilestone,
+} from '../../src/lib/analytics/analyticsService';
 
 type QuizAnswer = {
   questionIndex: number;
@@ -135,6 +140,7 @@ export default function LessonScreen() {
         educationalService.startLesson(userId, lessonData.trackId, lessonData.id).catch(() => {
           // Silently fail — lesson can still be read
         });
+        trackLessonStarted(lessonData.id, lessonData.trackId);
       }
     } catch (err) {
       setError('Failed to load lesson');
@@ -257,6 +263,23 @@ export default function LessonScreen() {
 
       // Update daily learning streak
       await updateDailyStreak(userId);
+
+      // Analytics: lesson completed
+      trackLessonCompleted(lesson.id, totalXPEarned);
+
+      // Analytics: check for streak milestones reached in this session
+      try {
+        const streak = await gamificationService.getStreakByType(userId, 'educational');
+        if (streak?.milestones) {
+          for (const m of streak.milestones) {
+            if (m.reachedAt && m.reachedAt === format(new Date(), 'yyyy-MM-dd')) {
+              trackStreakMilestone(m.days);
+            }
+          }
+        }
+      } catch {
+        // analytics should never block the main flow
+      }
 
       setEarnedXP(totalXPEarned);
       showSuccess();

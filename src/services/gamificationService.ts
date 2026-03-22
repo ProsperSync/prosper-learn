@@ -7,6 +7,7 @@ import type {
   Reward,
   GamificationStats,
 } from '../lib/types';
+import { trackBadgeUnlocked } from '../lib/analytics/analyticsService';
 
 /**
  * Gamification Service
@@ -34,6 +35,8 @@ export class GamificationService {
       badges[existing] = badge;
     } else {
       badges.push(badge);
+      // Analytics: track new badge unlock
+      trackBadgeUnlocked(badge.id, badge.type);
     }
 
     await AsyncStorage.setItem(`${STORAGE_KEYS.BADGES}:${badge.userId}`, JSON.stringify(badges));
