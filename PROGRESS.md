@@ -3,6 +3,28 @@ _Planner Agent Memory Log_
 
 ---
 
+## Executor Run #25 — 2026-03-22
+
+### Tasks Executed
+**TASK-023**: Google Play Developer Account & Service Account Key Setup — COMPLETED ✅
+
+### Details
+All 5 acceptance criteria met:
+1. **Google Play Developer account active** — Developer account (ID: `7585026284130861122`) accessible at play.google.com/console via personal Google account.
+2. **"Prosper Learn" app entry created** — New app created in Play Console as a free App (separate from existing ProsperSync).
+3. **`google-service-account.json` at project root** — GCP service account `prosper-learn-play-store@project-a0219125-e9cc-4759-841.iam.gserviceaccount.com` created; JSON key downloaded and placed at project root (2432 bytes).
+4. **`google-service-account.json` in `.gitignore`** — Already listed at line 15 of `.gitignore` (pre-existing).
+5. **Service account has Release Manager role** — Invited with 7 permissions for Prosper Learn app including: Release to production/exclude devices/Play App Signing, Release apps to testing tracks, Manage testing tracks and edit tester lists, plus read-only view permissions.
+
+### Notes
+- Had to reset GCP organization policy `iam.disableServiceAccountKeyCreation` (was enforced by "Secure by Default") to allow service account key download.
+- Granted `orgpolicy.policyAdmin` role at org level (`928465390236`) to reset the constraint at project level.
+
+### Outcome
+TASK-023 fully completed. TASK-003 (Play Store Submission) is now unblocked on the service account side (still needs TASK-024 screenshots).
+
+---
+
 ## Executor Run #24 — 2026-03-22
 
 ### Tasks Executed

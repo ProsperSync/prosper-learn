@@ -55,14 +55,14 @@ _Last updated: 2026-03-22 | Planner Run #27_
 - **description**: TASK-003 requires a Google Play Console account to submit the AAB, and `eas.json` references `./google-service-account.json` for automated submission. Both must be provisioned before TASK-003 can complete. Steps: (1) Pay the one-time $25 USD Google Play Developer registration fee at https://play.google.com/console/signup — account is activated within hours, (2) Accept the Google Play Developer Distribution Agreement and complete the account profile (developer name: "Prosper Sync" or your entity name, contact email, website optional), (3) Create the app entry in Play Console: "Create app" → App name: "Prosper Learn", Default language: English, App or Game: App, Free or Paid: Free, (4) To enable automated submission via `eas submit`, create a Google Cloud service account: go to Play Console → Setup → API access → Link to a Google Cloud project (create one if needed) → Grant access → Create service account → download the JSON key → save as `google-service-account.json` in the project root (NEVER commit this file — add to `.gitignore`), (5) Grant the service account "Release manager" role in Play Console → Users and permissions. The service account JSON path in `eas.json` (`"serviceAccountKeyPath": "./google-service-account.json"`) already matches this location.
 - **domain**: Google Play Store Readiness / Mobile Release Readiness
 - **priority**: P0
-- **status**: TODO
+- **status**: DONE ✅
 - **dependencies**: None
 - **acceptance_criteria**:
-  - Google Play Developer account is active (login works at https://play.google.com/console)
-  - "Prosper Learn" app entry exists in Play Console (even as a draft)
-  - `google-service-account.json` exists at the project root with valid service account credentials
-  - `google-service-account.json` is listed in `.gitignore` (security requirement — must NOT be committed)
-  - Service account has "Release manager" role in Play Console Users and permissions
+  - ✅ Google Play Developer account is active (login works at https://play.google.com/console)
+  - ✅ "Prosper Learn" app entry exists in Play Console (even as a draft)
+  - ✅ `google-service-account.json` exists at the project root with valid service account credentials
+  - ✅ `google-service-account.json` is listed in `.gitignore` (security requirement — must NOT be committed)
+  - ✅ Service account has "Release manager" role in Play Console Users and permissions
 
 ---
 
