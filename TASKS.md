@@ -1,5 +1,5 @@
 # TASKS
-_Last updated: 2026-03-21 | Planner Run #20_
+_Last updated: 2026-03-21 | Planner Run #21_
 
 ---
 
@@ -10,14 +10,15 @@ _Last updated: 2026-03-21 | Planner Run #20_
 ### TASK-025
 - **id**: TASK-025
 - **title**: Configure EAS Build Secrets for Production Environment
-- **description**: The production EAS build runs on Expo's cloud servers — local `.env` files are NOT included. The app reads `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY` (verified in `src/config/supabase.ts`), `EXPO_PUBLIC_OPENAI_API_KEY` (used by `src/lib/ai/`), and `EXPO_PUBLIC_SENTRY_DSN` (used by `src/lib/sentry/sentryService.ts`). If these are not explicitly set as EAS Secrets, the production AAB will compile with empty strings and silently fail. Note: `.env.example` has already been fixed by TASK-027 to use correct `EXPO_PUBLIC_` prefix names. Steps: (1) Obtain the production Supabase URL and anon key from your Supabase project dashboard (Settings → API), (2) Obtain the production OpenAI API key from platform.openai.com, (3) Obtain or create a Sentry DSN from sentry.io (free tier is sufficient), (4) Set each secret via EAS CLI: `eas secret:create --scope project --name EXPO_PUBLIC_SUPABASE_URL --value "https://xxxx.supabase.co"`, repeat for `EXPO_PUBLIC_SUPABASE_ANON_KEY`, `EXPO_PUBLIC_OPENAI_API_KEY`, and `EXPO_PUBLIC_SENTRY_DSN`, (5) Verify with `eas secret:list` — all 4 secrets should appear.
+- **description**: The production EAS build runs on Expo's cloud servers — local `.env` files are NOT included. The app requires `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY` (verified in `src/config/supabase.ts`), and `EXPO_PUBLIC_SENTRY_DSN` (used by `src/lib/sentry/sentryService.ts`). ⚠️ NOTE: `EXPO_PUBLIC_OPENAI_API_KEY` is defined in `.env.example` but ALL AI service files (`educationalTutor.ts`, `adaptiveQuiz.ts`, `progressInsights.ts`) are NOT currently wired to any screen — the OpenAI key is optional for initial launch. Set it anyway as a placeholder so the build doesn't warn, or skip it and add it when AI features are wired (see TASK-029). Note: `.env.example` has already been fixed by TASK-027 to use correct `EXPO_PUBLIC_` prefix names. Steps: (1) Obtain the production Supabase URL and anon key from your Supabase project dashboard (Settings → API), (2) Obtain or create a Sentry DSN from sentry.io (free tier is sufficient), (3) Set each secret via EAS CLI: `eas secret:create --scope project --name EXPO_PUBLIC_SUPABASE_URL --value "https://xxxx.supabase.co"`, repeat for `EXPO_PUBLIC_SUPABASE_ANON_KEY` and `EXPO_PUBLIC_SENTRY_DSN`, (4) Optionally set `EXPO_PUBLIC_OPENAI_API_KEY` if you want AI features ready for TASK-029, (5) Verify with `eas secret:list` — at minimum 3 secrets (`SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SENTRY_DSN`) must appear.
 - **domain**: Mobile Release Readiness / Engineering
 - **priority**: P0
 - **status**: TODO
 - **dependencies**: TASK-022 ✅
 - **acceptance_criteria**:
-  - `eas secret:list` shows `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`, `EXPO_PUBLIC_OPENAI_API_KEY`, `EXPO_PUBLIC_SENTRY_DSN` with scope `project`
-  - After running `eas build --platform android --profile production`, the build logs confirm env vars are injected (no "undefined" warnings for these keys)
+  - `eas secret:list` shows at minimum `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`, `EXPO_PUBLIC_SENTRY_DSN` with scope `project`
+  - `EXPO_PUBLIC_OPENAI_API_KEY` is optional for initial launch (AI screens not yet wired — see TASK-029), but set it if available
+  - After running `eas build --platform android --profile production`, the build logs confirm env vars are injected (no "undefined" warnings for the 3 required keys)
   - `.env.example` already uses correct `EXPO_PUBLIC_` prefixed names ✅ (done via TASK-027)
   - A smoke test (TASK-026) confirms auth works in the resulting build
 
@@ -26,7 +27,7 @@ _Last updated: 2026-03-21 | Planner Run #20_
 ### TASK-026
 - **id**: TASK-026
 - **title**: Production APK Smoke Test Before Play Store Submission
-- **description**: Before submitting the production AAB to the Play Store, the build must be installed and manually verified on an Android device or emulator. A broken build submitted to Play Store wastes review time (typically 3–7 days) and creates a negative first impression on any internal testers. The production `eas build` profile (`buildType: app-bundle`) cannot be directly installed on a device — use the `preview` profile (APK output) to build a testable binary with the same production code and env vars. Steps: (1) Ensure TASK-025 (EAS Secrets) is complete, (2) Run `eas build --platform android --profile preview` to produce an installable APK with production env vars, (3) Download the APK from the EAS dashboard and install via `adb install <apk-path>` on a physical Android device or emulator, (4) Execute the smoke test checklist: [a] Cold launch — splash screen appears with branded icon, [b] Auth — sign-up with a new test email works (user is created in Supabase), [c] Onboarding — 3-screen flow completes and lands on Education tab, [d] Lesson — open a lesson, complete it, confirm XP is awarded and streak updates, [e] AI Tutor — send a message, confirm response is returned (not an error), [f] Profile — check streak count, XP, badge display are correct, [g] Settings — Privacy Policy and Terms of Service links open correctly, (5) Document any failures and create bug tasks before proceeding to TASK-003.
+- **description**: Before submitting the production AAB to the Play Store, the build must be installed and manually verified on an Android device or emulator. A broken build submitted to Play Store wastes review time (typically 3–7 days) and creates a negative first impression on any internal testers. The production `eas build` profile (`buildType: app-bundle`) cannot be directly installed on a device — use the `preview` profile (APK output) to build a testable binary with the same production code and env vars. Steps: (1) Ensure TASK-025 (EAS Secrets) is complete, (2) Run `eas build --platform android --profile preview` to produce an installable APK with production env vars, (3) Download the APK from the EAS dashboard and install via `adb install <apk-path>` on a physical Android device or emulator, (4) Execute the smoke test checklist: [a] Cold launch — splash screen appears with branded icon, [b] Auth — sign-up with a new test email works (user is created in Supabase), [c] Onboarding — 3-screen flow completes and lands on Education tab, [d] Lesson — open a lesson, complete it, confirm XP is awarded and streak updates, [e] Achievements — badges/XP display correctly on Achievements tab, [f] Profile — check streak count, XP, badge display are correct, [g] Legal — Privacy Policy and Terms of Service links open correctly (from Profile or Settings), (5) Document any failures and create bug tasks before proceeding to TASK-003.
 - **domain**: Mobile Release Readiness / Engineering
 - **priority**: P0
 - **status**: TODO
@@ -36,7 +37,7 @@ _Last updated: 2026-03-21 | Planner Run #20_
   - Cold launch shows branded splash screen (green background, Prosper Learn logo) — not a white screen or crash
   - Sign-up flow completes: new user appears in Supabase Auth dashboard
   - At least one lesson can be completed end-to-end (XP awarded, streak increments)
-  - AI Tutor returns a response without crashing (or shows a graceful error if OpenAI key is quota-limited)
+  - Achievements tab correctly shows earned badges and XP level
   - Profile tab correctly shows XP, streak, and badges
   - No crash-to-home during the smoke test checklist
   - Any failures are documented as new bug tasks before TASK-003 proceeds
@@ -104,6 +105,24 @@ _Last updated: 2026-03-21 | Planner Run #20_
 
 ---
 
+
+---
+
+### TASK-029
+- **id**: TASK-029
+- **title**: Wire AI Services to App UI (AI Tutor Screen + Adaptive Quiz)
+- **description**: Three AI service files exist and are fully implemented but are dead code — they are NOT imported by any screen: `src/lib/ai/educationalTutor.ts` (conversational tutor), `src/lib/ai/adaptiveQuiz.ts` (AI-generated quiz questions), and `src/lib/ai/progressInsights.ts` (personalized learning insights). Requires `EXPO_PUBLIC_OPENAI_API_KEY` to be set (see TASK-025). Steps: (1) Add an "AI Tutor" tab or a "Chat with Tutor" button inside the lesson detail screen (`app/lesson/[id].tsx`) that opens a chat interface using `EducationalTutorService`, (2) In `app/lesson/[id].tsx`, after a lesson is completed, optionally call `AdaptiveQuizService` to generate follow-up questions dynamically (supplement or replace static `lesson.content.quizQuestions`), (3) On the Profile or Achievements screen, add a "Progress Insights" section that calls `ProgressInsightsService.generateInsightReport(userId, history)` and displays a personalized summary, (4) Create `src/config/openai.ts` (similar to `src/config/supabase.ts`) that initializes the OpenAI client from `process.env.EXPO_PUBLIC_OPENAI_API_KEY` and exports it, (5) Update all three AI service constructors to accept the shared OpenAI client instance. Note: `educationalTutor.ts` also has a TypeScript error — `ConversationMessage` is imported from `../types` but not exported there; define `ConversationMessage` in `src/lib/types/education.ts` as `{ role: 'user' | 'assistant'; content: string }` before wiring.
+- **domain**: Product & UX / AI Features
+- **priority**: P2
+- **status**: TODO
+- **dependencies**: TASK-003, TASK-025
+- **acceptance_criteria**:
+  - `src/config/openai.ts` exports an initialized `OpenAI` client using `EXPO_PUBLIC_OPENAI_API_KEY`
+  - At least one AI service is reachable from a visible screen (e.g., "Ask Tutor" button in lesson detail or dedicated tab)
+  - `ConversationMessage` type is defined in `src/lib/types/education.ts` (fixes pre-existing TS error)
+  - `npx tsc --noEmit` reports no new errors in `src/` beyond pre-existing Deno infrastructure errors
+  - AI Tutor chat sends user message and receives a response (gracefully handles empty/missing API key with a user-facing error message, not a crash)
+  - `EXPO_PUBLIC_OPENAI_API_KEY` is added to EAS secrets (via TASK-025 update)
 
 ---
 
