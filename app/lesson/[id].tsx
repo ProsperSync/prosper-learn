@@ -15,6 +15,7 @@ import type { Lesson, Streak } from '../../src/lib/types';
 import { educationalTrackEngine, xpCalculator } from '../../src/lib/ai';
 import { educationalService, gamificationService } from '../../src/services';
 import { useAuth } from '../../src/hooks/useAuth';
+import { maybeRequestReview } from '../../src/lib/reviews/reviewService';
 
 type QuizAnswer = {
   questionIndex: number;
@@ -259,6 +260,13 @@ export default function LessonScreen() {
 
       setEarnedXP(totalXPEarned);
       showSuccess();
+
+      // Prompt for in-app review after 5th lesson (non-blocking, shown at most once)
+      const allXPEvents = await gamificationService.getXPEvents(userId);
+      const completedLessonCount = allXPEvents.filter(
+        (e) => e.type === 'lesson_completed'
+      ).length;
+      maybeRequestReview(completedLessonCount).catch(() => {});
     } catch (err) {
       console.error('Failed to complete lesson:', err);
       // Still show success if the lesson itself was likely completed

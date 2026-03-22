@@ -126,25 +126,6 @@ _Last updated: 2026-03-21 | Planner Run #21_
 
 ---
 
-### TASK-017
-- **id**: TASK-017
-- **title**: Add In-App Rating Prompt After Milestone Completion
-- **description**: Play Store ratings are one of the strongest organic growth levers for app discovery. After a user has had enough positive experience to form a genuine opinion — completing their 5th lesson is a natural milestone — prompt them to rate the app using the native in-app review API. This avoids the jarring experience of a cold rating request and maximizes the likelihood of a positive review. ⚠️ UNBLOCKED — implement now; `StoreReview.isAvailableAsync()` safely returns false in dev/preview builds so there is no risk of pre-launch noise. Steps: (1) install `expo-store-review`, (2) create `src/lib/reviews/reviewService.ts` with function `maybeRequestReview(lessonsCompleted: number)` that checks if `lessonsCompleted >= 5`, if `expo-store-review` is available (`StoreReview.isAvailableAsync()`), and if the prompt hasn't been shown before (persisted in AsyncStorage key `review_requested`), then calls `StoreReview.requestReview()` and sets the flag, (3) call `maybeRequestReview()` in the lesson completion handler in `app/lesson/[id].tsx` after the XP is awarded and toast is shown, (4) the rating prompt must NEVER be shown more than once per install (enforced via the AsyncStorage flag).
-- **domain**: Growth & Marketing / Product & UX
-- **priority**: P2
-- **status**: TODO
-- **dependencies**: None
-- **acceptance_criteria**:
-  - `expo-store-review` is installed and listed in `package.json` dependencies
-  - `src/lib/reviews/reviewService.ts` exports `maybeRequestReview(lessonsCompleted: number)`
-  - The review prompt fires after the user's 5th lesson completion (not before)
-  - The prompt is shown at most once per install (AsyncStorage flag `review_requested` prevents repeats)
-  - `StoreReview.isAvailableAsync()` is checked before calling `requestReview()` to avoid crashes on unsupported devices
-  - The prompt appears after the lesson completion toast (non-blocking, natural timing)
-  - No crashes or TypeScript errors introduced
-
----
-
 ### TASK-018
 - **id**: TASK-018
 - **title**: Integrate Analytics for Behavioral Event Tracking
@@ -186,6 +167,7 @@ _Last updated: 2026-03-21 | Planner Run #21_
 
 ---
 
+- **TASK-017** ✅ — Add In-App Rating Prompt After Milestone Completion
 - **TASK-028** ✅ — Commit Uncommitted TASK-015 & TASK-010 Implementation Files
 
 ---

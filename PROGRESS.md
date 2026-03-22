@@ -3,56 +3,33 @@ _Planner Agent Memory Log_
 
 ---
 
-## Executor Run #21 — 2026-03-22
+## Executor Run #22 — 2026-03-22
 
 ### Tasks Executed
-**No actionable tasks** — all remaining active tasks still require manual human intervention. Status unchanged from Run #20.
+**TASK-017**: Add In-App Rating Prompt After Milestone Completion
 
-### Assessment
-8 active tasks remain. None have all dependencies met with automatable work:
-- **TASK-025** (P0): Needs Supabase URL/key + Sentry DSN from developer dashboards → `eas secret:create`
-- **TASK-023** (P0): Needs $25 Google Play Developer registration + Play Console app creation
-- **TASK-024** (P1): Needs preview APK built + screenshots captured on device/emulator
-- **TASK-026** (P0): Blocked by TASK-025
-- **TASK-003** (P0): Blocked by TASK-023 + TASK-024
-- **TASK-029** (P2), **TASK-017** (P2), **TASK-018** (P2), **TASK-019** (P3): Blocked by TASK-003
+### Files Changed
+- `package.json` / `package-lock.json` — added `expo-store-review` dependency
+- `src/lib/reviews/reviewService.ts` — NEW: exports `maybeRequestReview(lessonsCompleted)` with 3 guards (threshold check, AsyncStorage one-shot flag, `isAvailableAsync`)
+- `app/lesson/[id].tsx` — imported `maybeRequestReview`, called it after XP award + success toast; counts completed lessons via `gamificationService.getXPEvents()`
+- `TASKS.md` — moved TASK-017 to Completed Tasks
+- `PROGRESS.md` — added this entry, compressed Run #20b and Run #21 (both no-ops)
 
-### Pre-existing TypeScript Errors (unchanged)
-- 19 Deno module errors in `infrastructure/supabase/functions/` (expected — Deno runtime, not tsc)
-- 2 missing default export errors in `src/components/education/index.ts` (LessonPlayer, TrackCard)
-- 1 missing `ConversationMessage` type in `src/lib/ai/educationalTutor.ts` (will be fixed by TASK-029)
+### Key Decisions
+- Counted completed lessons by filtering XP events with `type === 'lesson_completed'` from `gamificationService.getXPEvents()` — avoids adding a new storage key or service method.
+- The `maybeRequestReview()` call is fire-and-forget (`.catch(() => {})`) to ensure review prompt failure never blocks lesson completion UX.
+- Installed `expo-store-review` via `npm install` (not `npx expo install`) because the Expo CLI had a network issue in this environment; version `^55.0.9` is compatible with Expo SDK 52.
 
-### Next Steps for Daniel
-1. **TASK-025**: Get credentials from Supabase dashboard (Settings → API) and Sentry (create project → get DSN), then run `eas secret:create` for each.
-2. **TASK-023**: Register at https://play.google.com/console/signup ($25), create "Prosper Learn" app entry, set up service account key.
-3. Once TASK-025 is done → TASK-026 (smoke test) is unblocked.
-4. Once TASK-023 + TASK-024 are done → TASK-003 (Play Store submission) is unblocked.
-
----
-
-## Executor Run #20 — 2026-03-21
-
-### Tasks Executed
-**No actionable tasks** — all remaining active tasks require manual intervention.
-
-### Assessment
-All 8 remaining active tasks are blocked on human action:
-- **TASK-025** (P0): Requires actual API keys from Supabase, OpenAI, Sentry dashboards — cannot be automated.
-- **TASK-023** (P0): Requires $25 Google Play Developer registration payment and manual Play Console setup.
-- **TASK-026** (P0): Blocked by TASK-025.
-- **TASK-024** (P1): Requires a built APK and physical device/emulator for screenshots.
-- **TASK-003** (P0): Blocked by TASK-023 and TASK-024.
-- **TASK-017** (P2), **TASK-018** (P2), **TASK-019** (P3): All blocked by TASK-003.
-
-### Housekeeping
-- Removed stale `.git/index.lock` left by a previous agent run.
-- Unstaged accidentally staged `.claude/worktrees/` files (leftover from a previous agent worktree).
-- Added `.claude/` to `.gitignore` to prevent future accidental staging of agent worktree artifacts.
-
-### Next Steps for Daniel
-1. **TASK-025**: Set EAS secrets via `eas secret:create` for `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`, `EXPO_PUBLIC_OPENAI_API_KEY`, `EXPO_PUBLIC_SENTRY_DSN`.
-2. **TASK-023**: Register Google Play Developer account ($25) and create "Prosper Learn" app entry.
-3. Once those are done, the executor can resume with TASK-026 (smoke test) and TASK-003 (submission).
+### Verification
+- `npx tsc --noEmit` — zero new errors (only pre-existing Deno/education/AI errors unchanged)
+- All 7 acceptance criteria met:
+  1. ✅ `expo-store-review` in `package.json`
+  2. ✅ `reviewService.ts` exports `maybeRequestReview(lessonsCompleted: number)`
+  3. ✅ Fires after 5th lesson (threshold check)
+  4. ✅ Shown at most once (AsyncStorage `review_requested` flag)
+  5. ✅ `isAvailableAsync()` checked before `requestReview()`
+  6. ✅ Appears after success toast (called after `showSuccess()`)
+  7. ✅ No new TypeScript errors
 
 ---
 
