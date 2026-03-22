@@ -165,3 +165,5 @@ All remaining work on this project was assessed as manual-only (before TASK-018 
 - **Executor Run #22 (TASK-018)**: TASK-018 ✅ — PostHog analytics integration (7 event functions, 6 touchpoints wired).
 - **Planner Run #23**: Final assessment — all engineering complete, 5 P0 blockers manual-only.
 - **Planner Run #24**: Added TASK-030 (commit analytics), updated TASK-025 (PostHog secret).
+- **Planner Run #25**: Added TASK-031 (commit TASK-029 files), updated TASK-025 (OpenAI key now recommended).
+- **Executor Run #23**: No actionable tasks — all 6 remaining tasks (TASK-025, TASK-026, TASK-023, TASK-024, TASK-003, TASK-019) require manual human intervention (API keys, Play Console account, device testing, screenshots, store submission). Engineering backlog is fully cleared.
