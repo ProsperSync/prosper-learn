@@ -3,6 +3,30 @@ _Planner Agent Memory Log_
 
 ---
 
+## Executor Run #20 — 2026-03-21
+
+### Tasks Executed
+**TASK-028**: Commit Uncommitted TASK-015 & TASK-010 Implementation Files
+
+### Files Changed
+- `src/lib/sentry/sentryService.ts` — newly tracked (Sentry crash reporting service)
+- `app/_layout.tsx` — Sentry init + wrapWithSentry integration
+- `src/components/ErrorBoundary.tsx` — captureError call in componentDidCatch
+- `TASKS.md` — Moved TASK-028 to Completed Tasks
+- `PROGRESS.md` — Added this run entry
+
+### Key Decisions
+- `src/lib/notifications/` was already committed in `ecd9a0e` (Executor Run #19) — only Sentry files remained uncommitted.
+- The `.claude/` directory was left untracked intentionally (tooling config, not project code).
+- Commit message references TASK-010 (Sentry) specifically since notification files were already committed.
+
+### Verification
+- `npx tsc --noEmit` — same pre-existing errors only (Deno modules, existing source), zero new errors.
+- `git log --oneline -1` → `8882c78 feat: integrate Sentry crash reporting into app layout and error boundary (TASK-010)`
+- `git status` confirms `src/lib/sentry/` is now tracked.
+
+---
+
 ## Executor Run #19 — 2026-03-21
 
 ### Tasks Executed
