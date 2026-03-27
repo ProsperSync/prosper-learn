@@ -33,8 +33,9 @@
       [
         "@sentry/react-native/expo",
         {
-          "organization": "prosper-sync",
-          "project": "prosper-learn"
+          "organization": "prosper-learn",
+          "project": "react-native",
+          "enableSourceMaps": false
         }
       ],
       [
