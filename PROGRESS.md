@@ -138,3 +138,28 @@ Engineering backlog remains fully cleared. No code changes. Same conclusion as E
 
 ### Outcome
 All 6 acceptance criteria met. Remaining active tasks (TASK-025, TASK-026, TASK-024, TASK-003) all require manual human intervention.
+
+---
+
+## Executor Run #28 — 2026-03-27
+
+### Tasks Executed
+- **TASK-025** ✅ — Configure EAS Build Secrets for Production Environment
+
+### Implementation Details
+- Set 5 EAS project-scoped secrets via `eas secret:create`:
+  1. `EXPO_PUBLIC_SUPABASE_URL` — Supabase project URL (project ref: hgebvmnntumhvgbprwkj)
+  2. `EXPO_PUBLIC_SUPABASE_ANON_KEY` — Supabase anon/public JWT key
+  3. `EXPO_PUBLIC_SENTRY_DSN` — Sentry DSN from new "prosper-learn" org (created under prospersync@gmail.com)
+  4. `EXPO_PUBLIC_POSTHOG_API_KEY` — PostHog project token (project ID 359400)
+  5. `EXPO_PUBLIC_OPENAI_API_KEY` — OpenAI API key for AI Tutor feature
+- Verified all 5 secrets appear in `eas secret:list` with scope `project`
+- Note: Sentry org was recreated under prospersync@gmail.com (org slug: prosper-learn, project: react-native)
+- No code changes — this task is purely infrastructure/secrets configuration
+
+### Files Modified
+- `TASKS.md` (TASK-025 moved to completed)
+- `PROGRESS.md` (this entry)
+
+### Outcome
+All acceptance criteria met (5/5 secrets set, verified via `eas secret:list`). TASK-025 dependency for TASK-026 is now satisfied. Remaining: TASK-026 (smoke test), TASK-024 (screenshots), TASK-003 (Play Store submission) — all require manual human intervention.

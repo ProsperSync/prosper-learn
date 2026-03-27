@@ -1,26 +1,9 @@
 # TASKS
-_Last updated: 2026-03-22 | Planner Run #28_
+_Last updated: 2026-03-27 | Executor Run #28_
 
 ---
 
 ## Active Tasks
-
----
-
-### TASK-025
-- **id**: TASK-025
-- **title**: Configure EAS Build Secrets for Production Environment
-- **description**: The production EAS build runs on Expo's cloud servers — local `.env` files are NOT included. The app requires `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY` (verified in `src/config/supabase.ts`), `EXPO_PUBLIC_SENTRY_DSN` (used by `src/lib/sentry/sentryService.ts`), and `EXPO_PUBLIC_POSTHOG_API_KEY` (used by `src/lib/analytics/analyticsService.ts` — analytics silently no-op if absent, but set it so events are captured from day-1 installs). ⚠️ NOTE: `EXPO_PUBLIC_OPENAI_API_KEY` should now be set — AI screens ARE wired (TASK-029 complete: AI Tutor chat + Progress Insights wired to app UI). Setting this key enables the AI Tutor feature from day-1 installs; without it the feature degrades gracefully with a user-facing message. Note: `.env.example` has already been fixed to use correct `EXPO_PUBLIC_` prefix names (TASK-027) and includes the PostHog key (TASK-018). Steps: (1) Obtain the production Supabase URL and anon key from your Supabase project dashboard (Settings → API), (2) Obtain or create a Sentry DSN from sentry.io (free tier is sufficient), (3) Create a PostHog project at https://us.posthog.com and copy the Project API Key, (4) Set each secret via EAS CLI: `eas secret:create --scope project --name EXPO_PUBLIC_SUPABASE_URL --value "https://xxxx.supabase.co"`, repeat for `EXPO_PUBLIC_SUPABASE_ANON_KEY`, `EXPO_PUBLIC_SENTRY_DSN`, and `EXPO_PUBLIC_POSTHOG_API_KEY`, (5) Optionally set `EXPO_PUBLIC_OPENAI_API_KEY` if you want AI features ready for TASK-029, (6) Verify with `eas secret:list` — at minimum 4 secrets (`SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SENTRY_DSN`, `POSTHOG_API_KEY`) must appear.
-- **domain**: Mobile Release Readiness / Engineering
-- **priority**: P0
-- **status**: TODO
-- **dependencies**: TASK-022 ✅
-- **acceptance_criteria**:
-  - `eas secret:list` shows at minimum `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`, `EXPO_PUBLIC_SENTRY_DSN`, `EXPO_PUBLIC_POSTHOG_API_KEY` with scope `project`
-  - `EXPO_PUBLIC_OPENAI_API_KEY` is set (AI screens are now wired via TASK-029 — set this key so the AI Tutor is functional from day-1 installs)
-  - After running `eas build --platform android --profile production`, the build logs confirm env vars are injected (no "undefined" warnings for the 3 required keys)
-  - `.env.example` already uses correct `EXPO_PUBLIC_` prefixed names ✅ (done via TASK-027)
-  - A smoke test (TASK-026) confirms auth works in the resulting build
 
 ---
 
@@ -94,6 +77,8 @@ _Last updated: 2026-03-22 | Planner Run #28_
 ## Completed Tasks
 
 ---
+
+- **TASK-025** ✅ — Configure EAS Build Secrets for Production Environment (5 secrets set: SUPABASE_URL, SUPABASE_ANON_KEY, SENTRY_DSN, POSTHOG_API_KEY, OPENAI_API_KEY)
 
 - **TASK-019** ✅ — Add Achievement Social Sharing
 - **TASK-023** ✅ — Google Play Developer Account & Service Account Key Setup (Executor Run #25: account active, app entry created, `google-service-account.json` provisioned, service account has Release Manager role)
