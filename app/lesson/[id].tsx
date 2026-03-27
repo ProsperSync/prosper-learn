@@ -21,6 +21,7 @@ import {
   trackLessonCompleted,
   trackStreakMilestone,
 } from '../../src/lib/analytics/analyticsService';
+import { shareLessonCompletion } from '../../src/lib/sharing/sharingService';
 
 type QuizAnswer = {
   questionIndex: number;
@@ -535,6 +536,12 @@ export default function LessonScreen() {
 
             <View style={styles.postCompleteActions}>
               <Pressable
+                style={styles.shareButtonSmall}
+                onPress={() => shareLessonCompletion(lesson.title, earnedXP)}
+              >
+                <Text style={styles.shareButtonSmallText}>Share</Text>
+              </Pressable>
+              <Pressable
                 style={styles.askTutorButtonSmall}
                 onPress={() => router.push({ pathname: '/ai-tutor', params: { lessonId: lesson.id } })}
               >
@@ -922,6 +929,19 @@ const styles = StyleSheet.create({
   },
   askTutorButtonText: {
     color: '#1565C0',
+    fontSize: 15,
+    fontWeight: '600',
+  },
+  shareButtonSmall: {
+    backgroundColor: '#E8F5E9',
+    borderWidth: 1.5,
+    borderColor: '#4CAF50',
+    paddingHorizontal: 20,
+    paddingVertical: 14,
+    borderRadius: 12,
+  },
+  shareButtonSmallText: {
+    color: '#2E7D32',
     fontSize: 15,
     fontWeight: '600',
   },

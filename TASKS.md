@@ -1,5 +1,5 @@
 # TASKS
-_Last updated: 2026-03-22 | Planner Run #27_
+_Last updated: 2026-03-22 | Planner Run #28_
 
 ---
 
@@ -49,23 +49,6 @@ _Last updated: 2026-03-22 | Planner Run #27_
 
 ---
 
-### TASK-023
-- **id**: TASK-023
-- **title**: Google Play Developer Account & Service Account Key Setup
-- **description**: TASK-003 requires a Google Play Console account to submit the AAB, and `eas.json` references `./google-service-account.json` for automated submission. Both must be provisioned before TASK-003 can complete. Steps: (1) Pay the one-time $25 USD Google Play Developer registration fee at https://play.google.com/console/signup — account is activated within hours, (2) Accept the Google Play Developer Distribution Agreement and complete the account profile (developer name: "Prosper Sync" or your entity name, contact email, website optional), (3) Create the app entry in Play Console: "Create app" → App name: "Prosper Learn", Default language: English, App or Game: App, Free or Paid: Free, (4) To enable automated submission via `eas submit`, create a Google Cloud service account: go to Play Console → Setup → API access → Link to a Google Cloud project (create one if needed) → Grant access → Create service account → download the JSON key → save as `google-service-account.json` in the project root (NEVER commit this file — add to `.gitignore`), (5) Grant the service account "Release manager" role in Play Console → Users and permissions. The service account JSON path in `eas.json` (`"serviceAccountKeyPath": "./google-service-account.json"`) already matches this location.
-- **domain**: Google Play Store Readiness / Mobile Release Readiness
-- **priority**: P0
-- **status**: DONE ✅
-- **dependencies**: None
-- **acceptance_criteria**:
-  - ✅ Google Play Developer account is active (login works at https://play.google.com/console)
-  - ✅ "Prosper Learn" app entry exists in Play Console (even as a draft)
-  - ✅ `google-service-account.json` exists at the project root with valid service account credentials
-  - ✅ `google-service-account.json` is listed in `.gitignore` (security requirement — must NOT be committed)
-  - ✅ Service account has "Release manager" role in Play Console Users and permissions
-
----
-
 ---
 
 ### TASK-024
@@ -94,7 +77,7 @@ _Last updated: 2026-03-22 | Planner Run #27_
 - **domain**: Google Play Store Readiness / Legal & Trust / Mobile Release Readiness
 - **priority**: P0
 - **status**: TODO
-- **dependencies**: TASK-007 ✅, TASK-011 ✅, TASK-012 ✅, TASK-013 ✅, TASK-014 ✅, TASK-016 ✅, TASK-020 ✅, TASK-022 ✅, TASK-023 (Play Console account), TASK-024 (screenshots)
+- **dependencies**: TASK-007 ✅, TASK-011 ✅, TASK-012 ✅, TASK-013 ✅, TASK-014 ✅, TASK-016 ✅, TASK-020 ✅, TASK-022 ✅, TASK-023 ✅, TASK-024 (screenshots), TASK-025 (EAS secrets), TASK-026 (smoke test)
 - **acceptance_criteria**:
   - `eas build --platform android --profile production` completes and produces a valid signed AAB
   - Store listing draft completed in Play Console: title "Prosper Learn", short description (≤80 chars), full description with keywords (financial education, personal finance, budgeting, investing, money management)
@@ -108,30 +91,12 @@ _Last updated: 2026-03-22 | Planner Run #27_
 
 ---
 
-### TASK-019
-- **id**: TASK-019
-- **title**: Add Achievement Social Sharing
-- **description**: Social sharing of achievements is the lowest-cost viral growth mechanism available. After a user earns a badge or completes a learning track, a "Share" button triggers the native share sheet with a pre-composed message (e.g., "🏆 I just earned the 'Budgeting Expert' badge on Prosper Learn! Learning personal finance one lesson at a time. #ProsperLearn"). Each social share is a free user acquisition attempt — and users who share financial education wins tend to attract high-quality peers. Steps: (1) install `expo-sharing` (if not already installed — check package.json), (2) create `src/lib/sharing/sharingService.ts` with `shareAchievement(achievementTitle: string, message: string)` that uses `expo-sharing` to open the native share dialog, (3) check `Sharing.isAvailableAsync()` before triggering to prevent crashes on unsupported platforms, (4) add a "Share" button to the badge unlock success flow (wherever badge unlocks are surfaced in GamificationScreen or profile), (5) add a "Share Achievement" button to the lesson completion toast/success state in `app/lesson/[id].tsx` after final lesson of a track.
-- **domain**: Growth & Marketing
-- **priority**: P3
-- **status**: TODO
-- **dependencies**: TASK-003
-- **acceptance_criteria**:
-  - `expo-sharing` is installed and listed in `package.json` dependencies
-  - `src/lib/sharing/sharingService.ts` exports `shareAchievement(achievementTitle, message)`
-  - A "Share" button is visible after earning a badge or completing a track
-  - The native share sheet opens with a pre-composed message containing the achievement name and `#ProsperLearn` hashtag
-  - `Sharing.isAvailableAsync()` is checked before triggering (no crashes on unsupported platforms)
-  - No TypeScript errors introduced
-
----
-
----
-
 ## Completed Tasks
 
 ---
 
+- **TASK-019** ✅ — Add Achievement Social Sharing
+- **TASK-023** ✅ — Google Play Developer Account & Service Account Key Setup (Executor Run #25: account active, app entry created, `google-service-account.json` provisioned, service account has Release Manager role)
 - **TASK-031** ✅ — Commit Uncommitted TASK-029 AI Feature Files (committed at `abf2b90` by executor concurrently with Planner Run #25)
 - **TASK-029** ✅ — Wire AI Services to App UI (AI Tutor Screen + Progress Insights)
 - **TASK-030** ✅ — Commit Uncommitted TASK-018 Analytics Implementation Files

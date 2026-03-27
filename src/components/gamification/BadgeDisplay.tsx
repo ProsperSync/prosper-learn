@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import type { Badge, BadgeTier } from '../../lib/types';
+import { shareAchievement } from '../../lib/sharing/sharingService';
 
 interface BadgeDisplayProps {
   badges: Badge[];
@@ -112,9 +113,20 @@ export function BadgeDetail({ badge, onClose }: BadgeDetailProps) {
         </Text>
       </View>
 
-      <Pressable style={styles.closeButton} onPress={onClose}>
-        <Text style={styles.closeButtonText}>{t('common.close')}</Text>
-      </Pressable>
+      <View style={styles.detailActions}>
+        <Pressable
+          style={styles.shareButton}
+          onPress={() => {
+            const title = t(`badges.${badge.type}.title`);
+            shareAchievement(title);
+          }}
+        >
+          <Text style={styles.shareButtonText}>Share</Text>
+        </Pressable>
+        <Pressable style={styles.closeButton} onPress={onClose}>
+          <Text style={styles.closeButtonText}>{t('common.close')}</Text>
+        </Pressable>
+      </View>
     </View>
   );
 }
@@ -280,6 +292,21 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: '#333',
+  },
+  detailActions: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  shareButton: {
+    backgroundColor: '#4CAF50',
+    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+  },
+  shareButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#fff',
   },
   closeButton: {
     backgroundColor: '#007AFF',
